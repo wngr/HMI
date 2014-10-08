@@ -113,7 +113,6 @@ async.series([
 /*
  * GET opcua test page.
  */
-exports.jade = function(req, res){
-	
-  res.render('opcua', { title: 'Express' });
+exports.index = function(req, res){
+  res.render('basicRead', { title: 'BasicRead' });
 };

@@ -2,13 +2,17 @@
 /**
  * Module dependencies.
  */
-
 var express = require('express')
-  , routes = require('./routes')
-  , user = require('./routes/user')
-  , opcuatestsuite = require('./routes/opcuatestsuite')
   , http = require('http')
   , path = require('path');
+
+/**
+ * Controls / Routes
+ */
+var  hmiDev 	= require('./routes/hmidev.js')
+  , user 		= require('./routes/user')
+  , basicRead 	= require('./routes/basicread')
+  , dashBoard 	= require('./routes/dashboard');
 
 var app = express();
 
@@ -28,9 +32,11 @@ if ('development' == app.get('env')) {
   app.use(express.errorHandler());
 }
 
-app.get('/', routes.index);
+app.get('/', hmiDev.index);
 app.get('/users', user.list);
-app.get('/opcua', opcuatestsuite.jade);
+app.get('/basicread', basicRead.index);
+app.get('/dashboard', dashBoard.index);
+app.get('/dashboard/module', dashBoard.module);
 
 http.createServer(app).listen(app.get('port'), function(){
   console.log('Express server listening on port ' + app.get('port'));
