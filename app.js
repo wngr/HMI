@@ -9,9 +9,10 @@ var express = require('express')
 /**
  * Controls / Routes
  */
-var  hmiDev 	= require('./routes/hmidev.js')
+var  hmiDev 	= require('./routes/hmidev')
   , user 		= require('./routes/user')
   , basicRead 	= require('./routes/basicread')
+  , bootstrap 	= require('./routes/bootstrap')
   , dashBoard 	= require('./routes/dashboard');
 
 var app = express();
@@ -37,6 +38,7 @@ app.get('/users', user.list);
 app.get('/basicread', basicRead.index);
 app.get('/dashboard', dashBoard.index);
 app.get('/dashboard/module', dashBoard.module);
+app.get('/bootstrap', bootstrap.index);
 
 http.createServer(app).listen(app.get('port'), function(){
   console.log('Express server listening on port ' + app.get('port'));
