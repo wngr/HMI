@@ -1,19 +1,24 @@
 
 /**
+ * Configuration
+ */
+var  config = require('./config'); 
+
+/**
  * Module dependencies.
  */
-var express = require('express')
-  , http = require('http')
-  , path = require('path');
+var express = require('express');
+var http = require('http');
+var path = require('path');
 
 /**
  * Controls / Routes
  */
-var  hmiDev 	= require('./routes/hmidev')
-  , user 		= require('./routes/user')
-  , basicRead 	= require('./routes/basicread')
-  , bootstrap 	= require('./routes/bootstrap')
-  , dashBoard 	= require('./routes/dashboard');
+var hmiDev = require('./routes/hmidev');
+var user = require('./routes/user');
+var basicRead = require('./routes/basicread');
+var bootstrap = require('./routes/bootstrap');
+var dashBoard = require('./routes/dashboard');
 
 var app = express();
 
