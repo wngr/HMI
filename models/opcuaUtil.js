@@ -29,23 +29,52 @@ var session;
 var the_subscription;
 
 
-
-
+/*
+ * Create Class (OOP in JS is like this)
+ * http://howtonode.org/prototypical-inheritance
+ */
 function myOpcua() {
   EventEmitter.call(this);
 }
 
+/*
+ * Use EventEmitter in the newly created class.
+ */
 util.inherits(myOpcua, EventEmitter);
 
-myOpcua.prototype.write = function(data) {
-    this.emit("data", data);
-}
+/*
+ * Create Method for class.
+ */
+myOpcua.prototype.connect = function _connect(data) {
+  console.log('/_connect() - create client');
+  client = new opcua.OPCUAClient();
+  console.log('/client connect');
+  client.connect(endpointUrl, _connected(err));
+};
 
-var stream = new myOpcua();
+myOpcua.prototype.connected = function _connected(err) {
+  console.log('/_connected()');
+  if(_checkErrors(err)) {
+    this.emit("connected");
+  }
+};
 
-stream.on("data", function(data) {
+myOpcua.prototype.checkErrors = function _checkErrors(err) {
+  console.log('/_checkErrors()');
+  if(err) {
+    console.log(" cannot connect to endpoint :" , endpointUrl );
+    return false;
+  } else {
+    console.log("connected !");
+    return true;
+  }
+};
+
+var opcuaclient = new myOpcua();
+
+opcuaclient.on("connected", function(data) {
     console.log('Received data: "' + data + '"');
 });
 
-stream.write("It works!"); // Received data: "It works!"
+opcuaclient.connect("It works! very fine!"); // Received data: "It works!"
 
