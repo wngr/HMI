@@ -11,7 +11,8 @@ console.log('Module: opcuaUtil loaded');
 /*
  * Endpoint URL to OPC UA Server
  */
-var endpointUrl = "opc.tcp://localhost:4334/UA/SampleServer";
+//var endpointUrl = "opc.tcp://localhost:4334/UA/SampleServer";
+var endpointUrl = "opc.tcp://192.168.175.230:4840";
 
 /*
  * Client Handle
@@ -48,24 +49,25 @@ util.inherits(myOpcua, EventEmitter);
 myOpcua.prototype.connect = function _connect(data) {
   console.log('/_connect() - create client');
   client = new opcua.OPCUAClient();
-  console.log('/client connect');
-  client.connect(endpointUrl, _connected(err));
+  console.log('/_connect() - client connect');
+  client.connect(endpointUrl, _connected);
 };
 
-myOpcua.prototype.connected = function _connected(err) {
+function _connected(err) {
   console.log('/_connected()');
   if(_checkErrors(err)) {
-    this.emit("connected");
+    opcuaclient.emit("connected", true);
+    console.log("/_connected() - connected !");
   }
 };
 
-myOpcua.prototype.checkErrors = function _checkErrors(err) {
+function _checkErrors(err) {
   console.log('/_checkErrors()');
   if(err) {
-    console.log(" cannot connect to endpoint :" , endpointUrl );
+    console.log('/_checkErrors():', err);
     return false;
   } else {
-    console.log("connected !");
+    console.log("/_checkErrors(): no error");
     return true;
   }
 };
