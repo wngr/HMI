@@ -5,3 +5,5 @@ block content
         h1 Socket.IO Test
         p In this Template the Socket.IO library shall be tested.
         div#socket_clock Original Text
+        
+    script socket.on('socket_clock', function(msg){ console.log(msg); $('#socket_clock').html(msg); });

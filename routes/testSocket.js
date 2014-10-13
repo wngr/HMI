@@ -13,6 +13,13 @@ io.on('connection', function(socket){
   console.log('user disconnected');
   });
   
+  socket.emit('info', { msg: 'The world is round, there is no up or down.' });
+  
+  setInterval(function(){
+    socket.emit('socket_clock', Date().toString());    
+  });
+  
+  
 });
 
 

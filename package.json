@@ -10,7 +10,7 @@
     "jade": "*",
     "node-opcua": "*",  // Not tested
     "async": "*",       // Not tested
-    "socket.io": "*",   // Not tested
+    "socket.io": "latest",   // Not tested
     "openssl": "*"      // Not tested
   }
 }
