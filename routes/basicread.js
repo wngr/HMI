@@ -1,12 +1,21 @@
+
 /*
  * Load custom node-opcua module
  */
-var opcua = require('./../models/opcua.js');
+var opcuaUtil = require('./../models/opcuaUtil.js');
+//var opcua = require('./../models/opcua.js');
 
 /*
  * execute a code
  */
-opcua.dir();
+//opcua.dir();
+//opcuaUtil.initialze();
+
+
+/*
+ * modeltest
+ */
+//var modeltest = require('./../models/modeltest.js');
 
 
 /*
