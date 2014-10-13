@@ -2,14 +2,17 @@
 /**
  * Configuration
  */
-var  config = require('./config'); 
+var config = require('./config'); 
 
 /**
- * Module dependencies.
+ * Node-Module dependencies.
  */
-var express = require('express');
-var http = require('http');
 var path = require('path');
+var express = require('express');
+var app = express();
+var http = require('http');
+var server = http.createServer(app);
+GLOBAL.io = require('socket.io').listen(server);
 
 /**
  * Controls / Routes
@@ -19,8 +22,8 @@ var user      = require('./routes/user');
 var basicRead = require('./routes/basicread');
 var bootstrap = require('./routes/bootstrap');
 var dashBoard = require('./routes/dashboard');
+var testSocket = require('./routes/testSocket');
 
-var app = express();
 
 // all environments
 app.set('port', process.env.PORT || 3000);
@@ -38,14 +41,18 @@ if ('development' == app.get('env')) {
   app.use(express.errorHandler());
 }
 
+/*
+ * Express Routes
+ */
 app.get('/', hmiDev.index);
 app.get('/users', user.list);
 app.get('/basicread', basicRead.index);
 app.get('/dashboard', dashBoard.index);
 app.get('/dashboard/module', dashBoard.module);
 app.get('/bootstrap', bootstrap.index);
+app.get('/testSocket', testSocket.index);
 
-http.createServer(app).listen(app.get('port'), function(){
+server.listen(app.get('port'), function(){
   console.log('Express server listening on port ' + app.get('port'));
 });
 
@@ -53,6 +60,7 @@ http.createServer(app).listen(app.get('port'), function(){
  * End Node-JS Application after n seconds. 
  * It is enerving to end it in eclipse all the time.
  */
-setTimeout(function(){
-  process.exit(0);
-}, 2000);
+//setTimeout(function(){
+//  console.log('----Terminated');
+//  process.exit(0);
+//}, 5000);

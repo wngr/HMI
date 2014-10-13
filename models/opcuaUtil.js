@@ -27,8 +27,12 @@ var session;
 /*
  * Subscription Handle
  */
-var the_subscription;
+var subscription;
 
+/*
+ * IsConnected to OPC UA Server
+ */
+var isConnected = false;
 
 /*
  * Create Class (OOP in JS is like this)
@@ -46,20 +50,24 @@ util.inherits(myOpcua, EventEmitter);
 /*
  * Create Method for class.
  */
-myOpcua.prototype.connect = function _connect(data) {
+myOpcua.prototype.connect = function _connect() {
   console.log('/_connect() - create client');
-  client = new opcua.OPCUAClient();
-  console.log('/_connect() - client connect');
-  client.connect(endpointUrl, _connected);
+  if(!isConnected) {
+    client = new opcua.OPCUAClient();
+    console.log('/_connect() - client connect');
+    client.connect(endpointUrl, _connected);    
+  } else {
+    console.log('/_connect() - myOpcua is already connected');
+  }
 };
 
 function _connected(err) {
   console.log('/_connected()');
   if(_checkErrors(err)) {
+    isConnected = true;
     opcuaclient.emit("connected", true);
-    console.log("/_connected() - connected !");
   }
-};
+}
 
 function _checkErrors(err) {
   console.log('/_checkErrors()');
@@ -70,13 +78,13 @@ function _checkErrors(err) {
     console.log("/_checkErrors(): no error");
     return true;
   }
-};
+}
 
 var opcuaclient = new myOpcua();
+opcuaclient.connect();
 
 opcuaclient.on("connected", function(data) {
-    console.log('Received data: "' + data + '"');
+    console.log('/on:connected: let\'s start working!');
 });
 
-opcuaclient.connect("It works! very fine!"); // Received data: "It works!"
 
