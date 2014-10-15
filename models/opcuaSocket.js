@@ -1,12 +1,12 @@
 
-/*
- * Load node-opcua module
+/**
+ * Model for integration of socket.io and node-opcua
  */
 var opcua = require('node-opcua');
 var async = require('async');
 var util = require('util');
-var EventEmitter = require('events').EventEmitter; 
-console.log('Module: opcuaUtil loaded');
+var EventEmitter = require('events').EventEmitter;
+console.log('Model loaded:' + __filename);
 
 /*
  * Endpoint URL to OPC UA Server
@@ -73,6 +73,8 @@ function _checkErrors(err) {
   console.log('/_checkErrors()');
   if(err) {
     console.log('/_checkErrors():', err);
+    console.log('/_checkErrors(): trying to reconnect after 5000ms');
+    setTimeout(opcuaclient.connect(), 5000);
     return false;
   } else {
     console.log("/_checkErrors(): no error");
@@ -86,5 +88,3 @@ opcuaclient.connect();
 opcuaclient.on("connected", function(data) {
     console.log('/on:connected: let\'s start working!');
 });
-
-

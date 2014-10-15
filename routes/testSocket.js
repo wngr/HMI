@@ -17,7 +17,7 @@ io.on('connection', function(socket){
   
   setInterval(function(){
     socket.emit('socket_clock', Date().toString());    
-  });
+  }, 1000);
   
   
 });
