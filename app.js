@@ -18,8 +18,11 @@ GLOBAL.io = require('socket.io').listen(server);
 /*
  * Testing
  */
-var meinModelTest = require('./models/modeltest.js');
-meinModelTest.on('birth', function(msg){ console.log('A birth happened: ' + msg)});
+var PersonA = require('./models/modeltest.js');
+PersonA.on('died', function(msg){ console.log(msg.lastname); });
+PersonA.on('born', function(msg){ console.log(msg.lastname); }); 
+PersonA.giveBirth('Adam','Gott');
+PersonA.die();
 
 console.log('====================================');
 /**

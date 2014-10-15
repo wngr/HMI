@@ -19,49 +19,44 @@ var util = require("util");
 var events = require("events");
 
 // 1.
-MyFamily = (function() {
-  function MyFamily() {
+FamilyMember = (function() {
+  function FamilyMember() {
     this.name = 'Max';
     this.lastname = 'Mustermann';
     this.age = '0';
     
-    this.reactions();
-    
-    this.giveBirth();
+    this.immediateReactions();
     
     events.EventEmitter.call(this);
   }
 
-  MyFamily.prototype = {
-    constructor: MyFamily,
+  FamilyMember.prototype = {
+    constructor: FamilyMember,
     giveBirth: function(name, lastname) {
       this.name = name ? name : this.name;
       this.lastname = lastname ? lastname : this.lastname;
-      this.age = 0
+      this.age = 0;
       
-      msg = 'Heureka! A child was born. It may carry the name: ' + this.name + ' ' + this.lastname;
-      console.log(msg);
-      this.emit('born', name + ' ' + lastname );
+      this.emit('born', this );
     },
     die: function(){
-      console.log(this.field + 2);
+      this.lastname = this.lastname + ' RIP ';
+      this.emit('died', this);
     },
-    reactions: function(){
-      this.on('born', function(){ console.log('The Child is out!'); });
-    },
-    shoutItOut: function(){
-      module.exports.emit('birth');
+    immediateReactions: function(){
+//      this.on('born', function(){ console.log('The Child is out!'); });
+//      this.on('died', function(){ console.log(this.name + ' ' + this.lastname + ' no longer is with us.')});
     }
   };
 
-  return MyFamily;
+  return FamilyMember;
 }());
 
 // 2.
-MyFamily.prototype.__proto__ = events.EventEmitter.prototype;
+FamilyMember.prototype.__proto__ = events.EventEmitter.prototype;
 
 // 3.
-//Frei = new MyFamily();
+//Frei = new FamilyMember();
 
 // 4.
 //Frei.on('born', function(msg){ console.log('I heard a ' + msg + ' was born!'); } );
@@ -69,7 +64,7 @@ MyFamily.prototype.__proto__ = events.EventEmitter.prototype;
 //5.
 //Frei.giveBirth('Carina', 'Frei');
 
-module.exports = new MyFamily();
+module.exports = new FamilyMember();
 setTimeout(function(){
   module.exports.emit('birth', 'Birthday!');  
 }, 10000);

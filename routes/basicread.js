@@ -2,7 +2,7 @@
 /*
  * Load custom node-opcua module
  */
-var opcuaUtil = require('./../models/opcuaUtil.js');
+//var opcuaUtil = require('./../models/opcuaUtil.js');
 //var opcua = require('./../models/opcua.js');
 
 /*

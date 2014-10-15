@@ -2,7 +2,7 @@
  * Control to test the opcua socket model
  */
 
-opcuaSocket = require('./../models/opcuaSocket');
+//opcuaSocket = require('./../models/opcuaSocket');
 
 
 
