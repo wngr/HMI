@@ -15,6 +15,13 @@ var http = require('http');
 var server = http.createServer(app);
 GLOBAL.io = require('socket.io').listen(server);
 
+/*
+ * Testing
+ */
+var meinModelTest = require('./models/modeltest.js');
+meinModelTest.on('birth', function(msg){ console.log('A birth happened: ' + msg)});
+
+console.log('====================================');
 /**
  * Controls / Routes
  */
@@ -24,6 +31,7 @@ var basicRead = require('./routes/basicread');
 var bootstrap = require('./routes/bootstrap');
 var dashBoard = require('./routes/dashboard');
 var testSocket = require('./routes/testSocket');
+var controlOpcuaSocket = require('./routes/testOpcuaSocket');
 
 
 // all environments
@@ -58,10 +66,10 @@ server.listen(app.get('port'), function(){
 });
 
 /*
- * End Node-JS Application after n seconds. 
+ * Exit Node-JS Application after n seconds. 
  * It is enerving to end it in eclipse all the time.
  */
-//setTimeout(function(){
-//  console.log('----Terminated');
-//  process.exit(0);
-//}, 5000);
+setTimeout(function(){
+  console.log('----Terminated');
+  process.exit(0);
+}, 5000);
