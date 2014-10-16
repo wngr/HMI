@@ -17,5 +17,5 @@ exports.endpointUrl = 'opc.tcp://localhost:4334/UA/SampleServer';
 /**
  * Exit Node-JS Application after n seconds. 
  */
-exports.terminateAfterTimeout = 10000;
+//exports.terminateAfterTimeout = 10000;
 

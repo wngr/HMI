@@ -1,8 +1,12 @@
+
 /**
  * route to test Opcua model
  */
 
-opcua = require('./../models/opcua');
+/*
+ * Global opcua handle, so that also in socket, they can talk
+ */
+GLOBAL.opcua = require('./../models/opcua');
 
 opcua.on('readFinished', function(data) {
   console.log(data[0].value.value);
@@ -27,7 +31,6 @@ opcua.on('ready', function(){
 });
 
 /*
- * Initialize at the end, because all the event-handlers needs to be registered beforehand!
+ * Initialize opcua class at the end, because all the event-handlers needs to be registered beforehand!
  */
 opcua.initialize();
-//setTimeout(opcua.disconnect, 1000);
