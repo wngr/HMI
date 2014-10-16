@@ -2,7 +2,7 @@
 /**
  * Configuration
  */
-var config = require('./config'); 
+GLOBAL.CONFIG = require('./config.js'); 
 
 /**
  * Node-Module dependencies.
@@ -13,28 +13,16 @@ var express = require('express');
 var app = express();
 var http = require('http');
 var server = http.createServer(app);
-GLOBAL.io = require('socket.io').listen(server);
+GLOBAL.IO = require('socket.io').listen(server);
 
 /*
- * Testing
- */
-var PersonA = require('./models/modeltest.js');
-PersonA.on('died', function(msg){ console.log(msg.lastname); });
-PersonA.on('born', function(msg){ console.log(msg.lastname); }); 
-PersonA.giveBirth('Adam','Gott');
-PersonA.die();
-
-console.log('====================================');
-/**
  * Controls / Routes
  */
 var hmiDev    = require('./routes/hmidev');
-var user      = require('./routes/user');
-var basicRead = require('./routes/basicread');
 var bootstrap = require('./routes/bootstrap');
 var dashBoard = require('./routes/dashboard');
 var testSocket = require('./routes/testSocket');
-var controlOpcuaSocket = require('./routes/testOpcuaSocket');
+var controlOpcuaSocket = require('./routes/testOpcua.js');
 
 
 // all environments
@@ -57,8 +45,6 @@ if ('development' == app.get('env')) {
  * Express Routes
  */
 app.get('/', hmiDev.index);
-app.get('/users', user.list);
-app.get('/basicread', basicRead.index);
 app.get('/dashboard', dashBoard.index);
 app.get('/dashboard/module', dashBoard.module);
 app.get('/bootstrap', bootstrap.index);
@@ -70,9 +56,10 @@ server.listen(app.get('port'), function(){
 
 /*
  * Exit Node-JS Application after n seconds. 
- * It is enerving to end it in eclipse all the time.
  */
-setTimeout(function(){
-  console.log('----Terminated');
-  process.exit(0);
-}, 5000);
+if( CONFIG.terminateAfterTimeout ){
+  setTimeout(function(){
+    console.log('----Terminated');
+    process.exit(0);
+  }, CONFIG.terminateAfterTimeout);  
+}

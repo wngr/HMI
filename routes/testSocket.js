@@ -6,7 +6,7 @@
 /*
  * Socket Connection handling
  */
-io.on('connection', function(socket){
+IO.on('connection', function(socket){
   console.log('a user connected');
   
   socket.on('disconnect', function(){
