@@ -1,0 +1,82 @@
+extends layout
+
+
+block content
+ div.container-fluid
+  div.row
+   div.col-sm-12.col-md-12.main
+    h1 Creme Module
+    div.col-xs-12.col-sm-4.placeholder.well
+     img.img-responsive(src="/assets/images/modules/module_creme.png")
+    div.col-xs-12.col-sm-8.well
+     h4.text-left Status
+     table.table.text-left
+      thead
+       tr
+        th(width='25%') Name
+        th(width='75%') Value
+      tbody
+       tr
+        td Topping
+        td ok
+       tr
+        td Time To Revision
+        td ok
+    div.col-xs-12.col-sm-8.well
+     h4.text-left Values
+     table.table.text-left
+      thead
+       tr
+        th(width='25%') Name
+        th(width='75%') Value
+      tbody
+       tr
+        td Topping
+        td
+         +progressbar(33)
+       tr
+        td Time To Revision
+        td 
+         +progressbar(90)
+  div.row
+   div.col-sm-12.col-md-12.main
+    h1 Creme Module
+    div.col-xs-12.col-sm-4.placeholder.well
+     img.img-responsive(src="/assets/images/modules/module_creme.png")
+    div.col-xs-12.col-sm-8.well
+     h4.text-left Status
+     table.table.text-left
+      thead
+       tr
+        th(width='25%') Name
+        th(width='75%') Value
+      tbody
+       tr
+        td Topping
+        td ok
+       tr
+        td Time To Revision
+        td ok
+    div.col-xs-12.col-sm-8.well
+     h4.text-left Values
+     table.table.text-left
+      thead
+       tr
+        th(width='25%') Name
+        th(width='75%') Value
+      tbody
+       tr
+        td Topping
+        td
+         +progressbar(33)
+       tr
+        td Time To Revision
+        td 
+         +progressbar(90)
+         
+
+mixin progressbar(value)
+ div.progress(style='height: 100%')
+  div.progress-bar.progress-bar-success(role='progressbar',aria-valuenow='#{value}',aria-valuemin='0',aria-valuemax='100',style='width:#{value}%')
+   | #{value}%
+ 

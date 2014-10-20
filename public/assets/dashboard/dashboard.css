@@ -5,6 +5,7 @@
 /* Move down content because we have a fixed navbar that is 50px tall */
 body {
   padding-top: 50px;
+  background-image: url('/assets/images/dashboard/metal_background1900x.jpg');
 }
 
 
@@ -95,7 +96,7 @@ body {
  */
 
 .main {
-  padding: 20px;
+  /* padding: 20px; */
 }
 @media (min-width: 768px) {
   .main {

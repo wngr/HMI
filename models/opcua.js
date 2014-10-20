@@ -148,8 +148,8 @@ opcuaPro = (function() {
     subscribe: function(){
       var subscriptionSettings = {
           requestedPublishingInterval: 1000,
-          requestedLifetimeCount: 10,
-          requestedMaxKeepAliveCount: 2,
+          requestedLifetimeCount: 100, // 10
+          requestedMaxKeepAliveCount: 10, // 2
           maxNotificationsPerPublish: 10,
           publishingEnabled: true,
           priority: 10 

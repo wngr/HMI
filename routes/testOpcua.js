@@ -10,21 +10,13 @@ opcua.on('readFinished', function(data) {
 opcua.on('writeFinished', function(){ console.log('erster schreiberversuch geglueckt.'); }); 
 
 opcua.on('monitoredItemChanged', function(data){ 
-  console.log('changed in subscription: ', data.value.value);
+  console.log('changed in subscription - new value: ', data.value.value);
 });
 
 opcua.on('ready', function(){ 
-//  opcua.browse('RootFolder');
- // opcua.browse('RootFolder.MyDevice');
-//  opcua.read('ns=4;s=free_memory');
-//  opcua.read('ns=4;b=1020FFAA');
-
-//  opcua.write('ns=4;b=1020FFAA', 1337);
-  
   opcua.subscribe();
-  //opcua.monitor('ns=4;s=free_memory');
-  //opcua.monitor('ns=1;i=1001');
   opcua.monitor('ns=4;s=GVL.OPCModule[1].Output.SkillOutput.SkillOutput[1].Ready');
+  opcua.monitor('ns=4;s=GVL.OPCModule[1].Output.SkillOutput.SkillOutput[1].Busy');
 });
 
 /*

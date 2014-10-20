@@ -23,6 +23,7 @@ var hmiDev    = require('./routes/hmidev');
 var bootstrap = require('./routes/bootstrap');
 var dashBoard = require('./routes/dashboard');
 var testSocket = require('./routes/testSocket');
+var testJonas = require('./routes/testJonas');
 var controlOpcuaSocket = require('./routes/testOpcua.js');
 
 
@@ -48,6 +49,7 @@ if ('development' == app.get('env')) {
 app.get('/', hmiDev.index);
 app.get('/bootstrap', bootstrap.index);
 app.get('/testSocket', testSocket.index);
+app.get('/testJonas', testJonas.index);
 
 server.listen(app.get('port'), function(){
   console.log('Express server listening on port ' + app.get('port'));
