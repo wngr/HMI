@@ -14,6 +14,11 @@ Start the server with:
 * In the misc/ folder you can find a uaexpert file, that connects to this localhost server.
 Use this tool to check OPC UA variables.
 Also check with the tool, if the sample server is implemented correctly, if something fails.
+!!! See following point for Server-Issues in UAExpert
+
+* When the variable-architecture changes, OPC UA is not able to subscribe to a variable anymore.
+The Message is: BadDataEncodingUnsupported
+Therefore it is necessary to delete the sampleserver from the uaexpert client and then add it again.
 
 ## Developing
 

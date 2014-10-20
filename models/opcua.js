@@ -64,10 +64,15 @@ opcuaPro = (function() {
       this.client.connect(CONFIG.endpointUrl, this.cbConnected);
     },
     cbConnected: function(err){
-      console.log('cbConnected()');
-      //isNested(this);
-      opcua.emit('connected');
-      opcua.createSession(); // the cb is called in this.client.connect() and in this scope, the this.-object does not see the opcuaPro methods. Therefore a global opcua object is needed.
+      if(!err){
+        console.log('cbConnected()');
+        //isNested(this);
+        opcua.emit('connected');
+        opcua.createSession(); // the cb is called in this.client.connect() and in this scope, the this.-object does not see the opcuaPro methods. Therefore a global opcua object is needed.        
+      } else {
+        opcua.errorHandling(err, 'Could not connect to the OPC UA Server - terminate');
+        opcua.disconnect(err);
+      }
     },
     
     createSession: function() {
@@ -195,7 +200,8 @@ opcuaPro = (function() {
       if(err) {
         console.log('ERR - ' + errmsg);
         console.log(err);
-        this.client.disconnect(function(){ console.log('disconnect() after ERR'); });
+//        this.client.disconnect(function(){ console.log('disconnect() after ERR'); });
+//        this.disconnect();
         return false;
       } else {
         console.log('OK - ' + sucmsg);

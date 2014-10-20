@@ -19,3 +19,7 @@ exports.endpointUrl = 'opc.tcp://localhost:4334/UA/SampleServer';
  */
 //exports.terminateAfterTimeout = 10000;
 
+/**
+ * Terminates the application after disconnect
+ */
+exports.terminateAfterDisconnect = true;

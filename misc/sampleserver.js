@@ -1,54 +1,61 @@
-    var opcua = require("node-opcua");
+/**
+ * Script to start a sample server. It should more or less resemble the Module Interface 
+ * see: OPPCUA Datastructur Screenshot.jpg
+ * 
+ * @author Thomas Frei
+ */
+
+var nodeopcua = require("node-opcua");
 
 // Let's create an instance of OPCUAServer
-var server = new opcua.OPCUAServer({
+var server = new nodeopcua.OPCUAServer({
     port: 4334 // the port of the listening socket of the server
 });
 
 // we can set the buildInfo
-server.buildInfo.productName = "MySampleServer1";
+server.buildInfo.productName = "NodeOPCUASampleServer";
 server.buildInfo.buildNumber = "7658";
-server.buildInfo.buildDate = new Date(2014,5,2);
+server.buildInfo.buildDate = new Date(2014,10,18);
 
 function post_initialize() {
     console.log("initialized");
     function construct_my_address_space(server) {
 
         // declare some folders
-         server.engine.createFolder("RootFolder",{ browseName: "MyDevice"});
+         server.engine.createFolder("RootFolder",{ browseName: "SampleServerDevice"});
 
         // add variables in folders
-        // add a variable named MyVariable1 to the newly created folder "MyDevice"
+        // add a variable named MyVariable1 to the newly created folder "SampleServerDevice"
         var variable1 = 1;
 
         // emulate variable1 changing every 500 ms
         setInterval(function(){  variable1+=1; }, 500);
 
-        server.nodeVariable1 = server.engine.addVariableInFolder("MyDevice",{
+        server.nodeVariable1 = server.engine.addVariableInFolder("SampleServerDevice",{
                 browseName: "MyVariable1",
                 dataType: "Double",
                 value: {
                     get: function () {
-                        return new opcua.Variant({dataType: opcua.DataType.Double, value: variable1 });
+                        return new nodeopcua.Variant({dataType: nodeopcua.DataType.Double, value: variable1 });
                     }
                 }
         });
 
 
-        // add a variable named MyVariable2 to the newly created folder "MyDevice"
+        // add a variable named MyVariable2 to the newly created folder "SampleServerDevice"
         var variable2 = 10.0;
-        server.nodeVariable2 = server.engine.addVariableInFolder("MyDevice",{
+        server.nodeVariable2 = server.engine.addVariableInFolder("SampleServerDevice",{
 
             nodeId: "ns=4;b=1020FFAA", // some opaque NodeId in namespace 4
             browseName: "MyVariable2",
             dataType: "Double",
             value: {
                 get: function () {
-                    return new opcua.Variant({dataType: opcua.DataType.Double, value: variable2 });
+                    return new nodeopcua.Variant({dataType: nodeopcua.DataType.Double, value: variable2 });
                 },
                 set: function (variant) {
                     variable2 = parseFloat(variant.value);
-                    return opcua.StatusCodes.Good;
+                    return nodeopcua.StatusCodes.Good;
                 }
             }
         });
@@ -64,26 +71,26 @@ function post_initialize() {
             return percentageMemUsed;
         }
 
-        server.nodeVariable3 = server.engine.addVariableInFolder("MyDevice", {
+        server.nodeVariable3 = server.engine.addVariableInFolder("SampleServerDevice", {
             nodeId: "ns=4;s=free_memory", // a string nodeID
             browseName: "FreeMemory",
             dataType: "Double",
             value: {
-                get: function () {return new opcua.Variant({dataType: opcua.DataType.Double, value: available_memory() });}
+                get: function () {return new nodeopcua.Variant({dataType: nodeopcua.DataType.Double, value: available_memory() });}
             }
         });
 
-        server.nodeVariable4 = server.engine.addVariableInFolder("MyDevice", {
+        server.nodeVariable4 = server.engine.addVariableInFolder("SampleServerDevice", {
             nodeId: "ns=4;s=first_variable", // a string nodeID
             browseName: "FirstVariableTom",
             dataType: "Double",
             value: {
                 get: function () {
-                    return new opcua.Variant({dataType: opcua.DataType.Double, value: variable2 });
+                    return new nodeopcua.Variant({dataType: nodeopcua.DataType.Double, value: variable2 });
                 },
                 set: function (variant) {
                     variable2 = parseFloat(variant.value);
-                    return opcua.StatusCodes.Good;
+                    return nodeopcua.StatusCodes.Good;
                 }
             }
         });

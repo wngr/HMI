@@ -14,6 +14,7 @@ var app = express();
 var http = require('http');
 var server = http.createServer(app);
 GLOBAL.IO = require('socket.io').listen(server);
+GLOBAL.opcua = require('./models/opcua');
 
 /*
  * Controls / Routes
@@ -45,8 +46,6 @@ if ('development' == app.get('env')) {
  * Express Routes
  */
 app.get('/', hmiDev.index);
-app.get('/dashboard', dashBoard.index);
-app.get('/dashboard/module', dashBoard.module);
 app.get('/bootstrap', bootstrap.index);
 app.get('/testSocket', testSocket.index);
 

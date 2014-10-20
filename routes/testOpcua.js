@@ -3,11 +3,6 @@
  * route to test Opcua model
  */
 
-/*
- * Global opcua handle, so that also in socket, they can talk
- */
-GLOBAL.opcua = require('./../models/opcua');
-
 opcua.on('readFinished', function(data) {
   console.log(data[0].value.value);
 });
@@ -27,7 +22,9 @@ opcua.on('ready', function(){
 //  opcua.write('ns=4;b=1020FFAA', 1337);
   
   opcua.subscribe();
-  opcua.monitor('ns=4;s=free_memory');
+  //opcua.monitor('ns=4;s=free_memory');
+  //opcua.monitor('ns=1;i=1001');
+  opcua.monitor('ns=4;s=GVL.OPCModule[1].Output.SkillOutput.SkillOutput[1].Ready');
 });
 
 /*

@@ -27,7 +27,6 @@ IO.on('connection', function(socket){
   opcua.on('monitoredItemChanged', function(data){ 
 //    console.log('changed in subscription: ', data.value.value);
     socket.emit('ns1i1001', data.value.value);
-    console.log(data);
   });
   
 });
@@ -36,5 +35,5 @@ IO.on('connection', function(socket){
 
 
 exports.index = function(req, res){
-  res.render('bootstrap/socket');
+  res.render('bootstrap/testJonas');
 };
