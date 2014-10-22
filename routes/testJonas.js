@@ -24,16 +24,28 @@ IO.on('connection', function(socket){
     //console.log(Date().toString());
   }, 1000);
 
-  opcua.on('monitoredItemChanged', function(data){ 
-//    console.log('changed in subscription: ', data.value.value);
-    socket.emit('ns1i1001', data.value.value);
+  
+  socket.on('specialKeyUp', function(){
+    console.log('specialKeyUp event');
+    opcua.read('ns=4;s=GVL.OPCModule[1].Output.SkillOutput.SkillOutput[1].Ready');
   });
+
+  
+  //opcua.on('readFinished', function(data){ console.log('haloho');});
+  
   
 });
 
+opcua.on('readFinished', function(data){ console.log(data)});
 
+var ni = 'ns=4;s=GVL.OPCModule[1].Output.SkillOutput.SkillOutput[1].Ready';
 
+console.log(_.uniqueId('ns=4;s=GVL.OPCModule[1].Output.SkillOutput.SkillOutput[1].Ready'));
 
 exports.index = function(req, res){
-  res.render('bootstrap/testJonas');
+  var data = {
+      IDread1: 'readid1',
+      IDwrite1: 'writeID123'
+  };
+  res.render('bootstrap/testJonas', data);
 };

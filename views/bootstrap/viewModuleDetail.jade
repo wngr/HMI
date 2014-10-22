@@ -1,5 +1,5 @@
 extends layout
-
+include mixins/gui-elements
 
 block content
  div.container-fluid
@@ -75,8 +75,4 @@ block content
          +progressbar(90)
          
 
-mixin progressbar(value)
- div.progress(style='height: 100%')
-  div.progress-bar.progress-bar-success(role='progressbar',aria-valuenow='#{value}',aria-valuemin='0',aria-valuemax='100',style='width:#{value}%')
-   | #{value}%
  

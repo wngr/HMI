@@ -1,0 +1,11 @@
+extends layout
+include mixins/gui-elements
+
+block content
+    div.container
+        div.col-xs-12.well
+            h1 Test
+            +read(data.name, data.domId, data.reqEvent)
+      
+      
+    script socket.on('#{data.resEvent}', function(data){ $('##{data.domId}').val(data.value); console.log(data);});

@@ -1,0 +1,49 @@
+// Progressbar using Bootstrap Components
+mixin progressbar(value)
+ div.progress(style='height: 100%')
+  div.progress-bar.progress-bar-success(role='progressbar',aria-valuenow='#{value}',aria-valuemin='0',aria-valuemax='100',style='width:#{value}%')
+   | #{value}%
+
+// Read/Write Submit
+mixin readWriteSubmitbla(readId, writeId)
+    form.form-inline(role=form)
+        div.form-group.has-success.has-feedback
+            label.control-label.col-sm-3(for=readId) test
+                div.col-sm-9
+                    input.form-control(type="text", id=readId) 
+                    span.glyphicon.glyphicon-ok.form-control-feedback
+                    input(type="text", id=writeId)
+//    <label class="control-label" for="inputSuccess4">Input with success</label>
+//    <input type="text" class="form-control" id="inputSuccess4">
+
+
+mixin readWriteSubmit(name, readId, writeId)
+ form.form-horizontal(role="form")
+  div.form-group.has-feedback
+   label.control-label.col-sm-3(for=readId)  #{name}
+   div.col-sm-3
+    input.form-control(id=readId, type="text", disabled)
+    span.glyphicon.glyphicon-eye-open.form-control-feedback
+   div.col-sm-3
+    input.form-control(id=writeId, type="text", onKeyUp="socket.emit('specialKeyUp')")
+    span.glyphicon.glyphicon-pencil.form-control-feedback
+
+// Input Field
+mixin field(type, name, label)
+  .field(class='field-' + type)
+    label #{label}:
+    input(type=type, name='user[#{name}]', value=user[name])
+    
+
+// Read
+mixin read(name, readId, eventName)
+    form.form-horizontal(role="form")
+        div.form-group.has-feedback
+            label.control-label.col-sm-4.col-xs-2(for=readId)  #{name}
+            div.col-sm-5.col-xs-8
+                input.form-control(id=readId, type="text", disabled)
+                span.glyphicon.glyphicon-eye-open.form-control-feedback
+            div.col-sm-3.col-xs-2.text-left
+                button.btn.btn-default(type="button", onclick="socket.emit('"+eventName+"')")
+                
+                    span.glyphicon.glyphicon-refresh

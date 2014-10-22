@@ -1,5 +1,5 @@
 extends layout
-
+include mixins/gui-elements
 
 block content
  div.container-fluid
@@ -10,6 +10,7 @@ block content
      img.img-responsive(src="/assets/images/modules/module_creme.png")
     div.col-xs-12.col-sm-8.well
      h4.text-left Status
+     +readWriteSubmit('Variable 1', 'test123read', 'write123test')
      table.table.text-left
       thead
        tr
@@ -73,10 +74,3 @@ block content
         td Time To Revision
         td 
          +progressbar(90)
-         
-
-mixin progressbar(value)
- div.progress(style='height: 100%')
-  div.progress-bar.progress-bar-success(role='progressbar',aria-valuenow='#{value}',aria-valuemin='0',aria-valuemax='100',style='width:#{value}%')
-   | #{value}%
- 

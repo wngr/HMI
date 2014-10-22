@@ -124,6 +124,28 @@ opcuaPro = (function() {
         console.log("ERR - read: " + err);
         console.log("statusCode: " + statusCode);
       } else {
+        var emitData = {
+            nodeId: 'ns=' + nodes[0].nodeId.namespace + ';s=' + nodes[0].nodeId.value,
+            value: data[0].value.value,
+            err: err
+            };
+        
+        opcua.emit('readFinished', emitData);
+        //        console.log(nodes);
+        //        console.log(data)
+      }
+    },
+    
+    readWithSocket: function(nodeIdToRead, fieldId) {
+      var max_age = 0;
+      var nodes = [ { nodeId: '' + nodeIdToRead, attributeId: 13} ];
+      this.session.read(nodes, max_age, this.cbReadWithSocket);
+    },
+    cbReadWithSocket: function(err, nodes, data) {
+      if(err){
+        console.log("ERR - read: " + err);
+        console.log("statusCode: " + statusCode);
+      } else {
         opcua.emit('readFinished', data);
         //console.log('Node Read' + data[0]);
       }

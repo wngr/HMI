@@ -4,7 +4,8 @@
  */
 
 opcua.on('readFinished', function(data) {
-  console.log(data[0].value.value);
+  //console.log(data[0].value.value);
+  //console.log(data[0].data.value.value);
 });
 
 opcua.on('writeFinished', function(){ console.log('erster schreiberversuch geglueckt.'); }); 

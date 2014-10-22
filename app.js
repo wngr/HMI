@@ -13,8 +13,9 @@ var express = require('express');
 var app = express();
 var http = require('http');
 var server = http.createServer(app);
-GLOBAL.IO = require('socket.io').listen(server);
+GLOBAL.IO = require('socket.io').listen(server); 
 GLOBAL.opcua = require('./models/opcua');
+var _ = require('underscore');
 
 /*
  * Controls / Routes
@@ -22,9 +23,10 @@ GLOBAL.opcua = require('./models/opcua');
 var hmiDev    = require('./routes/hmidev');
 var bootstrap = require('./routes/bootstrap');
 var dashBoard = require('./routes/dashboard');
-var testSocket = require('./routes/testSocket');
-var testJonas = require('./routes/testJonas');
-var controlOpcuaSocket = require('./routes/testOpcua.js');
+//var testSocket = require('./routes/testSocket');
+//var testJonas = require('./routes/testJonas');
+var testGuiElements = require('./routes/testGuiElements');
+//var controlOpcuaSocket = require('./routes/testOpcua.js');
 
 
 // all environments
@@ -48,12 +50,17 @@ if ('development' == app.get('env')) {
  */
 app.get('/', hmiDev.index);
 app.get('/bootstrap', bootstrap.index);
-app.get('/testSocket', testSocket.index);
-app.get('/testJonas', testJonas.index);
+//app.get('/testSocket', testSocket.index);
+//app.get('/testJonas', testJonas.index);
+app.get('/testGuiElements', testGuiElements.index);
 
-server.listen(app.get('port'), function(){
-  console.log('Express server listening on port ' + app.get('port'));
-});
+opcua.on('ready', _.once(function(){ 
+  server.listen(app.get('port'), function(){
+    console.log('Express server listening on port ' + app.get('port'));
+  });
+}));
+
+opcua.initialize();
 
 /*
  * Exit Node-JS Application after n seconds. 

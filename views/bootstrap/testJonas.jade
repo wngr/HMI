@@ -1,7 +1,9 @@
 extends layout
+include mixins/gui-elements
 
 block content
     div.container
+     div.col-xs-12.well
         h1 Test for Jonas 1
         p In this Template a Task with ID XYZ shall be tested
         p If this is blinking
@@ -10,9 +12,9 @@ block content
             li Systemtime
                 div#socket_clock Original Text
             li NS=1;i=1001 / OPC UA Test
-                div#ns1i1001 zahl
-            li 
-                input.form-control#ns1i1001(type='text', placeholder='', readonly)
+                div#ns1i1001 noch kein update
+     div.col-xs-12.well
+        +readWriteSubmit('Variable 1', IDread1, IDwrite1)
     
     block socketscripts
         script socket.on('socket_clock', function(msg){ $('#socket_clock').html(msg); });

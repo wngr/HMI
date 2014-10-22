@@ -21,15 +21,28 @@ server.buildInfo.buildDate = new Date(2014,5,2);
 function construct_my_address_space(server) {
 
   // declare some folders
-  server.engine.createFolder("RootFolder",{ browseName: "MyDevice"});
-
-  // add variables in folder
-  createOpcuaVariable( 'GVL.OPCModule[1].Output.SkillOutput.SkillOutput[1].Ready', 'Ready', 'Double', 1 );
-  createOpcuaVariable( 'GVL.OPCModule[1].Input.SkillInput.Skillinput[1].ParameterInput.Value', 'Input', 'Double', 0 );
-  createOpcuaVariable( 'GVL.OPCModule[1].Input.SkillInput.Skillinput[1].Execute', 'Execute', 'Double', 0 );
-  createOpcuaVariable( 'GVL.OPCModule[1].Output.SkillOutput.SkillOutput[1].Busy', 'Busy', 'Double', 0 );
-  createOpcuaVariable( 'GVL.OPCModule[1].Output.SkillOutput.SkillOutput[1].Done', 'Done', 'Double', 0 );
+  server.engine.createFolder("RootFolder",{ browseName: "Module1101"});
+  server.engine.createFolder("Module1101",{ browseName: "Output"});
+  server.engine.createFolder("Output",{ browseName: "SkillOutput"});
   
+  // Add Output Variables
+  createOpcuaVariable( 'MI5.Module1101.Output.Dummy', 'Dummy', 'Output', 'Double', 1 );
+  createOpcuaVariable( 'MI5.Module1101.Output.Name', 'Name', 'Output', 'String', 'OutputName' );
+  createOpcuaVariable( 'MI5.Module1101.Output.ID', 'ID', 'Output', 'Double', 42123 );
+  createOpcuaVariable( 'MI5.Module1101.Output.Idle', 'Idle', 'Output', 'Double', 1 );
+  createOpcuaVariable( 'MI5.Module1101.Output.Connected', 'Connected', 'Output', 'Double', 1 );
+  createOpcuaVariable( 'MI5.Module1101.Output.ConnectionTestOutput', 'ConnectionTestOutput', 'Output', 'Double', 3 );
+  // Not yet complete - continue Output variables
+  
+  // Add SkillOutput and SkillOutput Folders
+  server.engine.createFolder("SkillOutput",{ browseName: "SkillOutput0"});
+  createOpcuaVariable( 'MI5.Module1101.Output.SkillOutput.SkillOutput0.Dummy', 'Dummy', 'SkillOutput0', 'Double', 1 );
+  createOpcuaVariable( 'MI5.Module1101.Output.SkillOutput.SkillOutput0.ID', 'ID', 'SkillOutput0', 'Double', 1337 );
+  createOpcuaVariable( 'MI5.Module1101.Output.SkillOutput.SkillOutput0.Name', 'Name', 'SkillOutput0', 'String', 'TestSkill' );
+  // skiping some
+  createOpcuaVariable( 'MI5.Module1101.Output.SkillOutput.SkillOutput0.Ready', 'Ready', 'SkillOutput0', 'Double', 1 );
+  createOpcuaVariable( 'MI5.Module1101.Output.SkillOutput.SkillOutput0.Busy', 'Busy', 'SkillOutput0', 'Double', 0 );
+  createOpcuaVariable( 'MI5.Module1101.Output.SkillOutput.SkillOutput0.Done', 'Done', 'SkillOutput0', 'Double', 0 );
 }
 
 function post_initialize() {
@@ -49,6 +62,9 @@ function post_initialize() {
 
 server.initialize(post_initialize);
 
+/*
+ * Variable Functions for easy handling
+ */
 
 /**
  * Generate 15 digit random string
@@ -67,14 +83,15 @@ function makeServerVariable()
 }
 
 /**
- * Create an OPC UA Variable
+ * 
  * @param DesiredNodeId
- * @param Description
+ * @param DisplayName
+ * @param Folder
  * @param VariableType
  * @param DefaultValue
  * @returns {String} name of server-object that stores the value (server.NewObject)
  */
-function createOpcuaVariable(DesiredNodeId, Description, VariableType, DefaultValue) {
+function createOpcuaVariable(DesiredNodeId, DisplayName, Folder, VariableType, DefaultValue) {
   /*
    * Generate Default values for the input variables
    */
@@ -85,9 +102,9 @@ function createOpcuaVariable(DesiredNodeId, Description, VariableType, DefaultVa
   localVars[currentElement] = DefaultValue;
   
   randomString  = makeServerVariable();
-  server[randomString] = server.engine.addVariableInFolder("MyDevice",{
+  server[randomString] = server.engine.addVariableInFolder(Folder,{
     nodeId: DesiredNodeId, // some opaque NodeId in namespace 4 (optional) "ns=4s=GVL.OPCModule.Output.Skill;
-    browseName: Description,
+    browseName: DisplayName,
     dataType: VariableType,    
     value: {
         get: function () {
@@ -103,7 +120,7 @@ function createOpcuaVariable(DesiredNodeId, Description, VariableType, DefaultVa
         }
     }
   });
-  console.log('Variable ', Description, ' added');
+  console.log('Variable ', DisplayName, ' added');
   return randomString;
 }
 
