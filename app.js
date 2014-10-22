@@ -26,6 +26,7 @@ var dashBoard = require('./routes/dashboard');
 //var testSocket = require('./routes/testSocket');
 //var testJonas = require('./routes/testJonas');
 var testGuiElements = require('./routes/testGuiElements');
+var testOpcuaInstance = require('./routes/testOpcuaInstance');
 //var controlOpcuaSocket = require('./routes/testOpcua.js');
 
 

@@ -22,10 +22,10 @@ var events = require("events");
  */
 function isNested (thisobject) {
   if ( thisobject.opcuaObject == 1) {
-    console.log('OK - {this} is the opcuaPro object');
+    console.log('OK - .this is the opcuaPro object');
     return false;
   } else {
-    console.log('SCOPE! - {this} is in a nested scope: use the global opcua object');
+    console.log('SCOPE! - .this is in a nested scope: use the global opcua object');
     return true;
   }
 }
