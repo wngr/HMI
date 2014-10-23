@@ -1,7 +1,7 @@
 /**
  * New node file
  */
-var opcuaModule1 = require('./../models/opcuaInstance').createServer('opc.tcp://localhost:4334/');
+var opcuaModule1 = require('./../models/opcuaInstance').server('opc.tcp://localhost:4334/');
 
 opcuaModule1.on('readFinished', function(data){
   console.log('Module1: ConnectionTestOutput:', data.value);
@@ -20,7 +20,7 @@ opcuaModule1.initialize();
 
 
 
-var opcuaModule2 = require('./../models/opcuaInstance').createServer('opc.tcp://localhost:4335/');
+var opcuaModule2 = require('./../models/opcuaInstance').server('opc.tcp://localhost:4335/');
 
 opcuaModule2.on('readFinished', function(data){
   console.log('Module2: ConnectionTestOutput:', data.value);

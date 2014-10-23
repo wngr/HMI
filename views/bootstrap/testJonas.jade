@@ -11,12 +11,11 @@ block content
         ul
             li Systemtime
                 div#socket_clock Original Text
-            li NS=1;i=1001 / OPC UA Test
-                div#ns1i1001 noch kein update
      div.col-xs-12.well
-        +readWriteSubmit('Variable 1', IDread1, IDwrite1)
+        +nameReadWriteKeyup('Variable 1', IDread1, ReadEventName1, IDwrite1, EventName1)
+        
+     div.col-xs-12.well
+        +readyBusyDoneError()
     
     block socketscripts
         script socket.on('socket_clock', function(msg){ $('#socket_clock').html(msg); });
-        script socket.on('ns1i1001', function(msg){ console.log(msg); $('#ns1i1001').html(msg); $('#ns1i1001').placeholder(msg); });
-        //script setInterval(function(){ socket.emit('isLive', 1); }, 1000);

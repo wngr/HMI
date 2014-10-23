@@ -1,6 +1,6 @@
 
 /**
- * OPC UA Model
+ * OPC UA Model for seperate Instances
  * 
  * Scope issue:
  * JS only sees direct function calls in the class opcuaPro as a method of this class.
@@ -14,7 +14,7 @@
  */
 
 
-exports.createServer = function(endPointUrl){
+exports.server = function(endPointUrl){
 
   var nodeopcua = require("node-opcua");
   var util = require("util");

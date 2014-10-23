@@ -17,16 +17,28 @@ mixin readWriteSubmitbla(readId, writeId)
 //    <input type="text" class="form-control" id="inputSuccess4">
 
 
-mixin readWriteSubmit(name, readId, writeId)
+mixin nameReadWriteKeyup(name, readId, readEventName, writeId, submitEventName)
  form.form-horizontal(role="form")
   div.form-group.has-feedback
-   label.control-label.col-sm-3(for=readId)  #{name}
-   div.col-sm-3
+   label.control-label.col-xs-4.col-sm-3(for=readId)  #{name}
+   div.col-xs-8.col-sm-3
     input.form-control(id=readId, type="text", disabled)
     span.glyphicon.glyphicon-eye-open.form-control-feedback
-   div.col-sm-3
-    input.form-control(id=writeId, type="text", onKeyUp="socket.emit('specialKeyUp')")
+   div.col-xs-12.col-sm-3
+    input.form-control(id=writeId, type="text", onKeyUp="socket.emit('"+submitEventName+"', {value: $('#"+writeId+"').val()})")
     span.glyphicon.glyphicon-pencil.form-control-feedback
+    script socket.on('#{readEventName}', function(data){ $('##{readId}').val(data.value); });
+    
+mixin readWriteKeyup(readId, readEventName, writeId, submitEventName)
+ form.form-horizontal(role="form")
+  div.form-group.has-feedback
+   div.col-sm-6
+    input.form-control(id=readId, type="text", disabled)
+    span.glyphicon.glyphicon-eye-open.form-control-feedback
+   div.col-sm-6
+    input.form-control(id=writeId, type="text", onKeyUp="socket.emit('"+submitEventName+"', {value: $('#"+writeId+"').val()})")
+    span.glyphicon.glyphicon-pencil.form-control-feedback
+    script socket.on('#{readEventName}', function(data){ $('##{readId}').val(data.value); });
 
 // Input Field
 mixin field(type, name, label)
@@ -45,5 +57,74 @@ mixin read(name, readId, eventName)
                 span.glyphicon.glyphicon-eye-open.form-control-feedback
             div.col-sm-3.col-xs-2.text-left
                 button.btn.btn-default(type="button", onclick="socket.emit('"+eventName+"')")
-                
                     span.glyphicon.glyphicon-refresh
+                    
+mixin readyBusyDoneError()
+   div.col-xs-12
+     h3 Module: Keks1
+     div.container-fluid
+      div.row.well
+        +skill()
+      div.row.well
+        +skill()
+        
+        
+        
+mixin skill() 
+      div.row
+        div.col-xs-8
+            h4 
+             b Skill: 
+             i Find Budy
+        div.col-xs-4
+            h4 
+             b ID: 
+             span #2218492
+      div.row
+       div.col-xs-12
+        div.col-xs-3.text-center.alert.alert-info
+            p Ready:
+            span.glyphicon.glyphicon-asterisk
+        div.col-xs-3.text-center.alert.alert-info
+            p Busy:
+            span.glyphicon.glyphicon-forward
+        div.col-xs-3.text-center.alert.alert-success
+            p Done:
+            span.glyphicon.glyphicon-ok-sign
+        div.col-xs-3.text-center.alert
+            p Error:
+            span.glyphicon.glyphicon-ban-circle
+      div.row
+        //div.panel.panel-default
+        //    div.panel-heading Parameterlist
+        //div.col-xs-12
+        div.col-xs-12
+         div.panel-group#parameterlist(style="padding: 0px")
+            div.panel.panel-default
+                div.panel-heading
+                    h4.panel-title Parameterlist
+                        a.text-right(data-toggle="collapse", data-parent="#accordion", href="#parameterListOne") 
+                            span.glyphicon.glyphicon-collapse-down
+                div.panel-collapse.collapse.out#parameterListOne
+                    div.panel-body
+                        table.table
+                         thead
+                            tr
+                                th.col-xs-1 #
+                                th.col-xs-3 Name
+                                th.col-xs-8 Values
+                         tbody
+                            tr
+                                td 1
+                                td Speed
+                                td 
+                                 +readWriteKeyup( '', '', '', '')
+      div.row
+        div.col-xs-12
+            button.btn.btn-primary.btn-lg(type="button") Execute
+        
+        
+        
+        
+        
+            

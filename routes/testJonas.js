@@ -1,51 +1,63 @@
-
 /*
- * Each route needs its own.
+ * Models
+ * 
+ * Strange: Sometimes it works, sometimes not.
+ * Somehow it has to do with IO connection and socket I think.
  */
 
-/*
- * Socket Connection handling
- */
+
+var myNodeId = 'ns=4;s=MI5.Module1101.Output.SkillOutput.SkillOutput0.Ready';
+
+var globalI = 1;
+
+// Value to Jade-Template
+var field1 = {
+    IDread1: 'readid1',
+    ReadEventName1: 'readMyFinished',
+    IDwrite1: 'writeID123',
+    EventName1: 'specialKeyUp'
+};
+
 IO.on('connection', function(socket){
+  var opcua = require('./../models/opcuaInstance').server('opc.tcp://localhost:4334/');
   console.log('a user connected');
+  //opcua.removeAllListeners();
   
+  // Disconnect
   socket.on('disconnect', function(){
     console.log('user disconnected');
+    opcua.disconnect(); // not good - if one client/browser goes down, all is down
+    //socket.removeAllListeners();
+    //opcua.removeAllListeners(); // that works, but it destroys other clients connection
   });
   
-  socket.on('isLive', function(){
-    console.log('user is live');
-  })
-  
-  socket.emit('info', { msg: 'The world is round, there is no up or down.' });
-  
+  // SystemTime
   setInterval(function(){
-    socket.emit('socket_clock', Date().toString()); 
-    //console.log(Date().toString());
+    socket.emit('hmiSystemTime', Date().toString()); 
   }, 1000);
 
+  socket.on(field1.EventName1, function(data){
+    console.log(field1.EventName1 + ' event',data);
+    opcua.write(myNodeId, parseFloat(data.value));
+  });
   
-  socket.on('specialKeyUp', function(){
-    console.log('specialKeyUp event');
-    opcua.read('ns=4;s=GVL.OPCModule[1].Output.SkillOutput.SkillOutput[1].Ready');
+  opcua.on('ready', function(){
+    opcua.read(myNodeId);    
   });
 
+  //Send it back to the readID text-field
+  opcua.on('readFinished', function(data){
+   console.log('II:', globalI++, data);
+   socket.emit(field1.ReadEventName1, data );
+  });
+  //Get the new Value as a request
+  opcua.on('writeFinished', function(){ opcua.read(myNodeId); });
   
-  //opcua.on('readFinished', function(data){ console.log('haloho');});
-  
-  
+  opcua.initialize() // when all callbacks are registered - initialize
 });
 
-opcua.on('readFinished', function(data){ console.log(data)});
-
-var ni = 'ns=4;s=GVL.OPCModule[1].Output.SkillOutput.SkillOutput[1].Ready';
-
-console.log(_.uniqueId('ns=4;s=GVL.OPCModule[1].Output.SkillOutput.SkillOutput[1].Ready'));
+//console.log(_.uniqueId(myNodeId));
 
 exports.index = function(req, res){
-  var data = {
-      IDread1: 'readid1',
-      IDwrite1: 'writeID123'
-  };
-  res.render('bootstrap/testJonas', data);
+  res.render('bootstrap/testJonas', field1);
 };

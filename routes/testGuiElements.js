@@ -1,5 +1,6 @@
 
 var input;
+var opcua = require('./../models/opcua');
 
 input = {
     name: 'Output.ConnectionTestOutput',
@@ -38,7 +39,7 @@ IO.on('connection', function(socket){
     }
   });
   
-  
+  opcua.initialize();
 });
 
 
