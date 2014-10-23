@@ -5,17 +5,14 @@ block content
     div.container
      div.col-xs-12.well
         h1 Test for Jonas 1
-        p In this Template a Task with ID XYZ shall be tested
-        p If this is blinking
-        
         ul
             li Systemtime
-                div#socket_clock Original Text
+                div#hmiSystemTime ...
      div.col-xs-12.well
         +nameReadWriteKeyup('Variable 1', IDread1, ReadEventName1, IDwrite1, EventName1)
         
      div.col-xs-12.well
-        +readyBusyDoneError()
+        +moduleView(moduleData)
     
     block socketscripts
-        script socket.on('socket_clock', function(msg){ $('#socket_clock').html(msg); });
+        script socket.on('hmiSystemTime', function(msg){ $('#hmiSystemTime').html(msg); });

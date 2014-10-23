@@ -59,27 +59,29 @@ mixin read(name, readId, eventName)
                 button.btn.btn-default(type="button", onclick="socket.emit('"+eventName+"')")
                     span.glyphicon.glyphicon-refresh
                     
-mixin readyBusyDoneError()
+mixin moduleView(moduleData)
    div.col-xs-12
-     h3 Module: Keks1
+     h3 Module: #{moduleData.name}
      div.container-fluid
-      div.row.well
-        +skill()
-      div.row.well
-        +skill()
+        for skill in moduleData.skills
+            div.row.well
+                +skillView(skill)
+        else
+            div.row.well
+                p There are no skills for this Module.
         
         
         
-mixin skill() 
+mixin skillView(skill) 
       div.row
         div.col-xs-8
             h4 
              b Skill: 
-             i Find Budy
+             i= skill.name
         div.col-xs-4
             h4 
              b ID: 
-             span #2218492
+             span= skill.skillid
       div.row
        div.col-xs-12
         div.col-xs-3.text-center.alert.alert-info
@@ -114,9 +116,10 @@ mixin skill()
                                 th.col-xs-3 Name
                                 th.col-xs-8 Values
                          tbody
+                          for parameter in skill.parameters                        
                             tr
-                                td 1
-                                td Speed
+                                td= parameter.id
+                                td= parameter.name
                                 td 
                                  +readWriteKeyup( '', '', '', '')
       div.row

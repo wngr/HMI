@@ -26,9 +26,7 @@ IO.on('connection', function(socket){
   // Disconnect
   socket.on('disconnect', function(){
     console.log('user disconnected');
-    opcua.disconnect(); // not good - if one client/browser goes down, all is down
-    //socket.removeAllListeners();
-    //opcua.removeAllListeners(); // that works, but it destroys other clients connection
+    opcua.disconnect();
   });
   
   // SystemTime
@@ -59,5 +57,33 @@ IO.on('connection', function(socket){
 //console.log(_.uniqueId(myNodeId));
 
 exports.index = function(req, res){
+  var moduleData = {
+      moduleData: {
+        name: 'Halloho',
+        skills: {
+          1: {
+            name: 'Testskill 1',
+            skillid: 10000,
+            ready: 1,
+            busy: 1,
+            done: 1,
+            error: 1,
+            parameters: {
+              1: {
+                name: 'Geschwindigkeit',
+                id: 432                
+              }
+            }
+          }
+//          2: {
+//            name: 'Testskill 2',
+//            skillid: 10001
+//          }
+        }
+      }
+  };
+  
+  field1 = _.extend(field1, moduleData);
+  
   res.render('bootstrap/testJonas', field1);
 };

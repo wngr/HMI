@@ -213,6 +213,42 @@ exports.server = function(endPointUrl){
       },
       
       
+      readArray: function(nodeIdArrayToRead) {
+        console.log('OK - ReadArray Called');
+        var max_age = 0;
+        // Map the array, to nodes array
+        var nodes = _.map(nodeIdArrayToRead, function(id){ return {nodeId: id, attributeId: 13};});
+        //var nodes = [ { nodeId: '' + nodeIdToRead, attributeId: 13} ];
+        //console.log(nodes);
+        this.session.read(nodes, max_age, this.cbReadArray);
+      },
+      cbReadArray: function(err, nodes, data) {
+        console.log('OK - cbReadArray ')
+//        console.log('err', err);
+//        console.log('nodes', nodes);
+//        console.log('data', data);
+        if(err){
+          console.log("ERR - read: " + err);
+          console.log("statusCode: " + statusCode);
+        } else {
+//          var emitData = {
+//              nodeId: 'ns=' + nodes[0].nodeId.namespace + ';s=' + nodes[0].nodeId.value,
+//              value: data[0].value.value,
+//              err: err
+//              };
+          var emitData = [ data, nodes];
+          
+          opcua.emit('readArrayFinished', emitData);
+          //        console.log(nodes);
+          //        console.log(data)
+        }
+      },
+      
+      _formatNodeDataOutput: function(data, nodes){
+        
+      },
+      
+      
       innerReactions: function(){
         this.on('connected', function(){ console.log('OK - connected to ' + CONFIG.endpointUrl); });
         this.on('ready', function(){ console.log('OK - session established'); });

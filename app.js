@@ -14,10 +14,8 @@ var app = express();
 var http = require('http');
 var server = http.createServer(app);
 GLOBAL.IO = require('socket.io').listen(server); 
-var _ = require('underscore');
+GLOBAL._ = require('underscore');
 var router = require('./routes/router'); // Control
-
-
 
 // all environments
 app.set('port', process.env.PORT || 3000);
