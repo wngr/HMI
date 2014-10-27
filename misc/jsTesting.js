@@ -25,7 +25,7 @@ var opcuaModule1 = require('./../models/opcuaInstance').server('opc.tcp://localh
 opcuaModule1.on('readArrayFinished', function(data){
   console.log('=======================================================');
   console.log('=======================================================');
-  console.log(JSON.stringify(data));  
+  console.log(JSON.stringify(data, null, 1));  
 });
 
 opcuaModule1.on('ready', function(){
@@ -33,7 +33,11 @@ opcuaModule1.on('ready', function(){
                      'MI5.Module1101.Output.SkillOutput.SkillOutput0.Ready',
                      'MI5.Module1101.Output.SkillOutput.SkillOutput0.Done'];
   opcuaModule1.readArray(NodesToRead);
+  opcuaModule1.readArray(opcuaModule1.nodeArrayParameterOutputSingle('MI5.Module1101.Output.SkillOutput.SkillOutput0.ParameterOutput',0));
+  opcuaModule1.readArray(opcuaModule1.nodeArraySkillOutputSingle('MI5.Module1101.Output.SkillOutput',0));
+  
 });
+
 
 opcuaModule1.initialize();
 

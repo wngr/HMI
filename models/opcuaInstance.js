@@ -44,7 +44,7 @@ exports.server = function(endPointUrl){
     function opcuaPro() {
       this.opcuaObject = 1;
       this.client = undefined;
-      this.sessoin = undefined;
+      this.session = undefined;
       this.subscription = undefined;
       
       // Register all the inner Class-Event-Listeners. This needs to be done in the ctor.
@@ -223,8 +223,8 @@ exports.server = function(endPointUrl){
         console.log('OK - ReadArray Called');
         var max_age = 0;
         // Generate a node-opcua ready array
-        var nodes = this.addNamespaceAndAttributeIdToNodeId(nodeIdArrayToRead);
-        this.session.read(nodes, max_age, this.cbReadArray);
+        var nodes = opcua.addNamespaceAndAttributeIdToNodeId(nodeIdArrayToRead);
+        opcua.session.read(nodes, max_age, opcua.cbReadArray);
       },
       cbReadArray: function(err, nodes, results) {
         console.log('OK - cbReadArray ')
@@ -238,6 +238,49 @@ exports.server = function(endPointUrl){
           opcua.emit('readArrayFinished', emitData );
         }
       },
+      
+      /**
+       * Read whole Parameterset
+       * 
+       * Read ParameterOutput.ParameterOutput0-5 (6 paramaters in total)
+       * Input should be base path
+       * 
+       * @param nodeIdToParameterSet e.g. 'MI5.Module1101.Output.SkillOutput.SkillOutput0.ParameterOutput'
+       * @param numberOfParameter e.g. 0-5
+       */
+      nodeArrayParameterOutputSingle: function(nodeIdToParameterSet, numberOfParameter){
+        //var endParameter = 0; // for i=0 i<=0 //on time
+        var parameterArray = ['Dummy', 'ID', 'Name', 'Unit', 'Required', 'Default', 'MinValue', 'MaxValue'];
+        var path = nodeIdToParameterSet+'.ParameterOutput'+numberOfParameter+'.';
+        
+        // Add the path to the node
+        parameterArray = _.map(parameterArray, function(node){ return path+node; });
+        
+        return parameterArray;
+      },
+
+      
+      /**
+       * Read whole Parameterset
+       * 
+       * Read ParameterOutput.ParameterOutput0-5 (6 paramaters in total)
+       * Input should be base path
+       * 
+       * @param nodeIdToParameterSet e.g. 'MI5.Module1101.Output.SkillOutput'
+       * @param numberOfParameter e.g. 0-15
+       */
+      nodeArraySkillOutputSingle: function(nodeIdToSkillOutput, numberOfSkill){
+        //var endSkill = 15;
+        var skillArray = ['Dummy', 'ID', 'Name', 'Activated', 'Ready', 'Busy', 'Done', 'Error'];
+        var path = nodeIdToSkillOutput+'.SkillOutput'+numberOfSkill+'.';
+     
+        // Add the path to the node
+        skillArray = _.map(skillArray, function(node){ return path+node; });
+        
+        return skillArray;
+      },
+      
+      
       
       /**
        * Adds node-opcua specific nodes values:
@@ -273,9 +316,19 @@ exports.server = function(endPointUrl){
         for ( var i = 0; i <= nodes.length; i++ ){
           if ( nodes[i] != undefined && results[i] != undefined )
           {
-            output[i] = {
+            // Check for BadNodeId (value: null, then statusCode)
+            //console.log(nodes[i]);
+            //console.log(results[i]);
+            if ( _.isEmpty(results[i].value) ){
+              output[i] = {
+                  nodeId : nodes[i].nodeId.value,
+                  value : results[i].statusCode.description
+                };
+            } else {
+              output[i] = {
                 nodeId : nodes[i].nodeId.value,
                 value : results[i].value.value
+              };
             }
           }
         }
@@ -294,8 +347,8 @@ exports.server = function(endPointUrl){
         // Add new attributes to the object of every array entry 
         output = _.map(data, function(entry){
           var eventObject = {
-              submitEvent: 'submitEvent'+opcua.convertNodeIdToEvent(entry.nodeId),
-              updateEvent: 'updateEvent'+opcua.convertNodeIdToEvent(entry.nodeId),
+              submitEvent: 'submitEv'+opcua.convertNodeIdToEvent(entry.nodeId),
+              updateEvent: 'updateEv'+opcua.convertNodeIdToEvent(entry.nodeId),
               containerId: opcua.convertNodeIdToContainerId(entry.nodeId)
           }
           return _.extend(entry, eventObject);
@@ -309,7 +362,7 @@ exports.server = function(endPointUrl){
        * @param nodeId (e.g. MI5.Module1101.Output.SkillOutput.SkillOutput0.Busy)
        */
       convertNodeIdToEvent: function(nodeId){
-        var output = nodeId.slice(-10)
+        var output = nodeId.slice(-8)
         output = _.uniqueId(output);
 
         return output;
@@ -327,6 +380,9 @@ exports.server = function(endPointUrl){
         return _.uniqueId('id'+md5(nodeId).slice(3,10));
       },
       
+      /**
+       * Register callbacks for internal messaging
+       */
       innerReactions: function(){
         this.on('connected', function(){ console.log('OK - connected to ' + CONFIG.endpointUrl); });
         this.on('ready', function(){ console.log('OK - session established'); });
