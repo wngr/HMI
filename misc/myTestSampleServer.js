@@ -30,7 +30,6 @@ exports.newOpcuaServer = function(portNumber){
     // declare some folders
     server.engine.createFolder("RootFolder",{ browseName: "Module1101"});
     server.engine.createFolder("Module1101",{ browseName: "Output"});
-    server.engine.createFolder("Output",{ browseName: "SkillOutput"});
     
     // Add Output Variables
     createOpcuaVariable( 'MI5.Module1101.Output.Dummy', 'Dummy', 'Output', 'Double', 1 );
@@ -39,17 +38,36 @@ exports.newOpcuaServer = function(portNumber){
     createOpcuaVariable( 'MI5.Module1101.Output.Idle', 'Idle', 'Output', 'Double', 1 );
     createOpcuaVariable( 'MI5.Module1101.Output.Connected', 'Connected', 'Output', 'Double', 1 );
     createOpcuaVariable( 'MI5.Module1101.Output.ConnectionTestOutput', 'ConnectionTestOutput', 'Output', 'Double', 3 );
-    // Not yet complete - continue Output variables
+    createOpcuaVariable( 'MI5.Module1101.Output.Error', 'Error', 'Output', 'Double', 0 );
+    createOpcuaVariable( 'MI5.Module1101.Output.ErrorID', 'ErrorID', 'Output', 'Double', 0 );
+    createOpcuaVariable( 'MI5.Module1101.Output.ErrorDescription', 'ErrorDescription', 'Output', 'String', '' );
+    createOpcuaVariable( 'MI5.Module1101.Output.CurrentTaskDescription', 'CurrentTaskDescription', 'Output', 'String', '' );
+    createOpcuaVariable( 'MI5.Module1101.Output.PositionSensor', 'PositionSensor', 'Output', 'Double', 0 );
     
     // Add SkillOutput and SkillOutput Folders
+    server.engine.createFolder("Output",{ browseName: "SkillOutput"});
     server.engine.createFolder("SkillOutput",{ browseName: "SkillOutput0"});
     createOpcuaVariable( 'MI5.Module1101.Output.SkillOutput.SkillOutput0.Dummy', 'Dummy', 'SkillOutput0', 'Double', 1 );
     createOpcuaVariable( 'MI5.Module1101.Output.SkillOutput.SkillOutput0.ID', 'ID', 'SkillOutput0', 'Double', 1337 );
     createOpcuaVariable( 'MI5.Module1101.Output.SkillOutput.SkillOutput0.Name', 'Name', 'SkillOutput0', 'String', 'TestSkill' );
-    // skiping some
+    createOpcuaVariable( 'MI5.Module1101.Output.SkillOutput.SkillOutput0.Activated', 'Activated', 'SkillOutput0', 'Double', 1 );
     createOpcuaVariable( 'MI5.Module1101.Output.SkillOutput.SkillOutput0.Ready', 'Ready', 'SkillOutput0', 'Double', 1 );
     createOpcuaVariable( 'MI5.Module1101.Output.SkillOutput.SkillOutput0.Busy', 'Busy', 'SkillOutput0', 'Double', 0 );
     createOpcuaVariable( 'MI5.Module1101.Output.SkillOutput.SkillOutput0.Done', 'Done', 'SkillOutput0', 'Double', 0 );
+    createOpcuaVariable( 'MI5.Module1101.Output.SkillOutput.SkillOutput0.Error', 'Error', 'SkillOutput0', 'Double', 0 );
+    
+    // ParameterOutput
+    server.engine.createFolder("SkillOutput0",{ browseName: "ParameterOutput"});
+    server.engine.createFolder("ParameterOutput",{ browseName: "ParameterOutput0"});
+    createOpcuaVariable( 'MI5.Module1101.Output.SkillOutput.SkillOutput0.ParameterOutput.ParameterOutput0.Dummy', 'Dummy', 'ParameterOutput0', 'Double', 0 );
+    createOpcuaVariable( 'MI5.Module1101.Output.SkillOutput.SkillOutput0.ParameterOutput.ParameterOutput0.ID', 'ID', 'ParameterOutput0', 'Double', 31337 );
+    createOpcuaVariable( 'MI5.Module1101.Output.SkillOutput.SkillOutput0.ParameterOutput.ParameterOutput0.Name', 'Name', 'ParameterOutput0', 'String', 'TestGeschwindigkeit' );
+    createOpcuaVariable( 'MI5.Module1101.Output.SkillOutput.SkillOutput0.ParameterOutput.ParameterOutput0.Unit', 'Unit', 'ParameterOutput0', 'String', 'm/s');
+    createOpcuaVariable( 'MI5.Module1101.Output.SkillOutput.SkillOutput0.ParameterOutput.ParameterOutput0.Required', 'Required', 'ParameterOutput0', 'Double', 1 );
+    createOpcuaVariable( 'MI5.Module1101.Output.SkillOutput.SkillOutput0.ParameterOutput.ParameterOutput0.Default', 'Default', 'ParameterOutput0', 'Double', 40 );
+    createOpcuaVariable( 'MI5.Module1101.Output.SkillOutput.SkillOutput0.ParameterOutput.ParameterOutput0.MinValue', 'MinValue', 'ParameterOutput0', 'Double', 0 );
+    createOpcuaVariable( 'MI5.Module1101.Output.SkillOutput.SkillOutput0.ParameterOutput.ParameterOutput0.MaxValue', 'MaxValue', 'ParameterOutput0', 'Double', 100 );
+
   }
   
   function post_initialize() {
