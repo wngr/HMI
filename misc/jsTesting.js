@@ -18,51 +18,26 @@ var http = require('http');
 var server = http.createServer(app);
 GLOBAL.IO = require('socket.io').listen(server); 
 GLOBAL._ = require('underscore');
-
-/*
- * Map-Test
- */
-//var nodeIds = ['ns=4',
-//           'ns-5',
-//           'lfldks'
-//           ];
-//console.log(nodeIds);
-//
-//var newNodeIds = _.map(nodeIds, function(id){ return {nodeId: id}})
-//
-//console.log(newNodeIds);
-
-console.log('=======================================================');
-console.log('=======================================================');
-
+GLOBAL.md5 = require('MD5');
 
 var opcuaModule1 = require('./../models/opcuaInstance').server('opc.tcp://localhost:4334/');
 
 opcuaModule1.on('readArrayFinished', function(data){
-  console.log(JSON.stringify(data));
-
   console.log('=======================================================');
   console.log('=======================================================');
-  
-  var NewData[];
-  for ( var i = 0; i <= data.length; i++){
-   // NewData[] = { data[i].value
-  }
-  console.log( data[0] );
-  console.log( data[1] );
-  
-  console.log( _.union(data[0], data[1]));
+  console.log(JSON.stringify(data));  
 });
 
 opcuaModule1.on('ready', function(){
-  var NodesToRead = ['ns=4;s=MI5.Module1101.Output.SkillOutput.SkillOutput0.Busy',
-                    'ns=4;s=MI5.Module1101.Output.SkillOutput.SkillOutput0.Ready'];
+  var NodesToRead = ['MI5.Module1101.Output.SkillOutput.SkillOutput0.Busy',
+                     'MI5.Module1101.Output.SkillOutput.SkillOutput0.Ready',
+                     'MI5.Module1101.Output.SkillOutput.SkillOutput0.Done'];
   opcuaModule1.readArray(NodesToRead);
 });
 
 opcuaModule1.initialize();
 
-  setTimeout(function(){
-    console.log('----Terminated');
-    process.exit(0);
-  }, 1000);  
+setTimeout(function(){
+  console.log('----Terminated');
+  process.exit(0);
+}, 1000);  

@@ -16,6 +16,7 @@ var server = http.createServer(app);
 GLOBAL.IO = require('socket.io').listen(server); 
 GLOBAL._ = require('underscore');
 var router = require('./routes/router'); // Control
+GLOBAL.md5 = require('MD5');
 
 // all environments
 app.set('port', process.env.PORT || 3000);

@@ -12,6 +12,7 @@
     "async": "*",
     "socket.io": "latest",
     "openssl": "*",
-    "underscore": "*"
+    "underscore": "*",
+    "MD5": "*"
   }
 }

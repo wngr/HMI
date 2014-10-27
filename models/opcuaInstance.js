@@ -212,42 +212,120 @@ exports.server = function(endPointUrl){
         opcua.emit('monitoredItemChanged', dataValue);
       },
       
-      
+      /**
+       * Reads couple of nodes on one go
+       * 
+       * @TODO: check what happens if there is no node with nodeId! (undefined object reference error!)
+       * 
+       * @param nodeIdArrayToRead array, e.g. [{nodeId: 'Busy'}, {nodeId: 'Ready'}]
+       */
       readArray: function(nodeIdArrayToRead) {
         console.log('OK - ReadArray Called');
         var max_age = 0;
-        // Map the array, to nodes array
-        var nodes = _.map(nodeIdArrayToRead, function(id){ return {nodeId: id, attributeId: 13};});
-        //var nodes = [ { nodeId: '' + nodeIdToRead, attributeId: 13} ];
-        //console.log(nodes);
+        // Generate a node-opcua ready array
+        var nodes = this.addNamespaceAndAttributeIdToNodeId(nodeIdArrayToRead);
         this.session.read(nodes, max_age, this.cbReadArray);
       },
-      cbReadArray: function(err, nodes, data) {
+      cbReadArray: function(err, nodes, results) {
         console.log('OK - cbReadArray ')
-//        console.log('err', err);
-//        console.log('nodes', nodes);
-//        console.log('data', data);
         if(err){
           console.log("ERR - read: " + err);
           console.log("statusCode: " + statusCode);
         } else {
-//          var emitData = {
-//              nodeId: 'ns=' + nodes[0].nodeId.namespace + ';s=' + nodes[0].nodeId.value,
-//              value: data[0].value.value,
-//              err: err
-//              };
-          var emitData = [ data, nodes];
+          var emitData = opcua.concatNodesAndResults(nodes, results);
+          emitData = opcua.addEventsAndIdsToResultsArray(emitData);
           
-          opcua.emit('readArrayFinished', emitData);
-          //        console.log(nodes);
-          //        console.log(data)
+          opcua.emit('readArrayFinished', emitData );
         }
       },
       
-      _formatNodeDataOutput: function(data, nodes){
-        
+      /**
+       * Adds node-opcua specific nodes values:
+       * 
+       * {nodeId} --> {nodeId: 'ns=4;s='+node, attributeId: 13}
+       * 
+       * @param nodeIdArrayToRead array
+       * @returns array
+       */
+      addNamespaceAndAttributeIdToNodeId: function(nodeIdArrayToRead){
+        var output = _.map(nodeIdArrayToRead, function(node){
+            return {
+              nodeId: 'ns=4;s='+node,
+              attributeId: 13
+            };
+        });
+        return output;
       },
       
+      /**
+       * Combines nodes and results to one data array with the structure:
+       * [{"nodeId":"MI5.Module1101.Output.SkillOutput.SkillOutput0.Busy",
+       *   "value":0},
+       *   {...},
+       *   {...}]
+       *   
+       * @param nodes : nodeId
+       * @param results : value
+       * @returns {Array}
+       */
+      concatNodesAndResults: function(nodes, results){
+        var output = new Array;
+        for ( var i = 0; i <= nodes.length; i++ ){
+          if ( nodes[i] != undefined && results[i] != undefined )
+          {
+            output[i] = {
+                nodeId : nodes[i].nodeId.value,
+                value : results[i].value.value
+            }
+          }
+        }
+        return output;
+      },
+      
+      /**
+       * Add object attributes to results array accodring to nodeId in results
+       * {nodeId, value} --> {nodeId, value, submitEvent, updateEvent, containerId}
+       * 
+       * @param data
+       * @returns {Array}
+       */
+      addEventsAndIdsToResultsArray: function(data){
+        var output = new Array;
+        // Add new attributes to the object of every array entry 
+        output = _.map(data, function(entry){
+          var eventObject = {
+              submitEvent: 'submitEvent'+opcua.convertNodeIdToEvent(entry.nodeId),
+              updateEvent: 'updateEvent'+opcua.convertNodeIdToEvent(entry.nodeId),
+              containerId: opcua.convertNodeIdToContainerId(entry.nodeId)
+          }
+          return _.extend(entry, eventObject);
+        });
+        return output;
+      },
+      
+      /**
+       * Transforms a nodeId to a uniqueEvent ID
+       * 
+       * @param nodeId (e.g. MI5.Module1101.Output.SkillOutput.SkillOutput0.Busy)
+       */
+      convertNodeIdToEvent: function(nodeId){
+        var output = nodeId.slice(-10)
+        output = _.uniqueId(output);
+
+        return output;
+      },
+      
+      /**
+       * Converts nodeId to MD5 hash, so that it is container-id compatible
+       * 
+       * id at thebeginning necessary, if md5 should start with a digit
+       * 
+       * @param nodeId
+       * @returns idFKDJ48238fhFak1
+       */
+      convertNodeIdToContainerId: function(nodeId){
+        return _.uniqueId('id'+md5(nodeId).slice(3,10));
+      },
       
       innerReactions: function(){
         this.on('connected', function(){ console.log('OK - connected to ' + CONFIG.endpointUrl); });
