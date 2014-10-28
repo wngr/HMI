@@ -20,6 +20,9 @@ Also check with the tool, if the sample server is implemented correctly, if some
 The Message is: BadDataEncodingUnsupported
 Therefore it is necessary to delete the sampleserver from the uaexpert client and then add it again.
 
+* JSCS - Control Source:
+"node_modules/.bin/jscs" .
+
 ## Developing
 
 * For developing purposes, there is a folder called test/ in which all the unit-tests are stored.
