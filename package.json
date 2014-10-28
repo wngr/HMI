@@ -4,7 +4,8 @@
   "private": true,
   "scripts": {
     "start": "node app.js",
-    "checkStyle": "\"node_modules/.bin/jscs\" ."
+    "pretest": "jscs .",
+    "test": "mocha"
   },
   "dependencies": {
     "express": "3.2.6",
