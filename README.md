@@ -7,9 +7,15 @@ It is also a testing basis for the MVC approach in JavaScript
 
 ## Usage
 
-* There is a sample server, based on node-opcua: misc/sampleserver.js
-Start the server with:
-	node sampleserver.js
+* Sapmleserver: 
+./misc/myTestSampleServerTriple.js
+This Server starts 3 instances with the same variable tree on the ports 4334, 4335, 4336
+
+* JSCS - Control Source:
+jscs .
+
+* Information Mocha Testing
+http://unitjs.com/guide/mocha.html
 
 * In the misc/ folder you can find a uaexpert file, that connects to this localhost server.
 Use this tool to check OPC UA variables.
@@ -20,12 +26,12 @@ Also check with the tool, if the sample server is implemented correctly, if some
 The Message is: BadDataEncodingUnsupported
 Therefore it is necessary to delete the sampleserver from the uaexpert client and then add it again.
 
-* JSCS - Control Source:
-"node_modules/.bin/jscs" .
-
 ## Developing
 
 * For developing purposes, there is a folder called test/ in which all the unit-tests are stored.
+
+* Run: npm test
+This executes: "jscs ." and then "mocha" 
 
 ### Tools
 

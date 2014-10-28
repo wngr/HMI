@@ -1,3 +1,8 @@
+/*
+ * Mocha Test Information
+ * http://unitjs.com/guide/mocha.html
+ */
+
 /**
  * Configuration
  */
