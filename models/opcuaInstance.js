@@ -254,6 +254,7 @@ exports.server = function(endPointUrl) {
         } else {
           var emitData = opcua.concatNodesAndResults(nodes, results);
           emitData = opcua.addEventsAndIdsToResultsArray(emitData);
+          emitData = opcua.addNameToResultsArray(emitData);
 
           opcua.emit('readArrayFinished', emitData);
         }
@@ -372,6 +373,34 @@ exports.server = function(endPointUrl) {
             containerId : opcua.convertNodeIdToContainerId(entry.nodeId)
           }
           return _.extend(entry, eventObject);
+        });
+        return output;
+      },
+
+      /**
+       * 
+       */
+      addNameToResultsArray : function(data) {
+        var output = new Array;
+        // Find .AlphaNumeric beginning from end of line, then the points needs to be sliced away.
+        var exp = /\.\w*$/
+        // Add new attributes to the object of every array entry
+        output = _.map(data, function(entry) {
+          var eventObject = {
+            name : entry.nodeId.match(exp)[0].slice(1)
+          }
+          return _.extend(entry, eventObject);
+        });
+        return output;
+      },
+
+      formatNodeValueArrayToSkillContainerArray : function(data) {
+        var output = new Array;
+        // Add new attributes to the object of every array entry
+        output = _.map(data, function(entry) {
+          var temp = new Object; // needed for variable object-property
+          temp[entry.name] = entry;
+          return temp;
         });
         return output;
       },

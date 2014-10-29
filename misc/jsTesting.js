@@ -14,6 +14,8 @@ var path = require('path'),
   http = require('http'),
   server = http.createServer(app);
 
+var skillContainer;
+
 GLOBAL.IO = require('socket.io').listen(server); 
 GLOBAL._ = require('underscore');
 GLOBAL.md5 = require('MD5');
@@ -23,28 +25,27 @@ var opcuaModule1 = require('./../models/opcuaInstance').server('opc.tcp://localh
 opcuaModule1.on('readArrayFinished', function(data){
   console.log('=======================================================');
   console.log('=======================================================');
-  console.log(JSON.stringify(data, null, 1));  
+  //console.log(JSON.stringify(data, null, 1));  
 
+  console.log(opcuaModule1.formatNodeValueArrayToSkillContainerArray(data));
+    
   /*
    * When the array is read, subscribe to all the nodes, that belong to that skill!
    */
-  opcuaModule1.subscribe();
-  data.forEach(function(entry){
-    var myNode = opcuaModule1.monitor('ns=4;s='+entry.nodeId);
-    myNode.on("changed", function(data){
-      console.log('changed:',entry.nodeId,data);
-      socket.emit(entry.updateEvent, entry.value);
-    });
-    
-    console.log('added monitord item on:',entry.nodeId);
-  });
+//  opcuaModule1.subscribe();
+//  data.forEach(function(entry){
+//    var myNode = opcuaModule1.monitor('ns=4;s='+entry.nodeId);
+//    myNode.on("changed", function(data){
+//      console.log('changed:',entry.nodeId,data);
+//      //socket.emit(entry.updateEvent, entry.value); // not tested yet
+//    });
+//    
+//    console.log('added monitord item on:',entry.nodeId);
+//  });
 });
 
 opcuaModule1.on('ready', function(){
-  var NodesToRead = ['MI5.Module1101.Output.SkillOutput.SkillOutput0.Busy',
-                     'MI5.Module1101.Output.SkillOutput.SkillOutput0.Ready',
-                     'MI5.Module1101.Output.SkillOutput.SkillOutput0.Done'];
-  
+
   opcuaModule1.readArray(opcuaModule1.nodeArraySkillOutputSingle('MI5.Module1101.Output.SkillOutput', 0));
 
  // opcuaModule1.on('monitoredItemChanged', function(data){ console.log(data); });

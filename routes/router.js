@@ -7,12 +7,13 @@ var testBootstrap = require('./testBootstrap');
 // var dashBoard = require('./routes/dashboard');
 // var testSocket = require('./routes/testSocket');
 var testJonas = require('./testJonas');
+var testModuleView = require('./testModuleView');
 // var testGuiElements = require('./testGuiElements');
 // var testOpcuaInstance = require('./testOpcuaInstance');
 // var controlOpcuaSocket = require('./routes/testOpcua.js');
 // var orderRecipe = require('');
 
-var myInstance = require('./testOpcuaInstance');
+// var myInstance = require('./testOpcuaInstance');
 
 function index(req, res) {
   res.render('hmiDev', {
@@ -35,6 +36,7 @@ exports.router = function(app) {
   // app.get('/testGuiElements', testGuiElements.index);
   app.get('/testBootstrap', testBootstrap.index);
   app.get('/testJonas', testJonas.index);
+  app.get('/testModuleView', testModuleView.index);
   app.get('/testOpcuaInstance', testOpcuaInstance);
   // app.get('/orderRecipe' )
   return app;

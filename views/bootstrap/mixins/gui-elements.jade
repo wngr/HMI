@@ -77,20 +77,22 @@ mixin skillView(skill)
         div.col-xs-8
             h4 
              b Skill: 
-             i= skill.name
+             i= skill.Name.value
         div.col-xs-4
             h4 
              b ID: 
-             span= skill.skillid
+             span= skill.ID.value
       div.row
        div.col-xs-12
-        div.col-xs-3.text-center.alert.alert-info
-            p Ready:
-            span.glyphicon.glyphicon-asterisk
-        div.col-xs-3.text-center.alert.alert-info
-            p Busy:
-            span.glyphicon.glyphicon-forward
-        div.col-xs-3.text-center.alert.alert-success
+        div.col-xs-3.text-center.alert
+            p Ready: 
+            span(id=skill.ready.containerId) #{skill.ready.value}
+            script socket.on('#{skill.ready.updateEvent}', function(data){ console.log(data); $('##{skill.ready.containerId}').text(data.value); });
+        div.col-xs-3.text-center.alert
+            p Busy: 
+            span(id=skill.busy.containerId) #{skill.busy.value}
+            script socket.on('#{skill.busy.updateEvent}', function(data){ console.log(data); $('##{skill.busy.containerId}').text(data.value); });
+        div.col-xs-3.text-center.alert
             p Done:
             span.glyphicon.glyphicon-ok-sign
         div.col-xs-3.text-center.alert
@@ -118,8 +120,8 @@ mixin skillView(skill)
                          tbody
                           for parameter in skill.parameters                        
                             tr
-                                td= parameter.id
-                                td= parameter.name
+                                td parameterID
+                                td parametername
                                 td 
                                  +readWriteKeyup( '', '', '', '')
       div.row
