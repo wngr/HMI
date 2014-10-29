@@ -89,3 +89,8 @@ exports.index = function(req, res) {
 
   res.render('bootstrap/testJonas', field1);
 };
+
+exports.moduleInterface = function(req, res) {
+  // testJonas/moduleInterface/1102
+  // 1102 - skilloutput
+}
