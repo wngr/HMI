@@ -88,19 +88,19 @@ mixin skillView(skill)
         div.col-xs-3.text-center.alert
             p Ready: 
             span(id=skill.Ready.containerId) #{skill.Ready.value}
-            script socket.on('#{skill.Ready.updateEvent}', function(data){ console.log(data); $('##{skill.Ready.containerId}').text(data.value); });
+            script socket.on('#{skill.Ready.updateEvent}', function(data){ console.log(data); $('##{skill.Ready.containerId}').text(data.value.value); });
         div.col-xs-3.text-center.alert
             p Busy: 
             span(id=skill.Busy.containerId) #{skill.Busy.value}
-            script socket.on('#{skill.Busy.updateEvent}', function(data){ console.log(data); $('##{skill.Busy.containerId}').text(data.value); });
+            script socket.on('#{skill.Busy.updateEvent}', function(data){ console.log(data); $('##{skill.Busy.containerId}').text(data.value.value); });
         div.col-xs-3.text-center.alert
             p Done:
             span(id=skill.Done.containerId) #{skill.Done.value}
-            script socket.on('#{skill.Done.updateEvent}', function(data){ console.log(data); $('##{skill.Done.containerId}').text(data.value); });
+            script socket.on('#{skill.Done.updateEvent}', function(data){ console.log(data); $('##{skill.Done.containerId}').text(data.value.value); });
         div.col-xs-3.text-center.alert
             p Error:
             span(id=skill.Error.containerId) #{skill.Error.value}
-            script socket.on('#{skill.Error.updateEvent}', function(data){ console.log(data); $('##{skill.Error.containerId}').text(data.value); });
+            script socket.on('#{skill.Error.updateEvent}', function(data){ console.log(data); $('##{skill.Error.containerId}').text(data.value.value); });
       div.row
         //div.panel.panel-default
         //    div.panel-heading Parameterlist

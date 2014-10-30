@@ -33,6 +33,10 @@ Therefore it is necessary to delete the sampleserver from the uaexpert client an
 * Run: npm test
 This executes: "jscs ." and then "mocha" 
 
+* Error Messages:
+Sometimes it throws error like certificate, or client.security.
+Then just restart both node.js applications some times, and it sould work.
+
 ### Tools
 
 Created with [Nodeclipse](https://github.com/Nodeclipse/nodeclipse-1)

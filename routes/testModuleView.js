@@ -5,6 +5,7 @@
  * Somehow it has to do with IO connection and socket I think.
  */
 var globalI = 0;
+var globalSocket;
 console.log('testModuleView.js / root');
 
 // console.log(_.uniqueId(myNodeId));
@@ -13,6 +14,7 @@ exports.index = function(req, res) {
   jadeData = {};
 
   IO.on('connection', function(socket) {
+    globalSocket = socket;
 
     // SystemTime
     setInterval(function() {
@@ -61,7 +63,7 @@ exports.index = function(req, res) {
         var myNode = opcuaInstance.monitor('ns=4;s=' + entry.nodeId);
         myNode.on("changed", function(data) {
           console.log('changed:', entry.nodeId, data);
-          // socket.emit(entry.updateEvent, entry.value); // not tested yet
+          globalSocket.emit(entry.updateEvent, data); // not tested yet
         });
 
         console.log('added monitord item on:', entry.nodeId);
