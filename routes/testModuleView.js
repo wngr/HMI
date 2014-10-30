@@ -37,17 +37,22 @@ exports.index = function(req, res) {
    */
   opcuaInstance.on('readArrayFinished', function(data) {
     function first(callback) {
+      console.log('first');
       /*
        * Format the nodeValueArray to SkillContainer
        */
       var moduleData = {
         moduleData : {
           name : 'Halloho',
-          skills : opcuaInstance.formatNodeValueArrayToSkillContainerArray(data)
+          skills : [ opcuaInstance.formatNodeValueArrayToSkillContainerArray(data) ]
         }
       };
       jadeData = _.extend(jadeData, moduleData);
+      callback(null);
+    }
 
+    function second(callback) {
+      console.log('second');
       /*
        * When the array is read, subscribe to all the nodes, that belong to that skill!
        */
@@ -64,13 +69,15 @@ exports.index = function(req, res) {
       callback(null);
     }
 
-    function second(callback) {
+    function third(callback) {
+      console.log('third');
       console.log('render');
       console.log(JSON.stringify(jadeData, null, 1));
       res.render('bootstrap/testModuleView', jadeData);
+      console.log('after render');
     }
 
-    async.series([ first, second ]);
+    async.series([ first, second, third ]);
   });
 
   opcuaInstance.on('ready', function() {

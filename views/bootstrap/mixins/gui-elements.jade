@@ -73,11 +73,12 @@ mixin moduleView(moduleData)
         
         
 mixin skillView(skill) 
+    
       div.row
         div.col-xs-8
             h4 
              b Skill: 
-             i= skill.Name.value
+             i= skill.Dummy.value
         div.col-xs-4
             h4 
              b ID: 
@@ -86,18 +87,20 @@ mixin skillView(skill)
        div.col-xs-12
         div.col-xs-3.text-center.alert
             p Ready: 
-            span(id=skill.ready.containerId) #{skill.ready.value}
-            script socket.on('#{skill.ready.updateEvent}', function(data){ console.log(data); $('##{skill.ready.containerId}').text(data.value); });
+            span(id=skill.Ready.containerId) #{skill.Ready.value}
+            script socket.on('#{skill.Ready.updateEvent}', function(data){ console.log(data); $('##{skill.Ready.containerId}').text(data.value); });
         div.col-xs-3.text-center.alert
             p Busy: 
-            span(id=skill.busy.containerId) #{skill.busy.value}
-            script socket.on('#{skill.busy.updateEvent}', function(data){ console.log(data); $('##{skill.busy.containerId}').text(data.value); });
+            span(id=skill.Busy.containerId) #{skill.Busy.value}
+            script socket.on('#{skill.Busy.updateEvent}', function(data){ console.log(data); $('##{skill.Busy.containerId}').text(data.value); });
         div.col-xs-3.text-center.alert
             p Done:
-            span.glyphicon.glyphicon-ok-sign
+            span(id=skill.Done.containerId) #{skill.Done.value}
+            script socket.on('#{skill.Done.updateEvent}', function(data){ console.log(data); $('##{skill.Done.containerId}').text(data.value); });
         div.col-xs-3.text-center.alert
             p Error:
-            span.glyphicon.glyphicon-ban-circle
+            span(id=skill.Error.containerId) #{skill.Error.value}
+            script socket.on('#{skill.Error.updateEvent}', function(data){ console.log(data); $('##{skill.Error.containerId}').text(data.value); });
       div.row
         //div.panel.panel-default
         //    div.panel-heading Parameterlist
@@ -118,12 +121,13 @@ mixin skillView(skill)
                                 th.col-xs-3 Name
                                 th.col-xs-8 Values
                          tbody
-                          for parameter in skill.parameters                        
-                            tr
-                                td parameterID
-                                td parametername
-                                td 
-                                 +readWriteKeyup( '', '', '', '')
+                          if skill.parameters
+                            for parameter in skill.parameters                        
+                                 tr
+                                    td parameterID
+                                    td parametername
+                                    td 
+                                        +readWriteKeyup( '', '', '', '')
       div.row
         div.col-xs-12
             button.btn.btn-primary.btn-lg(type="button") Execute

@@ -395,14 +395,12 @@ exports.server = function(endPointUrl) {
       },
 
       formatNodeValueArrayToSkillContainerArray : function(data) {
-        var output = new Array;
+        var temp = new Object; // needed for variable object-property
         // Add new attributes to the object of every array entry
-        output = _.map(data, function(entry) {
-          var temp = new Object; // needed for variable object-property
+        _.each(data, function(entry) {
           temp[entry.name] = entry;
-          return temp;
         });
-        return output;
+        return temp;
       },
 
       /**
