@@ -7,6 +7,7 @@
  * http://node-opcua.github.io/create_a_server.html
  * @author Thomas Frei
  */
+var _ = require('underscore');
     
 exports.newOpcuaServer = function(portNumber){
 
@@ -68,6 +69,51 @@ exports.newOpcuaServer = function(portNumber){
     createOpcuaVariable( 'MI5.Module1101.Output.SkillOutput.SkillOutput0.ParameterOutput.ParameterOutput0.MinValue', 'MinValue', 'ParameterOutput0', 'Double', 0 );
     createOpcuaVariable( 'MI5.Module1101.Output.SkillOutput.SkillOutput0.ParameterOutput.ParameterOutput0.MaxValue', 'MaxValue', 'ParameterOutput0', 'Double', 100 );
 
+    // Add Second SkillOutput and SkillOutput Folders
+    server.engine.createFolder("SkillOutput",{ browseName: "SkillOutput1"});
+    var skillOutput = 'MI5.Module1101.Output.SkillOutput.SkillOutput1';
+    createMI5Variable(skillOutput, 'Dummy', 0 );
+    createMI5Variable(skillOutput, 'ID', 74821 );
+    createMI5Variable(skillOutput, 'Name', 'DummySkill' , 'String');
+    createMI5Variable(skillOutput, 'Activated', 0 );
+    createMI5Variable(skillOutput, 'Ready', 1 );
+    createMI5Variable(skillOutput, 'Busy', 0 );
+    createMI5Variable(skillOutput, 'Done', 0 );
+    createMI5Variable(skillOutput, 'Error', 0 );
+    
+    server.engine.createFolder("SkillOutput1",{ browseName: "ParameterOutput"});
+    server.engine.createFolder("ParameterOutput",{ browseName: "ParameterOutput0"});
+    var parameterOutput = 'MI5.Module1101.Output.SkillOutput.SkillOutput1.ParameterOutput.ParameterOutput0';
+    createMI5Variable(parameterOutput, 'Dummy', 0);
+    createMI5Variable(parameterOutput, 'ID', 1);
+    createMI5Variable(parameterOutput, 'Name', 'Erster', 'String');
+    createMI5Variable(parameterOutput, 'Unit', 'm/s', 'String');
+    createMI5Variable(parameterOutput, 'Required', 1);
+    createMI5Variable(parameterOutput, 'Default', 50);
+    createMI5Variable(parameterOutput, 'MinValue', 0);
+    createMI5Variable(parameterOutput, 'MaxValue', 100);
+    server.engine.createFolder("ParameterOutput",{ browseName: "ParameterOutput1"});
+    var parameterOutput = 'MI5.Module1101.Output.SkillOutput.SkillOutput1.ParameterOutput.ParameterOutput1';
+    createMI5Variable(parameterOutput, 'Dummy', 0);
+    createMI5Variable(parameterOutput, 'ID', 2);
+    createMI5Variable(parameterOutput, 'Name', 'Zweiter', 'String');
+    createMI5Variable(parameterOutput, 'Unit', 'm/s', 'String');
+    createMI5Variable(parameterOutput, 'Required', 1);
+    createMI5Variable(parameterOutput, 'Default', 50);
+    createMI5Variable(parameterOutput, 'MinValue', 0);
+    createMI5Variable(parameterOutput, 'MaxValue', 100);
+    server.engine.createFolder("ParameterOutput",{ browseName: "ParameterOutput2"});
+    var parameterOutput = 'MI5.Module1101.Output.SkillOutput.SkillOutput1.ParameterOutput.ParameterOutput2';
+    createMI5Variable(parameterOutput, 'Dummy', 0);
+    createMI5Variable(parameterOutput, 'ID', 3);
+    createMI5Variable(parameterOutput, 'Name', 'Dritter', 'String');
+    createMI5Variable(parameterOutput, 'Unit', 'm/s', 'String');
+    createMI5Variable(parameterOutput, 'Required', 1);
+    createMI5Variable(parameterOutput, 'Default', 10);
+    createMI5Variable(parameterOutput, 'MinValue', 5);
+    createMI5Variable(parameterOutput, 'MaxValue', 30);
+    
+    
   }
   
   function post_initialize() {
@@ -87,6 +133,8 @@ exports.newOpcuaServer = function(portNumber){
   
   server.initialize(post_initialize);
   
+  
+  
 
 
   /*
@@ -96,6 +144,7 @@ exports.newOpcuaServer = function(portNumber){
   /**
    * Generate 15 digit random string
    * used for 'variable variable names'
+   * 
    * @returns {String}
    */
   function makeServerVariable()
@@ -110,6 +159,28 @@ exports.newOpcuaServer = function(portNumber){
   }
   
   /**
+   * Explode a NodeId (String to Array)
+   * 
+   * @returns [array]
+   */
+  function explodeNodeId(nodeId){
+    return nodeId.split('.');
+  }
+  
+  function createMI5Variable(baseNodeId, variableName, defaultValue, variableType){
+    var folder = _.last(explodeNodeId(baseNodeId));
+    var desiredNodeId = baseNodeId+'.'+variableName;
+    var displayName = variableName;
+    
+    defaultValue = typeof defaultValue !== 'undefined' ? defaultValue : 0;
+    variableType = typeof variableType !== 'undefined' ? variableType : 'Double';
+    
+    //console.log(desiredNodeId, displayName, folder, variableType, defaultValue);
+    createOpcuaVariable(desiredNodeId, displayName, folder, variableType, defaultValue);
+  }
+  
+  /**
+   * Create an OPC UA Variable in the Test Server
    * 
    * @param DesiredNodeId
    * @param DisplayName
