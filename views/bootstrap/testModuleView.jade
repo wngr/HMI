@@ -7,7 +7,7 @@ block content
         h1 Test for Module View
         ul
             li Systemtime
-                div#hmiSystemTime ...
+                div#serverTime ...
                     
      div.col-xs-12.well
        if moduleData
@@ -16,4 +16,4 @@ block content
         p no module to display
     
     block socketscripts
-        script socket.on('hmiSystemTime', function(msg){ $('#hmiSystemTime').html(msg); });
+        script socket.on('serverTime', function(msg){ $('#serverTime').html(msg); });

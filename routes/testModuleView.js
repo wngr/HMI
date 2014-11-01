@@ -4,37 +4,11 @@
  * Strange: Sometimes it works, sometimes not.
  * Somehow it has to do with IO connection and socket I think.
  */
-var globalI = 1;
 
 console.log('testModuleView.js / root');
 
 // console.log(_.uniqueId(myNodeId));
 exports.index = function(req, res) {
-  var session = 1;
-
-  var globalSocket = new Array;
-  IO.on('connection', function(socket) {
-    globalSocket[session] = socket;
-
-    // SystemTime
-    setInterval(function() {
-      socket.emit('hmiSystemTime', Date().toString());
-    }, 1000);
-
-    // Disconnect
-    socket.on('disconnect', function() {
-      console.log('user disconnected');
-      opcuaInstance.disconnect();
-    });
-
-    // Check how many sockets
-    socket.on('mytest', function(bla) {
-      console.log('mytest:', bla, globalI);
-
-    });
-
-  });
-
   var opcuaInstance = require('./../models/opcuaInstance').server('opc.tcp://localhost:4334/');
   jadeData = {};
 
@@ -54,11 +28,7 @@ exports.index = function(req, res) {
         }
       };
       jadeData = _.extend(jadeData, moduleData);
-      callback(null);
-    }
 
-    function second(callback) {
-      console.log('second');
       /*
        * When the array is read, subscribe to all the nodes, that belong to that skill!
        */
@@ -67,23 +37,17 @@ exports.index = function(req, res) {
         var myNode = opcuaInstance.monitor('ns=4;s=' + entry.nodeId);
         myNode.on("changed", function(data) {
           console.log('changed:', entry.nodeId, data);
-          globalSocket[globalI].emit(entry.updateEvent, data); // not tested yet
+          IO.emit(entry.updateEvent, data);
         });
 
         console.log('added monitord item on:', entry.nodeId);
       });
-      callback(null);
-    }
 
-    function third(callback) {
-      console.log('third');
       console.log('render');
       console.log(JSON.stringify(jadeData, null, 1));
       res.render('bootstrap/testModuleView', jadeData);
-      console.log('after render');
     }
-
-    async.series([ first, second, third ]);
+    first();
   });
 
   opcuaInstance.on('ready', function() {
@@ -91,9 +55,33 @@ exports.index = function(req, res) {
         'MI5.Module1101.Output.SkillOutput', 0));
   });
 
-  opcuaInstance.initialize(); // when all callbacks are registered - initialize
-  session++
+  opcuaInstance.initialize(); // when all callbare registered - initializeacks
 };
+
+// SystemTime
+setInterval(function() {
+  IO.emit('serverTime', Date().toString());
+}, 1000);
+
+var connectedClients = 0;
+IO.on('connection', function(socket) {
+  connectedClients++;
+
+  // Disconnect
+  socket.on('disconnect', function() {
+    console.log('Number of users from ', connectedClients, ' to ');
+    connectedClients--;
+    console.log(connectedClients);
+
+    if (connectedClients === 0) {
+      try {
+        tryopcuaInstance.disconnect();
+      } catch (err) {
+        console.log(err);
+      }
+    }
+  });
+});
 
 exports.moduleInterface = function(req, res) {
 };
