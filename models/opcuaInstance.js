@@ -410,10 +410,11 @@ exports.server = function(endPointUrl) {
        *          (e.g. MI5.Module1101.Output.SkillOutput.SkillOutput0.Busy)
        */
       convertNodeIdToEvent : function(nodeId) {
-        var output = nodeId.slice(-8)
-        output = _.uniqueId(output);
-
-        return output;
+        // var output = nodeId.slice(-8)
+        // output = _.uniqueId(output);
+        //
+        // return output;
+        return nodeId; // test for session
       },
 
       /**
@@ -424,7 +425,8 @@ exports.server = function(endPointUrl) {
        * @returns idFKDJ48238fhFak1
        */
       convertNodeIdToContainerId : function(nodeId) {
-        return _.uniqueId('id' + md5(nodeId).slice(3, 10));
+        // return _.uniqueId('id' + md5(nodeId).slice(3, 10));
+        return 'id' + md5(nodeId);
       },
 
       /**

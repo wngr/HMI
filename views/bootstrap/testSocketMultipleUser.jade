@@ -1,0 +1,20 @@
+extends layout
+include mixins/gui-elements
+
+block content
+    div.container-fluid
+        div.row
+            div.col-xs-12
+                h2#systemTime
+                script socket.on('timeUpdate', function(msg){ $('#systemTime').html(msg); });
+                p#greeting ...
+                if content
+                    p= content
+                if list
+                    ul
+                        for entry in list
+                            li= entry
+                
+            
+    block socketscripts
+        script socket.on('greeting', function(msg){ $('#greeting').html(msg); });

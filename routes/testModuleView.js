@@ -4,17 +4,17 @@
  * Strange: Sometimes it works, sometimes not.
  * Somehow it has to do with IO connection and socket I think.
  */
-var globalI = 0;
-var globalSocket;
+var globalI = 1;
+
 console.log('testModuleView.js / root');
 
 // console.log(_.uniqueId(myNodeId));
 exports.index = function(req, res) {
-  var opcuaInstance = require('./../models/opcuaInstance').server('opc.tcp://localhost:4334/');
-  jadeData = {};
+  var session = 1;
 
+  var globalSocket = new Array;
   IO.on('connection', function(socket) {
-    globalSocket = socket;
+    globalSocket[session] = socket;
 
     // SystemTime
     setInterval(function() {
@@ -30,9 +30,13 @@ exports.index = function(req, res) {
     // Check how many sockets
     socket.on('mytest', function(bla) {
       console.log('mytest:', bla, globalI);
+
     });
 
   });
+
+  var opcuaInstance = require('./../models/opcuaInstance').server('opc.tcp://localhost:4334/');
+  jadeData = {};
 
   /*
    * ReadArray
@@ -63,7 +67,7 @@ exports.index = function(req, res) {
         var myNode = opcuaInstance.monitor('ns=4;s=' + entry.nodeId);
         myNode.on("changed", function(data) {
           console.log('changed:', entry.nodeId, data);
-          globalSocket.emit(entry.updateEvent, data); // not tested yet
+          globalSocket[globalI].emit(entry.updateEvent, data); // not tested yet
         });
 
         console.log('added monitord item on:', entry.nodeId);
@@ -88,6 +92,7 @@ exports.index = function(req, res) {
   });
 
   opcuaInstance.initialize(); // when all callbacks are registered - initialize
+  session++
 };
 
 exports.moduleInterface = function(req, res) {

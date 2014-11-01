@@ -70,7 +70,11 @@ mixin moduleView(moduleData)
             div.row.well
                 p There are no skills for this Module.
         
-        
+
+mixin scriptUpdateEventOnSocket(updateEvent, containerId)
+   script socket.on('#{updateEvent}', function(data){ console.log(data); $('##{containerId}').text(data.value.value); });           
+
+
         
 mixin skillView(skill) 
     
@@ -78,7 +82,8 @@ mixin skillView(skill)
         div.col-xs-8
             h4 
              b Skill: 
-             i= skill.Dummy.value
+             i(id=skill.Name.containerId)= skill.Name.value
+             +scriptUpdateEventOnSocket(skill.Name.updateEvent, skill.Name.containerId)           
         div.col-xs-4
             h4 
              b ID: 

@@ -1,7 +1,14 @@
 extends layout
 include mixins/gui-elements
 
-div.container-fluid
-    div.row
-        div.col-xs-12
-            p= content
+block content
+    div.container-fluid
+        div.row
+            div.col-xs-12
+                p= content
+                if list
+                    ul
+                        for entry in list
+                            li= entry
+
+                    
