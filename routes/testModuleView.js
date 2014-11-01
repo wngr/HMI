@@ -78,6 +78,7 @@ IO.on('connection', function(socket) {
         tryopcuaInstance.disconnect();
       } catch (err) {
         console.log(err);
+        d
       }
     }
   });
