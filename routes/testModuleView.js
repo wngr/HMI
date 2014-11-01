@@ -16,38 +16,35 @@ exports.index = function(req, res) {
    * ReadArray
    */
   opcuaInstance.on('readArrayFinished', function(data) {
-    function first(callback) {
-      console.log('first');
-      /*
-       * Format the nodeValueArray to SkillContainer
-       */
-      var moduleData = {
-        moduleData : {
-          name : 'Halloho',
-          skills : [ opcuaInstance.formatNodeValueArrayToSkillContainerArray(data) ]
-        }
-      };
-      jadeData = _.extend(jadeData, moduleData);
+    /*
+     * Format the nodeValueArray to SkillContainer
+     */
+    var moduleData = {
+      moduleData : {
+        name : 'Halloho',
+        skills : [ opcuaInstance.formatNodeValueArrayToSkillContainerArray(data) ]
+      }
+    };
+    jadeData = _.extend(jadeData, moduleData);
 
-      /*
-       * When the array is read, subscribe to all the nodes, that belong to that skill!
-       */
-      opcuaInstance.subscribe();
-      data.forEach(function(entry) {
-        var myNode = opcuaInstance.monitor('ns=4;s=' + entry.nodeId);
-        myNode.on("changed", function(data) {
-          console.log('changed:', entry.nodeId, data);
-          IO.emit(entry.updateEvent, data);
-        });
-
-        console.log('added monitord item on:', entry.nodeId);
+    /*
+     * When the array is read, subscribe to all the nodes, that belong to that skill and register
+     * event emitters.
+     */
+    opcuaInstance.subscribe();
+    data.forEach(function(entry) {
+      var myNode = opcuaInstance.monitor('ns=4;s=' + entry.nodeId);
+      myNode.on('changed', function(data) {
+        console.log('changed:', entry.nodeId, data);
+        IO.emit(entry.updateEvent, data);
       });
 
-      console.log('render');
-      console.log(JSON.stringify(jadeData, null, 1));
-      res.render('bootstrap/testModuleView', jadeData);
-    }
-    first();
+      console.log('added monitord item on:', entry.nodeId);
+    });
+
+    console.log('render');
+    console.log(JSON.stringify(jadeData, null, 1));
+    res.render('bootstrap/testModuleView', jadeData);
   });
 
   opcuaInstance.on('ready', function() {
@@ -75,7 +72,7 @@ IO.on('connection', function(socket) {
 
     if (connectedClients === 0) {
       try {
-        tryopcuaInstance.disconnect();
+        opcuaInstance.disconnect();
       } catch (err) {
         console.log(err);
       }
