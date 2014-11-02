@@ -61,7 +61,7 @@ mixin read(name, readId, eventName)
                     
 mixin moduleView(moduleData)
    div.col-xs-12
-     h3 Module: #{moduleData.name}
+     h3 Module: #{moduleData.module.Name}
      div.container-fluid
         for skill in moduleData.skills
             div.row.well
@@ -77,7 +77,6 @@ mixin scriptUpdateEventOnSocket(updateEvent, containerId)
 
         
 mixin skillView(skill) 
-    
       div.row
         div.col-xs-8
             h4 
