@@ -1,0 +1,19 @@
+extends layout
+include mixins/gui-elements
+
+block content
+    div.container
+     div.col-xs-12.well
+        h1 Test for Module View
+        ul
+            li Systemtime
+                div#serverTime ...
+                    
+     div.col-xs-12.well
+       if moduleData
+        +moduleView(moduleData)
+       else
+        p no module to display
+    
+    block socketscripts
+        script socket.on('serverTime', function(msg){ $('#serverTime').html(msg); });

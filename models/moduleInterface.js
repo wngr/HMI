@@ -181,15 +181,19 @@ function getModule(callback) {
 }
 exports.getModule = getModule;
 
+/**
+ * Complete Module List
+ * 
+ * @param callback
+ */
 function getCompleteModuleData(callback) {
   var moduleData = new Object();
-  moduleData.skills = new Array();
 
   getModule(function(output) {
     moduleData.module = output;
 
     getSkillsWithParameters(function(output) {
-      moduleData.skills.push(output);
+      moduleData.skills = output;
 
       callback(moduleData); // final callback
     });

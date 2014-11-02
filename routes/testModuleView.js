@@ -4,8 +4,27 @@
  * Strange: Sometimes it works, sometimes not.
  * Somehow it has to do with IO connection and socket I think.
  */
-
 console.log('testModuleView.js / root');
+// SystemTime
+setInterval(function() {
+  IO.emit('serverTime', Date().toString());
+}, 1000);
+
+exports.completeModule = function(req, res) {
+  jadeData = {};
+
+  var moduleInterface = require('./../models/moduleInterface');
+  moduleInterface.setEndpointUrl('opc.tcp://localhost:4334/');
+  moduleInterface.setModule('Module1101');
+
+  moduleInterface.getCompleteModuleData(function(pModuleData) {
+    jadeData.moduleData = pModuleData
+
+    console.log(pModuleData);
+
+    res.render('bootstrap/testModuleView', jadeData);
+  });
+}
 
 // console.log(_.uniqueId(myNodeId));
 exports.index = function(req, res) {
@@ -55,14 +74,10 @@ exports.index = function(req, res) {
   opcuaInstance.initialize(); // when all callbare registered - initializeacks
 };
 
-// SystemTime
-setInterval(function() {
-  IO.emit('serverTime', Date().toString());
-}, 1000);
-
 var connectedClients = 0;
 IO.on('connection', function(socket) {
   connectedClients++;
+  console.log('Connected Clients: ', connectedClients);
 
   // Disconnect
   socket.on('disconnect', function() {

@@ -36,7 +36,7 @@ exports.router = function(app) {
   // app.get('/testGuiElements', testGuiElements.index);
   app.get('/testBootstrap', testBootstrap.index);
   app.get('/testJonas', testJonas.index);
-  app.get('/testModuleView', testModuleView.index);
+  app.get('/testModuleView', testModuleView.completeModule);
   app.get('/testOpcuaInstance', testOpcuaInstance);
   // app.get('/orderRecipe' )
   return app;

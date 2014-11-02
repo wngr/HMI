@@ -266,7 +266,7 @@ exports.server = function(endPointUrl) {
        */
       readArrayCB : function(nodeIdArrayToRead, callback) {
         var max_age = 0, nodes = opcua.addNamespaceAndAttributeIdToNodeId(nodeIdArrayToRead);
-        console.log('OK - ReadArray Called');
+        // console.log('OK - ReadArray Called');
         opcua.session.read(nodes, max_age, callback);
       },
 
