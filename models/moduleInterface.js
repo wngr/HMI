@@ -3,31 +3,53 @@
  * 
  * Facilitate the opcua access
  */
-
-var nodeopcua = require("node-opcua"), util = require("util"), vents = require("events");
+var opcuaHelper = require('./opcuaHelper');
 
 var client, session, subscription;
 var moduleData, skillData, parameterData;
+var skills = new Array;
 
-exports.getSession = function getSession(endpointUrl) {
+exports.getSkills = function getSkills(endpointUrl) {
+  var opcuaInstance = require('./../models/opcuaInstance').server('opc.tcp://localhost:4334/');
+  var baseNode = 'MI5.Module1101.Output.SkillOutput';
 
-  client = new nodeopcua.OPCUAClient();
-  client.connect(endpointUrl, function(err) {
-    if (!err) {
-      client.createSession(function(err, newSession) {
-        if (!err) {
-          session = newSession;
-          return newSession;
-        } else {
-          console.log('could not create session', err);
-          return err;
-        }
-      });
-    } else {
-      console.log('could not connect')
+  opcuaInstance.on('ready', function() {
+    for (var i = 0; i <= 14; i++) {
+      if (i == 14) {
+        opcuaInstance.readArrayCB(opcuaInstance.nodeArraySkillOutputSingle(baseNode, i), function(
+            err, nodes, results) {
+          pushSkillResult(err, nodes, results);
+          opcuaInstance.emit('completeSkills');
+        });
+      }
+      opcuaInstance.readArrayCB(opcuaInstance.nodeArraySkillOutputSingle(baseNode, i),
+          pushSkillResult);
     }
   });
 
+  opcuaInstance.on('completeSkills', function() {
+    console.log(skills);
+  });
+
+  opcuaInstance.initialize();
+}
+
+function pushSkillResult(err, nodes, results) {
+  skills.push(formatSkillResults(err, nodes, results));
+}
+
+function formatSkillResults(err, nodes, results) {
+  console.log('OK - cbSkillOutput ')
+  if (err) {
+    console.log("ERR - read: " + err);
+    console.log("statusCode: " + statusCode);
+  } else {
+    var returnData = opcuaHelper.concatNodesAndResults(nodes, results);
+    returnData = opcuaHelper.addEventsAndIdsToResultsArray(returnData);
+    returnData = opcuaHelper.addNameToResultsArray(returnData);
+    returnData = opcuaHelper.formatNodeValueArrayToSkillContainerArray(returnData);
+    return returnData;
+  }
 }
 
 exports.readAndSubscribe = function(moduleName, endpointUrl) {

@@ -14,11 +14,7 @@ GLOBAL.IO = require('socket.io').listen(server);
 GLOBAL._ = require('underscore');
 GLOBAL.md5 = require('MD5');
 
-var opcua = require('./../models/moduleInterface');
+var mI = require('./../models/moduleInterface');
 
-var session = undefined;
-do {
-  session = opcua.getSession('opc.tcp://localhost:4334');
-  console.log('hi');
-} while (session === undefined);
-console.log(session);
+var skills = mI.getSkills();
+console.log(skills);
