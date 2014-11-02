@@ -16,15 +16,13 @@ GLOBAL.md5 = require('MD5');
 
 var moduleInterface = require('./../models/moduleInterface');
 moduleInterface.setEndpointUrl('opc.tcp://localhost:4334/');
-
 moduleInterface.setModule('Module1101');
-var skills = moduleInterface.getSkills(function(skills) {
-  console.log(skills);
+
+moduleInterface.getCompleteModuleData(function(output) {
+  console.log(output);
 });
-moduleInterface.setSkill(1);
-var parameters = moduleInterface.getParameters(function(parameters) {
-  console.log(parameters);
-});
-var module = moduleInterface.getModule(function(module) {
-  console.log(module);
-})
+//
+// moduleInterface.setSkill(1);
+// var parameters = moduleInterface.getParameters(function(parameters) {
+// console.log(parameters);
+// });

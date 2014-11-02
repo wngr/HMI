@@ -57,14 +57,14 @@ exports.server = function(endPointUrl) {
       },
 
       connect : function() {
-        console.log('connect()');
+        console.log('OK - connect()');
         // isNested(this);
         // console.log( this );
         this.client.connect(endPointUrl, this.cbConnected);
       },
       cbConnected : function(err) {
         if (!err) {
-          console.log('cbConnected()');
+          console.log('OK - cbConnected()');
           // isNested(this);
           opcua.emit('connected');
           opcua.createSession(); // the cb is called in this.client.connect() and in this scope,
@@ -77,7 +77,7 @@ exports.server = function(endPointUrl) {
       },
 
       createSession : function() {
-        console.log('createSession()');
+        console.log('OK - createSession()');
         this.client.createSession(function(err, session) {
           if (!err) {
             opcua.session = session;
