@@ -18,12 +18,37 @@ var moduleInterface = require('./../models/moduleInterface');
 moduleInterface.setEndpointUrl('opc.tcp://localhost:4334/');
 moduleInterface.setModule('Module1101');
 
-// get Complete Module List
-// moduleInterface.getCompleteModuleData(function(output) {
-// console.log(output);
-// });
+// Test on how to extract the submitEvents from every single Entry (module, skill, parameter)
+moduleInterface.getCompleteModuleData(function(output) {
+  var subscribeThis = new Array();
 
-moduleInterface.setSkill(1);
-var parameters = moduleInterface.getParameters(function(parameters) {
-  console.log(parameters);
+  flattened = _.flatten(output);
+  flattened.forEach(function(entry) {
+    console.log('xxxSkillOutputxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx');
+    console.log('xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx');
+    // We get the module, and every skill
+    // console.log(entry);
+    _.each(entry, function(element) {
+      if (element.submitEvent) {
+        // console.log(element.submitEvent);
+        subscribeThis.push(element.submitEvent);
+      } else {
+        // ParameterOutput
+        element.forEach(function(parameter) {
+          console.log('xxxParameterOutputxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx');
+          _.each(parameter, function(parameterEntry) {
+            // console.log(parameterEntry.submitEvent);
+            subscribeThis.push(parameterEntry.submitEvent);
+          });
+          // console.log(parameter);
+        });
+      }
+    });
+  });
+  console.log(subscribeThis);
 });
+
+// moduleInterface.setSkill(1);
+// var parameters = moduleInterface.getParameters(function(parameters) {
+// console.log(parameters);
+// });
