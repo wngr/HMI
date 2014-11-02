@@ -114,9 +114,9 @@ mixin skillView(skill)
             div.panel.panel-default
                 div.panel-heading
                     h4.panel-title Parameterlist
-                        a.text-right(data-toggle="collapse", data-parent="#accordion", href="#parameterListOne") 
+                        a.text-right(data-toggle="collapse", data-parent="#accordion", href="#c"+skill.ID.containerId) 
                             span.glyphicon.glyphicon-collapse-down
-                div.panel-collapse.collapse.out#parameterListOne
+                div.panel-collapse.collapse.out(id="c"+skill.ID.containerId)
                     div.panel-body
                         table.table
                          thead
@@ -126,10 +126,11 @@ mixin skillView(skill)
                                 th.col-xs-8 Values
                          tbody
                           if skill.parameters
-                            for parameter in skill.parameters                        
+                            for parameter in skill.parameters    
+                                - console.log(parameter)       
                                  tr
-                                    td parameterID
-                                    td parametername
+                                    td= parameter.ID.value
+                                    td= parameter.Name.value
                                     td 
                                         +readWriteKeyup( '', '', '', '')
       div.row

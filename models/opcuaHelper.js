@@ -134,6 +134,11 @@ function convertNodeIdToContainerId(nodeId) {
 }
 exports.convertNodeIdToContainerId = convertNodeIdToContainerId;
 
+/**
+ * 
+ * @param data
+ * @returns {Object}
+ */
 function formatNodeValueArrayToSkillContainerArray(data) {
   var temp = new Object; // needed for variable object-property
   // Add new attributes to the object of every array entry
@@ -143,3 +148,15 @@ function formatNodeValueArrayToSkillContainerArray(data) {
   return temp;
 }
 exports.formatNodeValueArrayToSkillContainerArray = formatNodeValueArrayToSkillContainerArray;
+
+/**
+ * Extract SkillNumber from NodeID with RegEXP
+ * 
+ * @param nodeId
+ * @returns
+ */
+function getSkillNumber(nodeId) {
+  var exp = /(?:SkillOutput)([0-9]+)\./
+  return nodeId.match(exp)[1];
+}
+exports.getSkillNumber = getSkillNumber;

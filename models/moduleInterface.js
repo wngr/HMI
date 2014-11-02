@@ -65,21 +65,20 @@ function getSkillsWithParameters(callback) {
   var opcuaInstance = require('./../models/opcuaInstance').server(pEndpointUrl);
   var baseNode = 'MI5.' + pModule + '.Output.SkillOutput';
   var skills = new Array;
-  var skillCounter = 0;
 
   opcuaInstance.on('ready', function() {
-    for (skillCounter; skillCounter <= pLastSkill; skillCounter++) {
-      if (skillCounter == pLastSkill) {
-        opcuaInstance.readArrayCB(opcuaInstance.nodeArraySkillOutputSingle(baseNode, skillCounter),
-            function(err, nodes, results) {
-              pushSkillResult(err, nodes, results, function() {
+    for (var i = 0; i <= pLastSkill; i++) {
+      if (i == pLastSkill) {
+        opcuaInstance.readArrayCB(opcuaInstance.nodeArraySkillOutputSingle(baseNode, i), function(
+            err, nodes, results) {
+          pushSkillResult(err, nodes, results, function() {
 
-                opcuaInstance.disconnect();
-                callback(skills); // final callback
-              });
-            });
+            opcuaInstance.disconnect();
+            callback(skills); // final callback
+          });
+        });
       } else {
-        opcuaInstance.readArrayCB(opcuaInstance.nodeArraySkillOutputSingle(baseNode, skillCounter),
+        opcuaInstance.readArrayCB(opcuaInstance.nodeArraySkillOutputSingle(baseNode, i),
             pushSkillResult);
       }
     }
@@ -87,8 +86,10 @@ function getSkillsWithParameters(callback) {
 
   function pushSkillResult(err, nodes, results, callback) {
     var resultObject = opcuaHelper.formatResultToObject(err, nodes, results);
+    var skillNodeId = nodes[0].nodeId.value;
+    var skillNumber = opcuaHelper.getSkillNumber(skillNodeId);
 
-    addParameters(function(output) {
+    addParameters(skillNumber, function(output) {
       resultObject.parameters = output;
       skills.push(resultObject);
       if (typeof callback === 'function') {
@@ -97,9 +98,9 @@ function getSkillsWithParameters(callback) {
     });
   }
 
-  function addParameters(callback) {
+  function addParameters(skillNumber, callback) {
     var parameters = new Array;
-    var parameterBaseNode = baseNode + '.SkillOutput.' + skillCounter + 'ParameterOutput';
+    var parameterBaseNode = baseNode + '.SkillOutput' + skillNumber + '.ParameterOutput';
 
     for (var i = 0; i <= pLastParameter; i++) {
       if (i == pLastParameter) {

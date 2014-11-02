@@ -20,8 +20,6 @@ exports.completeModule = function(req, res) {
   moduleInterface.getCompleteModuleData(function(pModuleData) {
     jadeData.moduleData = pModuleData
 
-    console.log(pModuleData);
-
     res.render('bootstrap/testModuleView', jadeData);
   });
 }
