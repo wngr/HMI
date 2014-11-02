@@ -18,11 +18,12 @@ var moduleInterface = require('./../models/moduleInterface');
 moduleInterface.setEndpointUrl('opc.tcp://localhost:4334/');
 moduleInterface.setModule('Module1101');
 
-moduleInterface.getCompleteModuleData(function(output) {
-  console.log(output);
-});
-//
-// moduleInterface.setSkill(1);
-// var parameters = moduleInterface.getParameters(function(parameters) {
-// console.log(parameters);
+// get Complete Module List
+// moduleInterface.getCompleteModuleData(function(output) {
+// console.log(output);
 // });
+
+moduleInterface.setSkill(1);
+var parameters = moduleInterface.getParameters(function(parameters) {
+  console.log(parameters);
+});
