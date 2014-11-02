@@ -235,6 +235,7 @@ exports.server = function(endPointUrl) {
        * 
        * @TODO: check what happens if there is no node with nodeId! (undefined object reference
        *        error!)
+       * @TODO: eventFinishedName not fully implemented = no effect at all.
        * @param nodeIdArrayToRead
        *          array, e.g. [{nodeId: 'Busy'}, {nodeId: 'Ready'}]
        */
@@ -258,6 +259,15 @@ exports.server = function(endPointUrl) {
 
           opcua.emit('readArrayFinished', emitData);
         }
+      },
+
+      /**
+       * Read an array with custom callback function
+       */
+      readArrayCB : function(nodeIdArrayToRead, callback) {
+        var max_age = 0, nodes = opcua.addNamespaceAndAttributeIdToNodeId(nodeIdArrayToRead);
+        console.log('OK - ReadArray Called');
+        opcua.session.read(nodes, max_age, callback);
       },
 
       /**

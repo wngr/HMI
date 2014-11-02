@@ -4,18 +4,47 @@
  * Facilitate the opcua access
  */
 
-exports.server = function(endpointUrl) {
-  var opcuaInstance = require('./../models/opcuaInstance').server(endpointUrl);
+var nodeopcua = require("node-opcua"), util = require("util"), vents = require("events");
 
-  opcuaInstance.on('ready', function() {
-    return opcuaInstance;
+var client, session, subscription;
+var moduleData, skillData, parameterData;
+
+exports.getSession = function getSession(endpointUrl) {
+
+  client = new nodeopcua.OPCUAClient();
+  client.connect(endpointUrl, function(err) {
+    if (!err) {
+      client.createSession(function(err, newSession) {
+        if (!err) {
+          session = newSession;
+          return newSession;
+        } else {
+          console.log('could not create session', err);
+          return err;
+        }
+      });
+    } else {
+      console.log('could not connect')
+    }
   });
 
-  opcuaInstance.initialize(); // when all callbare registered - initializeacks
-};
+}
 
-exports.module = function(moduleName) {
+exports.readAndSubscribe = function(moduleName, endpointUrl) {
+  var opcuaInstance = require('./../models/opcuaInstance').server(endpointUrl);
   var jadeData = {};
+
+  function readModule(callback) {
+
+    opcuaInstance.on('ready', function() {
+      opcuaInstance.readArray(opcuaInstance.nodeArraySkillOutputSingle(
+          'MI5.Module1101.Output.SkillOutput', 0));
+    });
+
+    callback(null);
+  }
+
+  async.series([ readModule ]);
 
   /*
    * ReadArray
