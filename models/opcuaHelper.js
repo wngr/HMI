@@ -9,7 +9,6 @@
  * @returns
  */
 function formatResultToObject(err, nodes, results) {
-  console.log('OK - cbSkillOutput ');
   if (err) {
     console.log("ERR - read: " + err);
     console.log("statusCode: " + statusCode);
