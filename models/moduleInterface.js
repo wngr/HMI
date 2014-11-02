@@ -5,53 +5,116 @@
  */
 var opcuaHelper = require('./opcuaHelper');
 
-var client, session, subscription;
-var moduleData, skillData, parameterData;
-var skills = new Array;
+var pEndpointUrl, pModule, pSkill; // p for property
 
-exports.getSkills = function getSkills(endpointUrl) {
-  var opcuaInstance = require('./../models/opcuaInstance').server('opc.tcp://localhost:4334/');
-  var baseNode = 'MI5.Module1101.Output.SkillOutput';
+/***************************************************************************************************
+ * Setup Module Interface for Job
+ */
+function setEndpointUrl(endpointUrl) {
+  pEndpointUrl = endpointUrl;
+}
+exports.setEndpointUrl = setEndpointUrl;
+
+function setModule(module) {
+  pModule = module;
+}
+exports.setModule = setModule;
+
+function setSkill(skill) {
+  pSkill = skill;
+}
+exports.setSkill = setSkill;
+
+/***************************************************************************************************
+ * Skills
+ */
+function getSkills(callback) {
+  var lastSkill = 15;
+  var opcuaInstance = require('./../models/opcuaInstance').server(pEndpointUrl);
+  var baseNode = 'MI5.' + pModule + '.Output.SkillOutput';
+  var skills = new Array;
 
   opcuaInstance.on('ready', function() {
-    for (var i = 0; i <= 14; i++) {
-      if (i == 14) {
+    for (var i = 0; i <= lastSkill; i++) {
+      if (i == lastSkill) {
         opcuaInstance.readArrayCB(opcuaInstance.nodeArraySkillOutputSingle(baseNode, i), function(
             err, nodes, results) {
           pushSkillResult(err, nodes, results);
-          opcuaInstance.emit('completeSkills');
+          callback(skills);
         });
+      } else {
+        opcuaInstance.readArrayCB(opcuaInstance.nodeArraySkillOutputSingle(baseNode, i),
+            pushSkillResult);
       }
-      opcuaInstance.readArrayCB(opcuaInstance.nodeArraySkillOutputSingle(baseNode, i),
-          pushSkillResult);
     }
   });
 
-  opcuaInstance.on('completeSkills', function() {
-    console.log(skills);
+  function pushSkillResult(err, nodes, results) {
+    skills.push(opcuaHelper.formatResultToObject(err, nodes, results));
+  }
+
+  opcuaInstance.initialize();
+}
+exports.getSkills = getSkills;
+
+/***************************************************************************************************
+ * Parameters
+ */
+function getParameters(callback) {
+  if (!pSkill) {
+    console.log('ERR - No Skill is set!');
+  }
+  var lastParameter = 5;
+  var opcuaInstance = require('./../models/opcuaInstance').server(pEndpointUrl);
+  var baseNode = 'MI5.' + pModule + '.Output.SkillOutput.SkillOutput' + pSkill + '.ParameterOutput';
+  var parameters = new Array;
+
+  opcuaInstance.on('ready', function() {
+    for (var i = 0; i <= lastParameter; i++) {
+      if (i == lastParameter) {
+        opcuaInstance.readArrayCB(opcuaInstance.nodeArrayParameterOutputSingle(baseNode, i),
+            function(err, nodes, results) {
+              pushParameterResult(err, nodes, results);
+              callback(parameters);
+            });
+      } else {
+        opcuaInstance.readArrayCB(opcuaInstance.nodeArrayParameterOutputSingle(baseNode, i),
+            pushParameterResult);
+      }
+    }
+  });
+
+  function pushParameterResult(err, nodes, results) {
+    parameters.push(opcuaHelper.formatResultToObject(err, nodes, results));
+  }
+
+  opcuaInstance.initialize();
+}
+exports.getParameters = getParameters;
+
+/***************************************************************************************************
+ * Module
+ */
+function getModule(callback) {
+  var opcuaInstance = require('./../models/opcuaInstance').server(pEndpointUrl);
+  var baseNode = 'MI5.' + pModule + '.Output';
+  var module = new Array;
+
+  opcuaInstance.on('ready', function() {
+    opcuaInstance.readArrayCB(opcuaInstance.nodeArrayModuleOutput(baseNode), function(err, nodes,
+        results) {
+      module.push(opcuaHelper.formatResultToObject(err, nodes, results));
+      callback(module);
+    });
   });
 
   opcuaInstance.initialize();
 }
+exports.getModule = getModule;
 
-function pushSkillResult(err, nodes, results) {
-  skills.push(formatSkillResults(err, nodes, results));
-}
-
-function formatSkillResults(err, nodes, results) {
-  console.log('OK - cbSkillOutput ')
-  if (err) {
-    console.log("ERR - read: " + err);
-    console.log("statusCode: " + statusCode);
-  } else {
-    var returnData = opcuaHelper.concatNodesAndResults(nodes, results);
-    returnData = opcuaHelper.addEventsAndIdsToResultsArray(returnData);
-    returnData = opcuaHelper.addNameToResultsArray(returnData);
-    returnData = opcuaHelper.formatNodeValueArrayToSkillContainerArray(returnData);
-    return returnData;
-  }
-}
-
+/***************************************************************************************************
+ * (deprecated?) for References
+ */
 exports.readAndSubscribe = function(moduleName, endpointUrl) {
   var opcuaInstance = require('./../models/opcuaInstance').server(endpointUrl);
   var jadeData = {};

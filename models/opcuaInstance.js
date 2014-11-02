@@ -271,8 +271,7 @@ exports.server = function(endPointUrl) {
       },
 
       /**
-       * Read whole Parameterset Read ParameterOutput.ParameterOutput0-5 (6 paramaters in total)
-       * Input should be base path
+       * Read single ParameterOutput: Read ParameterOutput.ParameterOutputX
        * 
        * @param nodeIdToParameterSet
        *          e.g. 'MI5.Module1101.Output.SkillOutput.SkillOutput0.ParameterOutput'
@@ -294,8 +293,7 @@ exports.server = function(endPointUrl) {
       },
 
       /**
-       * Read whole Parameterset Read ParameterOutput.ParameterOutput0-5 (6 paramaters in total)
-       * Input should be base path
+       * Read single SkillOutput: Read SkillOutput.SkillOutputX
        * 
        * @param nodeIdToParameterSet
        *          e.g. 'MI5.Module1101.Output.SkillOutput'
@@ -313,6 +311,28 @@ exports.server = function(endPointUrl) {
         });
 
         return skillArray;
+      },
+
+      /**
+       * Read ModuleOutput: MI5.ModuleXXXX.Output
+       * 
+       * @param nodeIdToParameterSet
+       *          e.g. 'MI5.Module1101.Output.SkillOutput'
+       * @param numberOfParameter
+       *          e.g. 0-15
+       */
+      nodeArrayModuleOutput : function(nodeIdToModuleOutput) {
+        // var endSkill = 15;
+        var moduleArray = [ 'Dummy', 'Connected', 'ConnectionTestOutput', 'CurrentTaskDescription',
+            'Error', 'ErrorDescription', 'ErrorID', 'ID', 'Idle', 'Name', 'PositionSensor' ];
+        var path = nodeIdToModuleOutput + '.';
+
+        // Add the path to the node
+        moduleArray = _.map(moduleArray, function(node) {
+          return path + node;
+        });
+
+        return moduleArray;
       },
 
       /**

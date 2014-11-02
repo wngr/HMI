@@ -1,4 +1,29 @@
 /**
+ * Format Result from Node-OPCUA Stylish, to more object oriented style
+ * 
+ * Working for skills and parameters
+ * 
+ * @param err
+ * @param nodes
+ * @param results
+ * @returns
+ */
+function formatResultToObject(err, nodes, results) {
+  console.log('OK - cbSkillOutput ');
+  if (err) {
+    console.log("ERR - read: " + err);
+    console.log("statusCode: " + statusCode);
+  } else {
+    var returnData = concatNodesAndResults(nodes, results);
+    returnData = addEventsAndIdsToResultsArray(returnData);
+    returnData = addNameToResultsArray(returnData);
+    returnData = formatNodeValueArrayToSkillContainerArray(returnData);
+    return returnData;
+  }
+}
+exports.formatResultToObject = formatResultToObject;
+
+/**
  * Combines nodes and results to one data array with the structure:
  * [{"nodeId":"MI5.Module1101.Output.SkillOutput.SkillOutput0.Busy", "value":0}, {...}, {...}]
  * 

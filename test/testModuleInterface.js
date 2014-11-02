@@ -14,7 +14,17 @@ GLOBAL.IO = require('socket.io').listen(server);
 GLOBAL._ = require('underscore');
 GLOBAL.md5 = require('MD5');
 
-var mI = require('./../models/moduleInterface');
+var moduleInterface = require('./../models/moduleInterface');
+moduleInterface.setEndpointUrl('opc.tcp://localhost:4334/');
 
-var skills = mI.getSkills();
-console.log(skills);
+moduleInterface.setModule('Module1101');
+var skills = moduleInterface.getSkills(function(skills) {
+  console.log(skills);
+});
+moduleInterface.setSkill(1);
+var parameters = moduleInterface.getParameters(function(parameters) {
+  console.log(parameters);
+});
+var module = moduleInterface.getModule(function(module) {
+  console.log(module);
+})
