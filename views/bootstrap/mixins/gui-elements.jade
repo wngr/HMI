@@ -74,7 +74,12 @@ mixin moduleView(moduleData)
 mixin scriptUpdateEventOnSocket(updateEvent, containerId)
    script socket.on('#{updateEvent}', function(data){ console.log(data); $('##{containerId}').text(data.value.value); });           
 
-
+mixin executeButton(skill)
+    if skill.Ready.value == 1
+        input(id=skill.Ready.containerId, value=skill.Ready.value)
+        button.btn.btn-primary.btn-lg(type="button") Execute
+    else 
+        button.btn.btn-default.btn-lg(type="button") Execute
         
 mixin skillView(skill) 
       div.row
@@ -127,16 +132,18 @@ mixin skillView(skill)
                          tbody
                           if skill.parameters
                             for parameter in skill.parameters    
-                                - console.log(parameter)       
                                  tr
                                     td= parameter.ID.value
                                     td= parameter.Name.value
                                     td 
+                                        span= parameter.MinValue.value
+                                        span= parameter.Default.value
+                                        span= parameter.MaxValue.value
                                         +readWriteKeyup( '', '', '', '')
       div.row
         div.col-xs-12
-            button.btn.btn-primary.btn-lg(type="button") Execute
-        
+            //button.btn.btn-primary.btn-lg(type="button") Execute
+            +executeButton(skill)
         
         
         
