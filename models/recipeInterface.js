@@ -7,7 +7,7 @@
 var opcuaHelper = require('./opcuaHelper');
 var opcuaDataStructure = require('./opcuaDataStructure');
 
-var pEndpointUrl; // p for property
+var pRecipeUrl, pQueueUrl; // p for property
 var pLastRecipe = 15;
 var pLastParameter = 5;
 var pRecipeBaseNode = 'MI5.Recipe';
@@ -15,46 +15,27 @@ var pRecipeBaseNode = 'MI5.Recipe';
 /***************************************************************************************************
  * Setup Recipe Interface for Job
  */
-function setEndpointUrl(endpointUrl) {
-  pEndpointUrl = endpointUrl;
+function setRecipeUrl(endpointUrl) {
+  pRecipeUrl = endpointUrl;
 }
-exports.setEndpointUrl = setEndpointUrl;
+exports.setRecipeUrl = setRecipeUrl;
 
+function setQueueUrl(endpointUrl) {
+  pQueueUrl = endpointUrl;
+}
+exports.setQueueUrl = setQueueUrl;
 /**
  * 
  * @returns
  */
 function getAllRecipes(callback) {
-  var opcuaInstance = require('./../models/opcuaInstance').server(pEndpointUrl);
-  var baseNode = pRecipeBaseNode;
-  var recipes = new Array;
+  var recipeIdArray = new Array();
 
-  opcuaInstance.on('ready', function() {
-    for (var i = 0; i <= pLastRecipe; i++) {
-      var recipeNode = baseNode + '.Recipe' + i;
-      if (i == pLastRecipe) {
-        opcuaInstance.readArrayCB(opcuaDataStructure.recipe(recipeNode),
-            function(err, nodes, results) {
-              pushResult(err, nodes, results);
+  for (var i = 0; i <= pLastRecipe; i++) {
+    recipeIdArray.push(i);
+  }
 
-              opcuaInstance.disconnect();
-              callback(recipes); // final callback
-            });
-      } else {
-        opcuaInstance.readArrayCB(opcuaDataStructure.recipe(recipeNode), pushResult);
-      }
-    }
-
-    function pushResult(err, nodes, results) {
-      var recipe = opcuaHelper.formatResultToObject(err, nodes, results);
-      // Check if Dummy or unknown node id
-      if (opcuaHelper.noDummy(recipe.Dummy.value)) {
-        recipes.push(recipe);
-      }
-    }
-  });
-
-  opcuaInstance.initialize();
+  getRecipes(recipeIdArray, callback);
 }
 exports.getAllRecipes = getAllRecipes;
 
@@ -65,7 +46,7 @@ exports.getAllRecipes = getAllRecipes;
  * @returns
  */
 function getRecipes(recipeIdArray, callback) {
-  var opcuaInstance = require('./../models/opcuaInstance').server(pEndpointUrl);
+  var opcuaInstance = require('./../models/opcuaInstance').server(pRecipeUrl);
   var baseNode = 'MI5.Recipe';
   var recipes = new Array;
 
@@ -139,20 +120,22 @@ exports.getRecipes = getRecipes;
  * @param userparameters
  * @returns
  */
-function order(recipeId, userparameters) {
-  // amount === undefined, amount = 1;
+function order(recipeId, userparameters, amount, callback) {
   var taskIds = new Array();
+  var opcuaQueue = require('./../models/opcuaInstance').server(pQueueUrl);
 
   var pending; // make queue opcua read
-  for (var i = 1; i <= amount; i++) {
-    if (pending === 0) {
-      // set order
+  for (var i = 1; i <= amount;) {
+    whenQueueReady(function() {
+      newTaskId = _.uniqueId();
+      console.log('taskid', newTaskId);
+      // write opcua
+
       taskIds.push = newTaskId;
-    } else {
-      // wait
-    }
+
+      i++; // for
+    });
   }
-  ;
 
   return taskIds;
 }
@@ -164,10 +147,17 @@ exports.order = order;
  * @returns
  */
 function whenQueueReady(callback) {
-  if (queue.pending == 0) {
-    callback();
-  } else {
-    // setTimeout
-    // read again
-  }
+  // var opcuaQueue = require('./../models/opcuaInstance').server(pQueueUrl);
+  // opcuaQueue.readArrayCB(['MI5.Queue.Queue0.Pending'], function(err, nodes, results){
+  // resultObject = opcuaHelper.formatResultToObject(err, nodes, results);
+  // if (queue.pending == 0) {
+  // callback();
+  // } else {
+  // // setTimeout
+  // // read again
+  // }
+  //    
+  // };
+  // opcuaQueue.initialize();
+  callback();
 }
