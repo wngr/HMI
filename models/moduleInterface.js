@@ -4,6 +4,7 @@
  * Facilitate the opcua access
  */
 var opcuaHelper = require('./opcuaHelper');
+var opcuaDataStructure = require('./opcuaDataStructure');
 
 var pEndpointUrl, pModule, pSkill; // p for property
 
@@ -39,15 +40,15 @@ function getSkills(callback) {
   opcuaInstance.on('ready', function() {
     for (var i = 0; i <= pLastSkill; i++) {
       if (i == pLastSkill) {
-        opcuaInstance.readArrayCB(opcuaInstance.nodeArraySkillOutputSingle(baseNode, i), function(
-            err, nodes, results) {
+        opcuaInstance.readArrayCB(opcuaDataStructure.SkillOutputSingle(baseNode, i), function(err,
+            nodes, results) {
           pushSkillResult(err, nodes, results);
 
           opcuaInstance.disconnect();
           callback(skills); // final callback
         });
       } else {
-        opcuaInstance.readArrayCB(opcuaInstance.nodeArraySkillOutputSingle(baseNode, i),
+        opcuaInstance.readArrayCB(opcuaDataStructure.SkillOutputSingle(baseNode, i),
             pushSkillResult);
       }
     }
@@ -69,8 +70,8 @@ function getSkillsWithParameters(callback) {
   opcuaInstance.on('ready', function() {
     for (var i = 0; i <= pLastSkill; i++) {
       if (i == pLastSkill) {
-        opcuaInstance.readArrayCB(opcuaInstance.nodeArraySkillOutputSingle(baseNode, i), function(
-            err, nodes, results) {
+        opcuaInstance.readArrayCB(opcuaDataStructure.SkillOutputSingle(baseNode, i), function(err,
+            nodes, results) {
           pushSkillResult(err, nodes, results, function() {
 
             opcuaInstance.disconnect();
@@ -78,7 +79,7 @@ function getSkillsWithParameters(callback) {
           });
         });
       } else {
-        opcuaInstance.readArrayCB(opcuaInstance.nodeArraySkillOutputSingle(baseNode, i),
+        opcuaInstance.readArrayCB(opcuaDataStructure.SkillOutputSingle(baseNode, i),
             pushSkillResult);
       }
     }
@@ -104,14 +105,14 @@ function getSkillsWithParameters(callback) {
 
     for (var i = 0; i <= pLastParameter; i++) {
       if (i == pLastParameter) {
-        opcuaInstance.readArrayCB(opcuaInstance
-            .nodeArrayParameterOutputSingle(parameterBaseNode, i), function(err, nodes, results) {
-          pushParameterResult(err, nodes, results);
-          callback(parameters);
-        });
+        opcuaInstance.readArrayCB(opcuaDataStructure.ParameterOutputSingle(parameterBaseNode, i),
+            function(err, nodes, results) {
+              pushParameterResult(err, nodes, results);
+              callback(parameters);
+            });
       } else {
-        opcuaInstance.readArrayCB(opcuaInstance
-            .nodeArrayParameterOutputSingle(parameterBaseNode, i), pushParameterResult);
+        opcuaInstance.readArrayCB(opcuaDataStructure.ParameterOutputSingle(parameterBaseNode, i),
+            pushParameterResult);
       }
     }
 
@@ -138,15 +139,15 @@ function getParameters(callback) {
   opcuaInstance.on('ready', function() {
     for (var i = 0; i <= pLastParameter; i++) {
       if (i == pLastParameter) {
-        opcuaInstance.readArrayCB(opcuaInstance.nodeArrayParameterOutputSingle(baseNode, i),
-            function(err, nodes, results) {
-              pushParameterResult(err, nodes, results);
+        opcuaInstance.readArrayCB(opcuaDataStructure.ParameterOutputSingle(baseNode, i), function(
+            err, nodes, results) {
+          pushParameterResult(err, nodes, results);
 
-              opcuaInstance.disconnect();
-              callback(parameters); // final callback
-            });
+          opcuaInstance.disconnect();
+          callback(parameters); // final callback
+        });
       } else {
-        opcuaInstance.readArrayCB(opcuaInstance.nodeArrayParameterOutputSingle(baseNode, i),
+        opcuaInstance.readArrayCB(opcuaDataStructure.ParameterOutputSingle(baseNode, i),
             pushParameterResult);
       }
     }
@@ -169,7 +170,7 @@ function getModule(callback) {
   var module = new Array;
 
   opcuaInstance.on('ready', function() {
-    opcuaInstance.readArrayCB(opcuaInstance.nodeArrayModuleOutput(baseNode), function(err, nodes,
+    opcuaInstance.readArrayCB(opcuaDataStructure.ModuleOutput(baseNode), function(err, nodes,
         results) {
       module.push(opcuaHelper.formatResultToObject(err, nodes, results));
 
@@ -212,7 +213,7 @@ exports.readAndSubscribe = function(moduleName, endpointUrl) {
   function readModule(callback) {
 
     opcuaInstance.on('ready', function() {
-      opcuaInstance.readArray(opcuaInstance.nodeArraySkillOutputSingle(
+      opcuaInstance.readArray(opcuaDataStructure.SkillOutputSingle(
           'MI5.Module1101.Output.SkillOutput', 0));
     });
 
