@@ -180,6 +180,22 @@ exports.server = function(endPointUrl) {
         }
       },
 
+      writeArrayCb : function(nodesToWrite, callback) {
+
+        nodesToWrite = [ {
+          nodeId : 'ns=4;s=MI5.Module1101.Output.SkillOutput.SkillOutput0.Busy',
+          attributeId : 13,
+          value : new nodeopcua.DataValue({
+            value : new nodeopcua.Variant({
+              dataType : nodeopcua.DataType.Double,
+              value : 13
+            })
+          })
+        } ];
+
+        opcua.session.write(nodesToWrite, callback);
+      },
+
       subscribe : function() {
         var subscriptionSettings = {
           requestedPublishingInterval : 1000,

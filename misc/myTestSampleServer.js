@@ -166,7 +166,25 @@ exports.newOpcuaServer = function(portNumber){
     createMI5Variable(recipe, 'MinValue', 10);
     createMI5Variable(recipe, 'MaxValue', 200);
      
-    
+
+    server.engine.createFolder("RootFolder",{ browseName: "Queue"});
+    server.engine.createFolder("Queue",{ browseName: "Queue0"});
+    var recipe = 'MI5.Queue.Queue0';
+    createMI5Variable(recipe, 'Pending', 0);
+    createMI5Variable(recipe, 'RecipeID', 0);
+    createMI5Variable(recipe, 'TaskID', 0);
+    createMI5Variable(recipe, 'Name', '', 'String');
+    createMI5Variable(recipe, 'Description', '', 'String');
+    server.engine.createFolder("Queue0",{ browseName: "UserParameter"});
+    server.engine.createFolder("UserParameter",{ browseName: "UserParameter0"});
+    var recipe = 'MI5.Queue.Queue0.UserParameter.UserParameter0';
+    createMI5Variable(recipe, 'Value', 0);
+    server.engine.createFolder("UserParameter",{ browseName: "UserParameter1"});
+    var recipe = 'MI5.Queue.Queue0.UserParameter.UserParameter1';
+    createMI5Variable(recipe, 'Value', 0);
+    server.engine.createFolder("UserParameter",{ browseName: "UserParameter2"});
+    var recipe = 'MI5.Queue.Queue0.UserParameter.UserParameter2';
+    createMI5Variable(recipe, 'Value', 0);
     
   }
   

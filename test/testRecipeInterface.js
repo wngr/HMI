@@ -18,7 +18,7 @@ GLOBAL._ = require('underscore');
 GLOBAL.md5 = require('MD5');
 
 var recipeInterface = require('./../models/recipeInterface');
-recipeInterface.setEndpointUrl('opc.tcp://localhost:4334/');
+recipeInterface.setRecipeUrl('opc.tcp://localhost:4334/');
 
 // Test for all recipes -- first
 // recipeInterface.getAllRecipes(function(recipes) {
@@ -26,6 +26,11 @@ recipeInterface.setEndpointUrl('opc.tcp://localhost:4334/');
 // });
 
 // Test for recipeIdArray
-recipeInterface.getRecipes([ 0, 2 ], function(recipes) {
-  console.log(recipes);
-});
+// recipeInterface.getRecipes([ 0, 2 ], function(recipes) {
+// console.log(recipes);
+// });
+
+recipeInterface.setQueueUrl('opc.tcp://localhost:4334/');
+recipeInterface.order(0, [ 40, 20 ], 3, function() {
+  console.log('order executed');
+})
