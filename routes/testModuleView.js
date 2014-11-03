@@ -14,8 +14,10 @@ exports.completeModule = function(req, res) {
   jadeData = {};
 
   var moduleInterface = require('./../models/moduleInterface');
-  moduleInterface.setEndpointUrl('opc.tcp://localhost:4334/');
-  moduleInterface.setModule('Module1101');
+  // moduleInterface.setEndpointUrl('opc.tcp://localhost:4334/');
+  // moduleInterface.setModule('Module1101');
+  moduleInterface.setEndpointUrl('opc.tcp://192.168.175.229:4840/'); // MI5Simu
+  moduleInterface.setModule('Module2001'); // MI5Simu
 
   moduleInterface.getCompleteModuleData(function(pModuleData) {
     jadeData.moduleData = pModuleData

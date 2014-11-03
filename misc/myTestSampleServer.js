@@ -112,6 +112,60 @@ exports.newOpcuaServer = function(portNumber){
     createMI5Variable(parameterOutput, 'Default', 10);
     createMI5Variable(parameterOutput, 'MinValue', 5);
     createMI5Variable(parameterOutput, 'MaxValue', 30);
+
+    server.engine.createFolder("RootFolder",{ browseName: "Recipe"});
+    server.engine.createFolder("Recipe",{ browseName: "Recipe0"});    
+    var recipe = 'MI5.Recipe.Recipe0';
+    createMI5Variable(recipe, 'Dummy', 0);
+    createMI5Variable(recipe, 'ID', 123);
+    createMI5Variable(recipe, 'Name', 'Schnaps', 'String');
+    createMI5Variable(recipe, 'Description', 'Original Cherry-Water', 'String');
+    server.engine.createFolder("Recipe0",{ browseName: "UserParameter"});
+    server.engine.createFolder("UserParameter",{ browseName: "UserParameter0"});  
+    var recipe = 'MI5.Recipe.Recipe0.UserParameter.UserParameter0';
+    createMI5Variable(recipe, 'Dummy', 0);
+    createMI5Variable(recipe, 'Name', 'Schnaps', 'String');
+    createMI5Variable(recipe, 'Description', 'Original Cherry-Water', 'String');
+    createMI5Variable(recipe, 'Unit', 'm/s', 'String');
+    createMI5Variable(recipe, 'Default', 10);
+    createMI5Variable(recipe, 'MinValue', 5);
+    createMI5Variable(recipe, 'MaxValue', 30);
+    server.engine.createFolder("UserParameter",{ browseName: "UserParameter1"});  
+    var recipe = 'MI5.Recipe.Recipe0.UserParameter.UserParameter1';
+    createMI5Variable(recipe, 'Dummy', 0);
+    createMI5Variable(recipe, 'Name', 'Wasser', 'String');
+    createMI5Variable(recipe, 'Description', 'Wasser', 'String');
+    createMI5Variable(recipe, 'Unit', 'ml', 'String');
+    createMI5Variable(recipe, 'Default', 50);
+    createMI5Variable(recipe, 'MinValue', 10);
+    createMI5Variable(recipe, 'MaxValue', 200);
+    
+    server.engine.createFolder("Recipe",{ browseName: "Recipe1"});    
+    var recipe = 'MI5.Recipe.Recipe1';
+    createMI5Variable(recipe, 'Dummy', 0);
+    createMI5Variable(recipe, 'ID', 123);
+    createMI5Variable(recipe, 'Name', 'Schnaps', 'String');
+    createMI5Variable(recipe, 'Description', 'Original Cherry-Water', 'String');
+    server.engine.createFolder("Recipe1",{ browseName: "UserParameter"});
+    server.engine.createFolder("UserParameter",{ browseName: "UserParameter0"});  
+    var recipe = 'MI5.Recipe.Recipe1.UserParameter.UserParameter0';
+    createMI5Variable(recipe, 'Dummy', 0);
+    createMI5Variable(recipe, 'Name', 'Schnaps', 'String');
+    createMI5Variable(recipe, 'Description', 'Original Cherry-Water', 'String');
+    createMI5Variable(recipe, 'Unit', 'm/s', 'String');
+    createMI5Variable(recipe, 'Default', 10);
+    createMI5Variable(recipe, 'MinValue', 5);
+    createMI5Variable(recipe, 'MaxValue', 30);
+    server.engine.createFolder("UserParameter",{ browseName: "UserParameter1"});  
+    var recipe = 'MI5.Recipe.Recipe1.UserParameter.UserParameter1';
+    createMI5Variable(recipe, 'Dummy', 0);
+    createMI5Variable(recipe, 'Name', 'Wasser', 'String');
+    createMI5Variable(recipe, 'Description', 'Wasser', 'String');
+    createMI5Variable(recipe, 'Unit', 'ml', 'String');
+    createMI5Variable(recipe, 'Default', 50);
+    createMI5Variable(recipe, 'MinValue', 10);
+    createMI5Variable(recipe, 'MaxValue', 200);
+     
     
     
   }

@@ -61,7 +61,7 @@ mixin read(name, readId, eventName)
                     
 mixin moduleView(moduleData)
    div.col-xs-12
-     h3 Module: #{moduleData.module.Name}
+     h3 Module: #{moduleData.module[0].Name.value}
      div.container-fluid
         for skill in moduleData.skills
             div.row.well

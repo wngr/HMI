@@ -160,3 +160,31 @@ function getSkillNumber(nodeId) {
   return nodeId.match(exp)[1];
 }
 exports.getSkillNumber = getSkillNumber;
+
+/**
+ * Extract RecipeID from NodeID with RegEXP
+ * 
+ * @param nodeId
+ * @returns
+ */
+function extractRecipeId(nodeId) {
+  var exp = /(?:Recipe)([0-9]+)\./
+  return nodeId.match(exp)[1];
+}
+exports.extractRecipeId = extractRecipeId;
+
+function noDummy(dummyValue) {
+  // if (dummyValue === 1
+  // || dummyValue == 'The node id refers to a node that does not exist in the server address
+  // space.') {
+  // return false;
+  // } else {
+  // return true;
+  // }
+  if (dummyValue === 0) {
+    return true;
+  } else {
+    return false;
+  }
+}
+exports.noDummy = noDummy;
