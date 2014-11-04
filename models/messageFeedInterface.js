@@ -27,7 +27,7 @@ exports.listen = function() {
       var monitoredItem = opcuaMessage.monitor(nodeId);
       monitoredItem.on('changed', function(data, additional) {
 
-        console.log(data, nodeId);
+        console.log(data);
       });
     }
   });
