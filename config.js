@@ -23,3 +23,5 @@ exports.endpointUrl = 'opc.tcp://localhost:4334/UA/SampleServer';
  * Terminates the application after disconnect
  */
 exports.terminateAfterDisconnect = true;
+
+exports.taskId = 1;

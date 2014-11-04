@@ -8,7 +8,7 @@ var testBootstrap = require('./testBootstrap');
 // var testSocket = require('./routes/testSocket');
 var testJonas = require('./testJonas');
 var testModuleView = require('./testModuleView');
-// var testRecipeView = require('./testRecipeView');
+var testRecipeView = require('./testRecipeView');
 // var testGuiElements = require('./testGuiElements');
 // var testOpcuaInstance = require('./testOpcuaInstance');
 // var controlOpcuaSocket = require('./routes/testOpcua.js');
@@ -39,7 +39,8 @@ exports.router = function(app) {
   app.get('/testJonas', testJonas.index);
   app.get('/testModuleView', testModuleView.completeModule);
   app.get('/testOpcuaInstance', testOpcuaInstance);
-  // app.get('/testRecipeView', testRecipeView);
+  app.get('/testRecipeView', testRecipeView.index);
+  app.post('/testRecipeView', testRecipeView.placeOrder);
   // app.get('/orderRecipe' )
   return app;
 };

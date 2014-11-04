@@ -121,7 +121,7 @@ exports.ModuleOutput = ModuleOutput;
  */
 
 function recipe(nodeId) {
-  var array = [ 'Dummy', 'Name', 'RecipeID', 'Description' ];
+  var array = [ 'Dummy', 'Name', 'ID', 'Description' ];
 
   array = _.map(array, function(element) {
     return nodeId + '.' + element;

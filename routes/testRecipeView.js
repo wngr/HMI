@@ -9,15 +9,51 @@ setInterval(function() {
 }, 1000);
 
 exports.index = function(req, res) {
-  jadeData = {};
+  var jadeData = new Object;
 
   var recipeInterface = require('./../models/recipeInterface');
   recipeInterface.setRecipeUrl('opc.tcp://localhost:4334/');
-  // moduleInterface.setEndpointUrl('opc.tcp://192.168.175.229:4840/'); // MI5Simu
-  // moduleInterface.setModule('Module2001'); // MI5Simu
   recipeInterface.getAllRecipes(function(recipes) {
-    console.log(recipes);
     jadeData.recipes = recipes;
-    res.render('bootstrap/testModuleView', jadeData);
+    res.render('bootstrap/testRecipeView', jadeData);
+    res.end();
   });
 };
+
+exports.placeOrder = function(req, res) {
+  console.log(req.body);
+  console.log(req.query);
+  var recipeId = req.query.recipeId;
+
+  //
+  var taskId = _.uniqueId();
+
+  var postParameters = req.body.userparameter;
+  var userParameters = new Array;
+  postParameters.forEach(function(value) {
+    userParameters.push({
+      value : value
+    });
+  });
+
+  var order = {
+    Name : 'Schnaps',
+    Description : 'Special Order for Thomas Frei',
+    RecipeID : recipeId,
+    TaskID : taskId,
+    UserParameter : userParameters
+  };
+  console.log(order);
+
+  var queueInterface = require('./../models/recipeInterface');
+  queueInterface.setQueueUrl('opc.tcp://localhost:4334/');
+  queueInterface.order(recipeId, 'userparam', function() {
+    console.log('order set');
+  });
+
+  var jadeData = {
+    content : 'hi'
+  };
+  res.render('bootstrap/blank', jadeData);
+  res.end();
+}

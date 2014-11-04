@@ -116,28 +116,26 @@ exports.getRecipes = getRecipes;
 
 /**
  * 
+ * @async
  * @param recipeId
  * @param userparameters
- * @returns
+ * @callback callback(taskId)
  */
-function order(recipeId, userparameters, amount, callback) {
-  var taskIds = new Array();
+function order(recipeId, userparameters, orderCallback) {
   var opcuaQueue = require('./../models/opcuaInstance').server(pQueueUrl);
 
-  var pending; // make queue opcua read
-  for (var i = 1; i <= amount;) {
-    whenQueueReady(function() {
-      newTaskId = _.uniqueId();
-      console.log('taskid', newTaskId);
-      // write opcua
+  whenQueueReady(function() {
+    console.log('order now!');
+    newTaskId = _.uniqueId();
+    async.series([ function(callback) {
+      console.log('step 1');
+      callback();
+    }, function(callback) {
+      console.log('step 2');
 
-      taskIds.push = newTaskId;
-
-      i++; // for
-    });
-  }
-
-  return taskIds;
+      callback();
+    } ], orderCallback);
+  });
 }
 exports.order = order;
 
@@ -151,22 +149,20 @@ function whenQueueReady(callback) {
   var opcuaQueue = require('./../models/opcuaInstance').server(pQueueUrl);
 
   opcuaQueue.on('ready', function() {
-
-    opcuaQueue.checkIfSubscribed();
-
-    opcuaQueue.disconnect();
+    opcuaQueue.subscribe();
+    var monitorPending = opcuaQueue.monitor('ns=4;s=MI5.Queue.Queue0.Pending');
+    monitorPending.on('changed', function(data, additional) {
+      if (data.value.value == 0) {
+        // opcuaQueue.disconnect(); // causes assert error in opcua_client:552
+        callback(data.value.value);
+      }
+    });
   });
-  // opcuaQueue.readArrayCB(['MI5.Queue.Queue0.Pending'], function(err, nodes, results){
-  // resultObject = opcuaHelper.formatResultToObject(err, nodes, results);
-  // if (queue.pending == 0) {
-  // callback();
-  // } else {
-  // // setTimeout
-  // // read again
-  // }
-  //    
-  // };
   opcuaQueue.initialize();
   return 0;
 }
 exports.whenQueueReady = whenQueueReady;
+
+function writeOrder(recipeId, userparameters, taskId, callback) {
+
+}
