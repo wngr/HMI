@@ -40,13 +40,13 @@ function getSkills(callback) {
   opcuaInstance.on('ready', function() {
     for (var i = 0; i <= pLastSkill; i++) {
       if (i == pLastSkill) {
-        opcuaInstance.readArrayCB(opcuaDataStructure.SkillOutputSingle(baseNode, i), function(err,
-            nodes, results) {
-          pushSkillResult(err, nodes, results);
+        opcuaInstance.readArrayCB(opcuaDataStructure.SkillOutputSingle(baseNode, i),
+            function(err, nodes, results) {
+              pushSkillResult(err, nodes, results);
 
-          opcuaInstance.disconnect();
-          callback(skills); // final callback
-        });
+              opcuaInstance.disconnect();
+              callback(skills); // final callback
+            });
       } else {
         opcuaInstance.readArrayCB(opcuaDataStructure.SkillOutputSingle(baseNode, i),
             pushSkillResult);
@@ -70,14 +70,14 @@ function getSkillsWithParameters(callback) {
   opcuaInstance.on('ready', function() {
     for (var i = 0; i <= pLastSkill; i++) {
       if (i == pLastSkill) {
-        opcuaInstance.readArrayCB(opcuaDataStructure.SkillOutputSingle(baseNode, i), function(err,
-            nodes, results) {
-          pushSkillResult(err, nodes, results, function() {
+        opcuaInstance.readArrayCB(opcuaDataStructure.SkillOutputSingle(baseNode, i),
+            function(err, nodes, results) {
+              pushSkillResult(err, nodes, results, function() {
 
-            opcuaInstance.disconnect();
-            callback(skills); // final callback
-          });
-        });
+                opcuaInstance.disconnect();
+                callback(skills); // final callback
+              });
+            });
       } else {
         opcuaInstance.readArrayCB(opcuaDataStructure.SkillOutputSingle(baseNode, i),
             pushSkillResult);
@@ -92,7 +92,9 @@ function getSkillsWithParameters(callback) {
 
     addParameters(skillNumber, function(output) {
       resultObject.parameters = output;
-      skills.push(resultObject);
+      if (opcuaHelper.noDummy(resultObject.Dummy.value)) {
+        skills.push(resultObject);
+      }
       if (typeof callback === 'function') {
         callback();
       }
@@ -117,7 +119,10 @@ function getSkillsWithParameters(callback) {
     }
 
     function pushParameterResult(err, nodes, results) {
-      parameters.push(opcuaHelper.formatResultToObject(err, nodes, results));
+      var result = opcuaHelper.formatResultToObject(err, nodes, results);
+      if (opcuaHelper.noDummy(result.Dummy.value)) {
+        parameters.push(result);
+      }
     }
   }
 
@@ -139,13 +144,13 @@ function getParameters(callback) {
   opcuaInstance.on('ready', function() {
     for (var i = 0; i <= pLastParameter; i++) {
       if (i == pLastParameter) {
-        opcuaInstance.readArrayCB(opcuaDataStructure.ParameterOutputSingle(baseNode, i), function(
-            err, nodes, results) {
-          pushParameterResult(err, nodes, results);
+        opcuaInstance.readArrayCB(opcuaDataStructure.ParameterOutputSingle(baseNode, i),
+            function(err, nodes, results) {
+              pushParameterResult(err, nodes, results);
 
-          opcuaInstance.disconnect();
-          callback(parameters); // final callback
-        });
+              opcuaInstance.disconnect();
+              callback(parameters); // final callback
+            });
       } else {
         opcuaInstance.readArrayCB(opcuaDataStructure.ParameterOutputSingle(baseNode, i),
             pushParameterResult);
@@ -170,13 +175,13 @@ function getModule(callback) {
   var module = new Array;
 
   opcuaInstance.on('ready', function() {
-    opcuaInstance.readArrayCB(opcuaDataStructure.ModuleOutput(baseNode), function(err, nodes,
-        results) {
-      module.push(opcuaHelper.formatResultToObject(err, nodes, results));
+    opcuaInstance.readArrayCB(opcuaDataStructure.ModuleOutput(baseNode),
+        function(err, nodes, results) {
+          module.push(opcuaHelper.formatResultToObject(err, nodes, results));
 
-      opcuaInstance.disconnect();
-      callback(module);
-    });
+          opcuaInstance.disconnect();
+          callback(module);
+        });
   });
 
   opcuaInstance.initialize();

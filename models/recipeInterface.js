@@ -168,6 +168,18 @@ function whenQueueReady(callback) {
 }
 exports.whenQueueReady = whenQueueReady;
 
-function writeOrder(recipeId, userparameters, taskId, callback) {
-
+function matchIdToImage(recipeId) {
+  baseFolder = '/assets/images/'
+  imageArchive = {
+    1001 : 'cubalibre.jpg',
+    1002 : 'virginpinacolada.jpg'
+  }
+  var keys
+  _.keys(imageArchive);
+  if (_.find(keys, recipeId)) {
+    return baseFolder + imageArchive[recipeId];
+  } else {
+    return baseFolder + '200x200.svg';
+  }
 }
+exports.matchIdToImage = matchIdToImage;
