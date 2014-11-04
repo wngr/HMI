@@ -21,16 +21,21 @@ var recipeInterface = require('./../models/recipeInterface');
 recipeInterface.setRecipeUrl('opc.tcp://localhost:4334/');
 
 // Test for all recipes -- first
-// recipeInterface.getAllRecipes(function(recipes) {
-// console.log(recipes);
-// });
+recipeInterface.getAllRecipes(function(recipes) {
+  console.log(recipes);
+});
 
 // Test for recipeIdArray
 // recipeInterface.getRecipes([ 0, 2 ], function(recipes) {
 // console.log(recipes);
 // });
 
+console.log('recipeInterface.js /root');
+
 recipeInterface.setQueueUrl('opc.tcp://localhost:4334/');
-recipeInterface.order(0, [ 40, 20 ], 3, function() {
-  console.log('order executed');
-})
+recipeInterface.whenQueueReady(function() {
+  console.log('QueueReady');
+});
+// recipeInterface.order(0, [ 40, 20 ], 3, function() {
+// console.log('order executed');
+// });

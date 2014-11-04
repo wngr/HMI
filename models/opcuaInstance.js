@@ -188,7 +188,7 @@ exports.server = function(endPointUrl) {
           value : new nodeopcua.DataValue({
             value : new nodeopcua.Variant({
               dataType : nodeopcua.DataType.Double,
-              value : 13
+              value : 1337
             })
           })
         } ];
@@ -216,6 +216,10 @@ exports.server = function(endPointUrl) {
         }).on("terminated", function() {
           console.log('SUBS: terminated');
         });
+      },
+
+      checkIfSubscribed : function() {
+        console.log(this.subscription instanceof nodeopcua.ClientSubscription);
       },
 
       /**
