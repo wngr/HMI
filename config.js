@@ -25,3 +25,8 @@ exports.endpointUrl = 'opc.tcp://localhost:4334/UA/SampleServer';
 exports.terminateAfterDisconnect = true;
 
 exports.taskId = 1;
+
+/*
+ * MessageFeed
+ */
+exports.messageFeedUrl = 'opc.tcp://192.168.175.230:4840';

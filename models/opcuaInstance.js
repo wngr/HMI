@@ -163,7 +163,7 @@ exports.server = function(endPointUrl) {
         }
       },
 
-      write : function(nodeIdToWrite, Value) {
+      writeSingleNode : function(nodeIdToWrite, Value) {
         var opcVariant = new nodeopcua.Variant({
           dataType : nodeopcua.DataType.Double,
           value : Value
@@ -197,18 +197,25 @@ exports.server = function(endPointUrl) {
       },
 
       /**
-       * Accepts objects nested with arrays
+       * Writes a whole Object to OPC UA
        * 
-       * @param nodesToWrite
+       * Accepts objects with nested Arrays
+       * 
+       * @async
+       * @param baseNode
+       *          (e.g. 'MI5.Queue.Queu.0')
+       * @param objectToWrite
+       *          (e.g. {Name: 'Schnaps', UserParameter: [10, 20]})
        * @param callback
        */
       writeObjectCb : function(baseNode, objectToWrite, callback) {
         var nodeDataArray = opcua.convertObjectToNodeDataArray(baseNode, objectToWrite);
-        console.log(nodeDataArray);
+        console.log(JSON.stringify(nodeDataArray, null, 1));
         opcua.session.write(nodeDataArray, callback);
       },
 
       /**
+       * convert an Object to the NodeDataArray
        * 
        * ``` var baseNode = 'ns=4;s=MI5.Queue.Queue0.'; var object = { Name : 'Schnaps', Description :
        * 'Special Order for Thomas Frei', RecipeID : 12, TaskID : 1337, Parameters : [ { value : 12 }, {
@@ -228,12 +235,13 @@ exports.server = function(endPointUrl) {
 
         // Help Function for data-structure of NodeDataArrayEntry
         function createNodeArrayEntry(baseNode, nodeIdSuffix, value) {
-          if (_.isNumber(value)) {
+          if (!isNaN(value)) { // is not a numeric, so if it is a numeric:
             var type = nodeopcua.DataType.Double;
+            value = parseInt(value);
           } else if (_.isString(value)) {
             var type = nodeopcua.DataType.String;
           } else {
-            var type = nodeopcua.DataType.String;
+            console.log('ERR - no Datatype recognized:', value);
           }
 
           // NodeDataArrayEntry structure
@@ -252,27 +260,34 @@ exports.server = function(endPointUrl) {
         }
 
         // loop over the elements in the given object
-        _.keys(dataObject).forEach(function(name) {
-          if (_.isArray(dataObject[name])) {
-            // Loop over elements and adapt the baseNode and NodeSuffix to react to array structure
-            // on OPC UA
-            dataObject[name].forEach(function(value, key) {
-              // nodeDataArray.push(createNodeArrayEntry(baseNode+name+".",name+"["+key+"]",order[name]));
-              tempEntry = createNodeArrayEntry(baseNode + name + ".", name + key, value);
-              nodeDataArray.push(tempEntry);
+        _.keys(dataObject).forEach(
+            function(name) {
+              if (_.isArray(dataObject[name])) {
+                // Loop over elements and adapt the baseNode and NodeSuffix to react to array
+                // structure
+                // on OPC UA
+                dataObject[name].forEach(function(value, key) {
+                  // value (e.g. [{value: 1, busy: 0}]
+                  _.keys(value).forEach(
+                      // looping over ['value','busy']
+                      function(name2) { // name2 (e.g. value, busy)
+                        tempEntry = createNodeArrayEntry(baseNode + name + "." + name + key + ".",
+                            name2, value[name2]); // value[name2] (e.g. 1,0)
+                      });
+                  nodeDataArray.push(tempEntry);
+                });
+              } else {
+                tempEntry = createNodeArrayEntry(baseNode, name, dataObject[name]);
+                nodeDataArray.push(tempEntry);
+              }
             });
-          } else {
-            tempEntry = createNodeArrayEntry(baseNode, name, dataObject[name]);
-            nodeDataArray.push(tempEntry);
-          }
-        });
 
         // console.log(JSON.stringify(nodeDataArray, null, 1));
         return nodeDataArray;
       },
 
       /**
-       * Adds stuff to baseNode-Url
+       * Check baseNode and adds stuff if necessary
        * 
        * @accepts 'MI5.Queue.Queue0.', 'ns=4;s=MI5.Queue.Queue0'
        * @param baseNode
@@ -282,6 +297,27 @@ exports.server = function(endPointUrl) {
         // add . at the end if missing
         if (baseNode.slice(-1) != '.') {
           baseNode = baseNode + '.';
+        }
+
+        // check for namespace and node-identifier
+        if (baseNode.slice(0, 7) != 'ns=4;s=') {
+          baseNode = 'ns=4;s=' + baseNode;
+        }
+
+        return baseNode;
+      },
+
+      /**
+       * Check NodeId and adds / removes stuff if necessary
+       * 
+       * @accepts 'MI5.Queue.Queue0.', 'ns=4;s=MI5.Queue.Queue0'
+       * @param baseNode
+       * @returns {String}
+       */
+      checkNodeId : function(baseNode) {
+        // add . at the end if missing
+        if (baseNode.slice(-1) == '.') {
+          baseNode = baseNode.slice(0, -1);
         }
 
         // check for namespace and node-identifier
@@ -304,11 +340,11 @@ exports.server = function(endPointUrl) {
         this.subscription = new nodeopcua.ClientSubscription(this.session, subscriptionSettings);
 
         this.subscription.on("started", function() {
-          console.log("SBUS: subscription started - subscriptionId=",
+          console.log("SUBS: subscription started - subscriptionId=",
               opcua.subscription.subscriptionId);
         });
         this.subscription.on("keepalive", function() {
-          console.log('SUBS: keepalive');
+          // console.log('SUBS: keepalive');
         }).on("terminated", function() {
           console.log('SUBS: terminated');
         });
@@ -321,11 +357,13 @@ exports.server = function(endPointUrl) {
       /**
        * 
        * @param nodeIdToMonitor
-       *          (ns=4;s=MI5......)
+       *          (ns=4;s=MI5...... / MI5.MessageFeed.MessageFeed[1])
        * 
        * @return Object
        */
       monitor : function(nodeIdToMonitor) {
+        nodeIdToMonitor = opcua.checkNodeId(nodeIdToMonitor);
+
         var itemToMonitor = {
           nodeId : nodeopcua.resolveNodeId(nodeIdToMonitor),
           attributeId : 13
@@ -456,7 +494,7 @@ exports.server = function(endPointUrl) {
             submitEvent : 'submitEv' + opcua.convertNodeIdToEvent(entry.nodeId),
             updateEvent : 'updateEv' + opcua.convertNodeIdToEvent(entry.nodeId),
             containerId : opcua.convertNodeIdToContainerId(entry.nodeId)
-          }
+          };
           return _.extend(entry, eventObject);
         });
         return output;
@@ -473,7 +511,7 @@ exports.server = function(endPointUrl) {
         output = _.map(data, function(entry) {
           var eventObject = {
             name : entry.nodeId.match(exp)[0].slice(1)
-          }
+          };
           return _.extend(entry, eventObject);
         });
         return output;
@@ -519,7 +557,7 @@ exports.server = function(endPointUrl) {
        */
       innerReactions : function() {
         this.on('connected', function() {
-          console.log('OK - connected to ' + CONFIG.endpointUrl);
+          console.log('OK - connected to ' + endPointUrl);
         });
         this.on('ready', function() {
           console.log('OK - session established');
@@ -557,7 +595,7 @@ exports.server = function(endPointUrl) {
    */
   opcua = new opcuaPro();
   return opcua;
-}; // end: exports.createServer()
+}; // end: exports.server()
 
 // module.exports = opcua;
 

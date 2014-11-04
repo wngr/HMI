@@ -32,22 +32,13 @@ exports.placeOrder = function(req, res) {
   var userParameters = new Array;
   postParameters.forEach(function(value) {
     userParameters.push({
-      value : value
+      Value : value
     });
   });
 
-  var order = {
-    Name : 'Schnaps',
-    Description : 'Special Order for Thomas Frei',
-    RecipeID : recipeId,
-    TaskID : taskId,
-    UserParameter : userParameters
-  };
-  console.log(order);
-
   var queueInterface = require('./../models/recipeInterface');
   queueInterface.setQueueUrl('opc.tcp://localhost:4334/');
-  queueInterface.order(recipeId, 'userparam', function() {
+  queueInterface.order(recipeId, userParameters, function() {
     console.log('order set');
   });
 
