@@ -121,21 +121,26 @@ exports.getRecipes = getRecipes;
  * @param userparameters
  * @callback callback(taskId)
  */
-function order(recipeId, userparameters, orderCallback) {
-  var opcuaQueue = require('./../models/opcuaInstance').server(pQueueUrl);
+function order(recipeId, userParameterArray, orderCallback) {
+  var opcuaInstance = require('./../models/opcuaInstance').server(pQueueUrl);
 
-  whenQueueReady(function() {
-    console.log('order now!');
-    newTaskId = _.uniqueId();
-    async.series([ function(callback) {
-      console.log('step 1');
-      callback();
-    }, function(callback) {
-      console.log('step 2');
+  opcuaInstance.on('ready', function() {
+    whenQueueReady(function() {
+      console.log('order now!');
+      newTaskId = _.uniqueId();
+      async.series([ function(callback) {
+        var nodeDataObject = {
+          Name : 'Test',
+          RecipeID : recipeId,
+          UserParameter : userParameterArray
+        };
 
-      callback();
-    } ], orderCallback);
+        opcuaInstance.writeObjectCb('MI5.Queue.Queue0', nodeDataObject, callback);
+        opcuaInstance.disconnect();
+      } ], orderCallback);
+    });
   });
+  opcuaInstance.initialize();
 }
 exports.order = order;
 
