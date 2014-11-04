@@ -36,21 +36,23 @@ async.series([
     
     // write object / array
     function(callback){
-      var baseNode = 'ns=4;s=MI5.Module1101.Output.SkillOutput.SkillOutput0.';
+      var nodeDataArray = new Array;
       
       function createNodeArrayEntry(baseNode, nodeIdSuffix, value){
-      nodesToWrite = [ {
-      nodeId : basenode+'Busy',
-      attributeId : 13,
-      value : new opcua.DataValue({
-        value : new opcua.Variant({
-          dataType : opcua.DataType.Double,
-          value : 1
-        })
-      })
-    } ];       
+        nodeData = {
+          nodeId : baseNode+nodeIdSuffix,
+          attributeId : 13,
+          value : new opcua.DataValue({
+            value : new opcua.Variant({
+              dataType : opcua.DataType.Double,
+              value : value
+            })
+          })
+        };
+        return nodeData;
       }
-      
+
+      var baseNode = 'ns=4;s=MI5.Queue.Queue0.';
       var order = {
           Name : 'Schnaps',
           Description : 'Special Order for Thomas Frei',
@@ -59,15 +61,27 @@ async.series([
           Parameters : [{value: 12}, {value: 14}]
         };
       
+
       _.keys(order).forEach(function(name){
         if(_.isNumber(order[name])){
           console.log('number');
-        } else if (_.isArray(order[name])){
-          console.log('array');
+          tempEntry = createNodeArrayEntry(baseNode,name,order[name]);
+          nodeDataArray.push(tempEntry);
         }else if (_.isString(order[name])){
           console.log('string');
+          tempEntry = createNodeArrayEntry(baseNode,name,order[name]);
+          nodeDataArray.push(tempEntry);
+        } else if (_.isArray(order[name])){
+          console.log('array');
+          order[name].forEach(function(value, key){ 
+            // nodeDataArray.push(createNodeArrayEntry(baseNode+name+".",name+"["+key+"]",order[name])); 
+            tempEntry = createNodeArrayEntry(baseNode+name+".",name+key,value); 
+            nodeDataArray.push(tempEntry);          
+          });
         }
       });
+      
+      console.log(JSON.stringify(nodeDataArray, null, 1));
       
 //      nodesToWrite = [ {
 //        nodeId : basenode+'Busy',

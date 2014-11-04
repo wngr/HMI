@@ -173,6 +173,12 @@ function extractRecipeId(nodeId) {
 }
 exports.extractRecipeId = extractRecipeId;
 
+/**
+ * Detects if the given Dummyvalue indicates a dummy Entry
+ * 
+ * @param dummyValue
+ * @returns {Boolean}
+ */
 function noDummy(dummyValue) {
   // if (dummyValue === 1
   // || dummyValue == 'The node id refers to a node that does not exist in the server address
