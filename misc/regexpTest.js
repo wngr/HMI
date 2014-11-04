@@ -19,3 +19,9 @@ function getSkillNumber(nodeId) {
 }
 
 console.log(getSkillNumber(nodeId));
+
+console.log(str.slice(-1));
+
+
+var baseNode = 'ns=4;s=MI5.Module1101.Output.SkillOutput';
+console.log(baseNode.slice(0,7));

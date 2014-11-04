@@ -34,19 +34,20 @@ opcuaModule1.on('ready', function() {
   // var NodesToRead = ['ns=4;s=MI5.Module1101.Output.SkillOutput.SkillOutput0.Busy',
   // 'ns=4;s=MI5.Module1101.Output.SkillOutput.SkillOutput0.Ready'];
   // opcuaModule1.readArray(NodesToRead);
-  // Test Write Array
-  var NodesToRead = [ {
-    nodeId : 'ns=4;s=MI5.Module1101.Output.SkillOutput.SkillOutput0.Busy',
-    attributeId : 13,
-    value : {
-      value : 1
-    }
-  } ];
-  opcuaModule1.writeArrayCb(NodesToRead, function(err, status) {
+  // Test write Object
+  var data = {
+    Description : 'Halloho"',
+    Name : 'Meine Bestellung',
+    RecipeID : '12',
+    TaskID : '1',
+    UserParameter : [ 0, 10, 15 ]
+  };
+  opcuaModule1.writeObjectCb('MI5.Queue.Queue0', data, function(err, status) {
+    // console.log(err);
     if (!err) {
       console.log('success');
     }
-  })
+  });
 });
 
 opcuaModule1.initialize();

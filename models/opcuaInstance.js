@@ -203,22 +203,93 @@ exports.server = function(endPointUrl) {
        * @param callback
        */
       writeObjectCb : function(baseNode, objectToWrite, callback) {
-        var temp[];
-        _.each(objectToWrite, function(object){
-          
-        });
-        nodesToWrite = [ {
-          nodeId : 'ns=4;s=MI5.Module1101.Output.SkillOutput.SkillOutput0.Busy',
-          attributeId : 13,
-          value : new nodeopcua.DataValue({
-            value : new nodeopcua.Variant({
-              dataType : nodeopcua.DataType.Double,
-              value : 1337
-            })
-          })
-        } ];
+        var nodeDataArray = opcua.convertObjectToNodeDataArray(baseNode, objectToWrite);
+        console.log(nodeDataArray);
+        opcua.session.write(nodeDataArray, callback);
+      },
 
-        opcua.session.write(nodesToWrite, callback);
+      /**
+       * 
+       * ``` var baseNode = 'ns=4;s=MI5.Queue.Queue0.'; var object = { Name : 'Schnaps', Description :
+       * 'Special Order for Thomas Frei', RecipeID : 12, TaskID : 1337, Parameters : [ { value : 12 }, {
+       * value : 14 } ] }; ```
+       * 
+       * @needs opcua-Object
+       * 
+       * @param baseNode
+       *          (e.g. 'MI5.Queue.Queue0')
+       * @param object
+       * @returns {Array}
+       */
+      convertObjectToNodeDataArray : function(baseNode, dataObject) {
+        var nodeDataArray = new Array;
+
+        baseNode = opcua.checkBaseNode(baseNode);
+
+        // Help Function for data-structure of NodeDataArrayEntry
+        function createNodeArrayEntry(baseNode, nodeIdSuffix, value) {
+          if (_.isNumber(value)) {
+            var type = nodeopcua.DataType.Double;
+          } else if (_.isString(value)) {
+            var type = nodeopcua.DataType.String;
+          } else {
+            var type = nodeopcua.DataType.String;
+          }
+
+          // NodeDataArrayEntry structure
+          nodeData = {
+            nodeId : baseNode + nodeIdSuffix,
+            attributeId : 13,
+            value : new nodeopcua.DataValue({
+              value : new nodeopcua.Variant({
+                dataType : type,
+                value : value
+              })
+            })
+          };
+
+          return nodeData;
+        }
+
+        // loop over the elements in the given object
+        _.keys(dataObject).forEach(function(name) {
+          if (_.isArray(dataObject[name])) {
+            // Loop over elements and adapt the baseNode and NodeSuffix to react to array structure
+            // on OPC UA
+            dataObject[name].forEach(function(value, key) {
+              // nodeDataArray.push(createNodeArrayEntry(baseNode+name+".",name+"["+key+"]",order[name]));
+              tempEntry = createNodeArrayEntry(baseNode + name + ".", name + key, value);
+              nodeDataArray.push(tempEntry);
+            });
+          } else {
+            tempEntry = createNodeArrayEntry(baseNode, name, dataObject[name]);
+            nodeDataArray.push(tempEntry);
+          }
+        });
+
+        // console.log(JSON.stringify(nodeDataArray, null, 1));
+        return nodeDataArray;
+      },
+
+      /**
+       * Adds stuff to baseNode-Url
+       * 
+       * @accepts 'MI5.Queue.Queue0.', 'ns=4;s=MI5.Queue.Queue0'
+       * @param baseNode
+       * @returns {String}
+       */
+      checkBaseNode : function(baseNode) {
+        // add . at the end if missing
+        if (baseNode.slice(-1) != '.') {
+          baseNode = baseNode + '.';
+        }
+
+        // check for namespace and node-identifier
+        if (baseNode.slice(0, 7) != 'ns=4;s=') {
+          baseNode = 'ns=4;s=' + baseNode;
+        }
+
+        return baseNode;
       },
 
       subscribe : function() {
