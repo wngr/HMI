@@ -42,7 +42,7 @@ exports.getAllRecipes = getAllRecipes;
 /**
  * 
  * @param recipeIdArray
- * @function callback
+ * @function callback(recipesArray)
  * @returns
  */
 function getRecipes(recipeIdArray, callback) {
@@ -143,11 +143,19 @@ exports.order = order;
 
 /**
  * 
+ * @async
  * @param callback
  * @returns
  */
 function whenQueueReady(callback) {
-  // var opcuaQueue = require('./../models/opcuaInstance').server(pQueueUrl);
+  var opcuaQueue = require('./../models/opcuaInstance').server(pQueueUrl);
+
+  opcuaQueue.on('ready', function() {
+
+    opcuaQueue.checkIfSubscribed();
+
+    opcuaQueue.disconnect();
+  });
   // opcuaQueue.readArrayCB(['MI5.Queue.Queue0.Pending'], function(err, nodes, results){
   // resultObject = opcuaHelper.formatResultToObject(err, nodes, results);
   // if (queue.pending == 0) {
@@ -158,6 +166,7 @@ function whenQueueReady(callback) {
   // }
   //    
   // };
-  // opcuaQueue.initialize();
-  callback();
+  opcuaQueue.initialize();
+  return 0;
 }
+exports.whenQueueReady = whenQueueReady;
