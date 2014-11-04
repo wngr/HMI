@@ -2,13 +2,11 @@ extends layout
 include mixins/gui-elements
 
 block content
-    div.container-fluid
-        div.row
-            div.col-xs-12
+    div.container
+     div.col-xs-12.well
+                p hallo
                 p= content
                 if list
                     ul
                         for entry in list
                             li= entry
-
-                    

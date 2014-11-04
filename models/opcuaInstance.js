@@ -21,10 +21,10 @@ exports.server = function(endPointUrl) {
    */
   function isNested(thisobject) {
     if (thisobject.opcuaObject == 1) {
-      console.log('OK - .this is the opcuaPro object');
+      // console.log('OK - .this is the opcuaPro object');
       return false;
     } else {
-      console.log('SCOPE! - .this is in a nested scope: use the global opcua object');
+      // console.log('SCOPE! - .this is in a nested scope: use the global opcua object');
       return true;
     }
   }
@@ -57,14 +57,14 @@ exports.server = function(endPointUrl) {
       },
 
       connect : function() {
-        console.log('OK - connect()');
+        // console.log('OK - connect()');
         // isNested(this);
         // console.log( this );
         this.client.connect(endPointUrl, this.cbConnected);
       },
       cbConnected : function(err) {
         if (!err) {
-          console.log('OK - cbConnected()');
+          // console.log('OK - cbConnected()');
           // isNested(this);
           opcua.emit('connected');
           opcua.createSession(); // the cb is called in this.client.connect() and in this scope,
@@ -77,7 +77,7 @@ exports.server = function(endPointUrl) {
       },
 
       createSession : function() {
-        console.log('OK - createSession()');
+        // console.log('OK - createSession()');
         this.client.createSession(function(err, session) {
           if (!err) {
             opcua.session = session;
@@ -196,6 +196,31 @@ exports.server = function(endPointUrl) {
         opcua.session.write(nodesToWrite, callback);
       },
 
+      /**
+       * Accepts objects nested with arrays
+       * 
+       * @param nodesToWrite
+       * @param callback
+       */
+      writeObjectCb : function(baseNode, objectToWrite, callback) {
+        var temp[];
+        _.each(objectToWrite, function(object){
+          
+        });
+        nodesToWrite = [ {
+          nodeId : 'ns=4;s=MI5.Module1101.Output.SkillOutput.SkillOutput0.Busy',
+          attributeId : 13,
+          value : new nodeopcua.DataValue({
+            value : new nodeopcua.Variant({
+              dataType : nodeopcua.DataType.Double,
+              value : 1337
+            })
+          })
+        } ];
+
+        opcua.session.write(nodesToWrite, callback);
+      },
+
       subscribe : function() {
         var subscriptionSettings = {
           requestedPublishingInterval : 1000,
@@ -223,7 +248,11 @@ exports.server = function(endPointUrl) {
       },
 
       /**
+       * 
        * @param nodeIdToMonitor
+       *          (ns=4;s=MI5......)
+       * 
+       * @return Object
        */
       monitor : function(nodeIdToMonitor) {
         var itemToMonitor = {
