@@ -4,9 +4,9 @@ include mixins/gui-elements
 block content
     div.container
      div.col-xs-12.well
-                p hallo
                 p= content
                 if list
                     ul
                         for entry in list
-                            li= entry
+                            li
+                             a(href=entry.href) #{entry.title}

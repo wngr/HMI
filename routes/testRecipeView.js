@@ -14,6 +14,7 @@ exports.index = function(req, res) {
   var recipeInterface = require('./../models/recipeInterface');
   recipeInterface.setRecipeUrl('opc.tcp://localhost:4334/');
   recipeInterface.getAllRecipes(function(recipes) {
+
     jadeData.recipes = recipes;
     res.render('bootstrap/testRecipeView', jadeData);
     res.end();
@@ -43,7 +44,14 @@ exports.placeOrder = function(req, res) {
   });
 
   var jadeData = {
-    content : 'hi'
+    content : 'Order has been placed! The corresponding (unique) TaskID is :' + taskId,
+    list : [ {
+      href : '/taskViewTest?taskId=' + taskId,
+      title : 'Redirect to specific TaskView'
+    }, {
+      href : '/taskViewTest',
+      title : 'Redirect to global TaskView'
+    } ]
   };
   res.render('bootstrap/blank', jadeData);
   res.end();

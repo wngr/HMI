@@ -17,9 +17,14 @@ var testRecipeView = require('./testRecipeView');
 // var myInstance = require('./testOpcuaInstance');
 
 function index(req, res) {
-  res.render('hmiDev', {
-    title : 'Project MI5 - HMI Development Environment'
-  });
+  jadeData = {
+    content : 'Overview of all the testing modules that are available',
+    list : [ {
+      href : 'testModuleView',
+      title : 'Module View (Test)'
+    } ]
+  }
+  res.render('./bootstrap/blank', jadeData);
 }
 
 function hmiDev(req, res) {
