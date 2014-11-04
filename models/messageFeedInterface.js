@@ -21,15 +21,19 @@ exports.listen = function() {
 
   opcuaMessage.on('ready', function() {
     opcuaMessage.subscribe();
-    for (var i = 0; i <= messageFeedSize; i++) {
-      console.log('Monitor for item ' + i);
-      var nodeId = nodeIdMessageFeedEntry('ID', i);
-      var monitoredItem = opcuaMessage.monitor(nodeId);
-      monitoredItem.on('changed', function(data, additional) {
 
-        console.log(data);
-      });
+    var messageFeedArray = new Array;
+    for (var i = 0; i <= messageFeedSize; i++) {
+      messageFeedArray.push(nodeIdMessageFeedEntry('ID', i));
     }
+
+    console.log(messageFeedArray);
+
+    opcuaMessage.readArrayCB(messageFeedArray, function(err, nodes, results) {
+      data = opcuaHelper.formatResultToObject(err, nodes, results);
+      console.log(results);
+      console.log(data);
+    });
   });
 
   function readMessageEntry(entry, callback) {
