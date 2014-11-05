@@ -39,7 +39,7 @@ function concatNodesAndResults(nodes, results) {
       // Check for BadNodeId (value: null, then statusCode)
       // console.log(nodes[i]);
       // console.log(results[i]);
-      if (_.isEmpty(results[i].value)) {
+      if (_.isEmpty(results[i].statusCode.value)) {
         output[i] = {
           nodeId : nodes[i].nodeId.value,
           value : results[i].statusCode.description
@@ -51,6 +51,7 @@ function concatNodesAndResults(nodes, results) {
         };
       }
     }
+    console.log('output:',output);
   }
   return output;
 }
@@ -156,7 +157,8 @@ exports.formatNodeValueArrayToSkillContainerArray = formatNodeValueArrayToSkillC
  * @returns
  */
 function getSkillNumber(nodeId) {
-  var exp = /(?:SkillOutput)([0-9]+)\./
+  // var exp = /(?:SkillOutput)([0-9]+)\./
+  var exp = /(?:SkillOutput\[)([0-9]+)\]/
   return nodeId.match(exp)[1];
 }
 exports.getSkillNumber = getSkillNumber;
@@ -168,7 +170,8 @@ exports.getSkillNumber = getSkillNumber;
  * @returns
  */
 function extractRecipeId(nodeId) {
-  var exp = /(?:Recipe)([0-9]+)\./
+  // var exp = /(?:Recipe)([0-9]+)\./
+  var exp = /(?:Recipe\[)([0-9]+)\]/;
   return nodeId.match(exp)[1];
 }
 exports.extractRecipeId = extractRecipeId;

@@ -14,18 +14,46 @@ exports.completeModule = function(req, res) {
   jadeData = {};
 
   var moduleInterface = require('./../models/moduleInterface');
-  moduleInterface.setEndpointUrl('opc.tcp://localhost:4334/');
-  moduleInterface.setModule('Module1101');
-  // moduleInterface.setEndpointUrl('opc.tcp://192.168.175.229:4840/'); // MI5Simu
-  // moduleInterface.setModule('Module2001'); // MI5Simu
+  // moduleInterface.setEndpointUrl('opc.tcp://localhost:4334/');
+  // moduleInterface.setModule('Module1101');
+  moduleInterface.setEndpointUrl('opc.tcp://192.168.175.230:4840/'); // MI5Simu
+  moduleInterface.setModule('Module2401'); // MI5Simu
 
   moduleInterface.getCompleteModuleData(function(pModuleData) {
-    jadeData.moduleData = pModuleData;
+    if (pModuleData.module.error == 1) {
+      jadeData.error = pModuleData.module.err;
+    } else {
+      jadeData.moduleData = pModuleData;
+    }
 
     res.render('bootstrap/testModuleView', jadeData);
   });
 };
 
+var connectedClients = 0;
+IO.on('connection', function(socket) {
+  connectedClients++;
+  console.log('Connected Clients: ', connectedClients);
+
+  // Disconnect
+  socket.on('disconnect', function() {
+    console.log('Number of users from ', connectedClients, ' to ');
+    connectedClients--;
+    console.log(connectedClients);
+
+    if (connectedClients === 0) {
+      try {
+        opcuaInstance.disconnect();
+      } catch (err) {
+        console.log(err);
+      }
+    }
+  });
+});
+
+/*
+ * deprecated
+ */
 // console.log(_.uniqueId(myNodeId));
 exports.index = function(req, res) {
   var opcuaInstance = require('./../models/opcuaInstance').server('opc.tcp://localhost:4334/');
@@ -72,28 +100,4 @@ exports.index = function(req, res) {
   });
 
   opcuaInstance.initialize(); // when all callbare registered - initializeacks
-};
-
-var connectedClients = 0;
-IO.on('connection', function(socket) {
-  connectedClients++;
-  console.log('Connected Clients: ', connectedClients);
-
-  // Disconnect
-  socket.on('disconnect', function() {
-    console.log('Number of users from ', connectedClients, ' to ');
-    connectedClients--;
-    console.log(connectedClients);
-
-    if (connectedClients === 0) {
-      try {
-        opcuaInstance.disconnect();
-      } catch (err) {
-        console.log(err);
-      }
-    }
-  });
-});
-
-exports.moduleInterface = function(req, res) {
 };

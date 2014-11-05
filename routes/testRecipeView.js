@@ -12,10 +12,16 @@ exports.index = function(req, res) {
   var jadeData = new Object;
 
   var recipeInterface = require('./../models/recipeInterface');
-  recipeInterface.setRecipeUrl('opc.tcp://localhost:4334/');
+  // recipeInterface.setRecipeUrl('opc.tcp://localhost:4334/');
+  recipeInterface.setRecipeUrl('opc.tcp://192.168.175.230:4840/');
   recipeInterface.getAllRecipes(function(recipes) {
+    console.log(recipes);
+    if (recipes.error == 1) {
+      jadeData.error = recipes.err;
+    } else {
+      jadeData.recipes = recipes;
+    }
 
-    jadeData.recipes = recipes;
     res.render('bootstrap/testRecipeView', jadeData);
     res.end();
   });
@@ -38,7 +44,8 @@ exports.placeOrder = function(req, res) {
   });
 
   var queueInterface = require('./../models/recipeInterface');
-  queueInterface.setQueueUrl('opc.tcp://localhost:4334/');
+  // recipeInterface.setRecipeUrl('opc.tcp://localhost:4334/');
+  recipeInterface.setRecipeUrl('opc.tcp://192.168.175.230:4840/');
   queueInterface.order(recipeId, userParameters, function() {
     console.log('order set');
   });

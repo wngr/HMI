@@ -35,13 +35,18 @@ exports.server = function(endPointUrl) {
 
         this.client = new nodeopcua.OPCUAClient();
         async.series([ function(callback) {
-          opcua.client.connect(endPointUrl, callback);
+          opcua.client.connect(endPointUrl, function(err) {
+            callback(err);
+          });
         }, function(callback) {
           opcua.client.createSession(function(err, session) {
             opcua.session = session;
-            callback();
+            callback(err);
           });
-        } ], initializeCallback);
+        } ], function(err) {
+          opcua.emit('err', err);
+          initializeCallback(err);
+        });
       },
 
       /**
@@ -127,8 +132,7 @@ exports.server = function(endPointUrl) {
         opcua.session.read(nodes, max_age, function(err, nodes, results) {
           var tempData = opcua._concatNodesAndResults(nodes, results);
           tempData = opcua._addEventsAndIdsToResultsArray(tempData);
-          tempData = opcua._addNameToResultsArray(tempData);
-
+          // console.log(tempData);
           callback(err, tempData);
         });
       },
@@ -306,7 +310,8 @@ exports.server = function(endPointUrl) {
             if (_.isEmpty(results[i].value)) {
               output[i] = {
                 nodeId : nodes[i].nodeId.value,
-                value : results[i].statusCode.description
+                value : '',
+                error : results[i].statusCode.description
               };
             } else {
               output[i] = {
@@ -341,9 +346,9 @@ exports.server = function(endPointUrl) {
       },
 
       /**
-       * 
+       * deprecated
        */
-      _addNameToResultsArray : function(data) {
+      _addNameForResultObject : function(data) {
         var output = new Array;
         // Find .AlphaNumeric beginning from end of line, then the points needs to be sliced away.
         var exp = /\.\w*$/
@@ -358,10 +363,25 @@ exports.server = function(endPointUrl) {
       },
 
       /**
+       * Format resultObject from ReadArray to a jade-compatible Container
+       * 
+       * @param data
+       *          [{nodeId: ..., value: ...},{nodeId: ..., value: ...}]
+       * @return output array {MI5: Recipe{ [Dummy: ..., Name: ..., UserParameter: [{Dummy : ...,
+       *         Default: ...,}]]}
+       */
+      _formatResultObjectToJade : function(data) {
+        var output = new Array;
+
+        return output;
+      },
+
+      /**
        * Transforms a nodeId to a uniqueEvent ID
        * 
        * @param nodeId
        *          (e.g. MI5.Module1101.Output.SkillOutput.SkillOutput0.Busy)
+       * @return nodeId
        */
       _convertNodeIdToEvent : function(nodeId) {
         // var output = nodeId.slice(-8)
@@ -376,12 +396,53 @@ exports.server = function(endPointUrl) {
        * necessary, if md5 should start with a digit
        * 
        * @param nodeId
-       * @returns idFKDJ48238fhFak1
+       * @return (e.g.) idFKDJ48238fhFak1
        */
       _convertNodeIdToContainerId : function(nodeId) {
         // return _.uniqueId('id' + md5(nodeId).slice(3, 10));
         return 'id' + md5(nodeId);
       },
+
+      /**
+       * Adds Parameters to a basenode :Recipe[0].YYYYYYYYYY
+       * 
+       * @param baseNode
+       *          string
+       * @return array
+       */
+      _structRecipeBase : function(baseNode) {
+        var nodes = [ 'Description', 'Dummy', 'Name', 'RecipeID' ];
+        // Add all 5 UserParameters
+        for (var i = 0; i <= 5; i++) {
+          var temp = opcua._structRecipeUserParameter('UserParameter[' + i + '].');
+          temp.forEach(function(item) {
+            nodes.push(item);
+          });
+        }
+        // Prepend baseNode
+        nodes = _.map(nodes, function(item) {
+          return baseNode + item;
+        });
+
+        return nodes;
+      },
+
+      /**
+       * Adds nodes to UserParameter[x].YYYYYYYYYYY
+       * 
+       * @param baseNode
+       *          string
+       * @return array
+       */
+      _structRecipeUserParameter : function(baseNode) {
+        var nodes = [ 'Default', 'Description', 'Dummy', 'MaxValue', 'MinValue', 'Name', 'Step',
+            'Unit' ];
+        // Prepend baseNode
+        nodes = _.map(nodes, function(item) {
+          return baseNode + item;
+        });
+        return nodes;
+      }
 
     };
 
