@@ -2,7 +2,7 @@
  * New node file
  */
 
-console.log('testModuleView.js / root');
+console.log('testRecipeView.js / root');
 // SystemTime
 setInterval(function() {
   IO.emit('serverTime', Date().toString());
@@ -10,14 +10,13 @@ setInterval(function() {
 
 exports.index = function(req, res) {
   var jadeData = new Object;
+  var recipeInterface = require('./../models/simpleRecipeInterface');
 
-  var recipeInterface = require('./../models/recipeInterface');
-  // recipeInterface.setRecipeUrl('opc.tcp://localhost:4334/');
-  recipeInterface.setRecipeUrl('opc.tcp://192.168.175.230:4840/');
-  recipeInterface.getAllRecipes(function(recipes) {
+  recipeIdArray = [ 1, 3, 14 ]; // Mockdata
+  recipeInterface.getRecipes(recipeIdArray, function(err, recipes) {
     console.log(recipes);
-    if (recipes.error == 1) {
-      jadeData.error = recipes.err;
+    if (err) {
+      jadeData.error = err;
     } else {
       jadeData.recipes = recipes;
     }
@@ -27,6 +26,12 @@ exports.index = function(req, res) {
   });
 };
 
+/**
+ * View to place the order
+ * 
+ * @post
+ * @author Thomas Frei
+ */
 exports.placeOrder = function(req, res) {
   console.log(req.body);
   console.log(req.query);
@@ -64,6 +69,12 @@ exports.placeOrder = function(req, res) {
   res.end();
 }
 
+/**
+ * Mockup for Bjoern, to develop slider
+ * 
+ * @static
+ * @author Thomas Frei
+ */
 exports.mockup = function(req, res) {
   var jadeData = {
     recipes : [ {

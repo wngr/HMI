@@ -52,6 +52,8 @@ exports.server = function(endPointUrl) {
       /**
        * Disconnect
        * 
+       * @param callback
+       *          <function> optional
        * @async
        */
       disconnect : function(callback) {
@@ -148,9 +150,30 @@ exports.server = function(endPointUrl) {
        * @param objectToWrite
        *          (e.g. {Name: 'Schnaps', UserParameter: [10, 20]})
        * @param callback
+       * @callback func(err)
        */
       mi5WriteObject : function(baseNode, objectToWrite, callback) {
         var nodeDataArray = opcua._convertObjectToNodeDataArray(baseNode, objectToWrite);
+        // console.log(JSON.stringify(nodeDataArray, null, 1));
+        var nodeDataArray = [ {
+          "nodeId" : "ns=4;s=MI5.Order[0].RecipeID",
+          "attributeId" : 13,
+          "value" : {
+            "value" : {
+              "dataType" : opcua.DataType.Int16,
+              "arrayType" : "Scalar",
+              "value" : 5
+            },
+            "statusCode" : {
+              "value" : 0,
+              "description" : "No Error",
+              "name" : "Good"
+            },
+            "sourcePicoseconds" : 0,
+            "serverPicoseconds" : 0
+          }
+        } ];
+
         opcua.session.write(nodeDataArray, callback);
       },
 
