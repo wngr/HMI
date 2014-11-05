@@ -63,3 +63,41 @@ exports.placeOrder = function(req, res) {
   res.render('bootstrap/blank', jadeData);
   res.end();
 }
+
+exports.mockup = function(req, res) {
+  var jadeData = {
+    recipes : [ {
+      ID : {
+        value : 1
+      },
+      Name : {
+        value : 'hi'
+      },
+      Description : {
+        value : 'Das ist eine Description'
+      },
+      parameters : [ {
+        Default : {
+          value : 1
+        },
+        MinValue : {
+          value : 1
+        },
+        MaxValue : {
+          value : 5
+        }
+      }, {
+        Default : {
+          value : 2
+        },
+        MinValue : {
+          value : 1
+        },
+        MaxValue : {
+          value : 3
+        }
+      } ]
+    } ]
+  };
+  res.render('bootstrap/testRecipeView', jadeData);
+}

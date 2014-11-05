@@ -48,53 +48,59 @@ opc.initialize(function(err) {
        *          <array> (e.g. [{nodeId: ..., value: ..., sub...},{},{}]
        * @return
        */
-      function _convertMi5ReadArrayToJade(data) {
-        var recipe = new Array;
+      function _convertMi5ReadArrayRecipeToJade(data) {
+        var NumberOfSubArrayParameters = 5; // Recipe UserParameter[0-5]
+        var NameOfSubArrayObject = 'UserParameters';
+
+        var recipe = new Object;
         data.forEach(function(item) {
           var nodeElements = opcH.splitNodeId(item.nodeId);
-          console.log(nodeElements);
+          // console.log(nodeElements);
           // For Recipe-layer
           if (nodeElements.length == 3) {
             var last = _.last(nodeElements);
             if (!opcH.detectIfArray(last)) {
-              var temp = {};
-              temp[last] = item;
-              recipe.push(temp);
+              recipe[last] = item;
             }
           }
         });
-        var userParameter = new Array;
-        var parameter = 0;
-        data.forEach(function(item) {
-          var nodeElements = opcH.splitNodeId(item.nodeId);
-          console.log(nodeElements);
-          // For UserParameterLayer
-          if (nodeElements.length == 4) {
-            // Last and secondlast element
-            var last = _.last(nodeElements);
-            nodeElements.pop();
-            var secondlast = _.last(nodeElements);
+        var parameterArray = new Array;
+        for (var parameter = 0; parameter <= NumberOfSubArrayParameters; parameter++) {
+          var singleParameterArray = new Object;
+          data.forEach(function(item) {
+            var nodeElements = opcH.splitNodeId(item.nodeId);
+            // console.log(nodeElements);
+            // For UserParameterLayer
+            if (nodeElements.length == 4) { // only work on this level.
+              // Last and secondlast element
+              var last = _.last(nodeElements);
+              nodeElements.pop();
+              var secondlast = _.last(nodeElements);
 
-            // userparemeter (secondlast) only for specified parameter (see above)
-            if (opcH.detectIfArray(secondlast)) {
-              if (parameter == opcH.stripArrayKey(secondlast)) {
-                // var temp = {};
-                // temp[last] = item;
-                // userParameter.push(temp);
-                console.log('now were talking');
+              // userparemeter (secondlast) only for specified parameter (see above)
+              if (opcH.detectIfArray(secondlast)) {
+                if (parameter == opcH.stripArrayKey(secondlast)) {
+                  singleParameterArray[last] = item;
+                  // console.log('now were talking');
+                }
               }
             }
-
-          }
-        });
+          });
+          parameterArray.push(singleParameterArray);
+        }
+        // console.log(parameterArray);
+        recipe[NameOfSubArrayObject] = parameterArray;
 
         return recipe;
       }
 
-      var output = _convertMi5ReadArrayToJade(data);
+      var output = _convertMi5ReadArrayRecipeToJade(data);
+      // console.log(JSON.stringify(output, null, 1));
+      // console.log(output[0].UserParameter);
+      // console.log(output.UserParameters[0].Name);
       console.log(output);
       callback(err);
-    })
+    });
     // console.log(structRecipeBase('MI5.Recipe[0].'));
   }
 
