@@ -6,8 +6,8 @@ GLOBAL.CONFIG = require('./../config.js');
 // nodeServer4334 = require("./../misc/myTestSampleServer.js").newOpcuaServer(4321);
 
 var async = require('async');
-// var opc = require('./../models/simpleOpcua').server('opc.tcp://localhost:4334/');
-var opc = require('./../models/simpleOpcua').server('opc.tcp://192.168.175.230:4840/');
+var opc = require('./../models/simpleOpcua').server('opc.tcp://localhost:4334/');
+// var opc = require('./../models/simpleOpcua').server('opc.tcp://192.168.175.230:4840/');
 var opcH = require('./../models/simpleOpcuaHelper');
 
 opc.initialize(function(err) {
@@ -70,13 +70,19 @@ opc.initialize(function(err) {
           console.log(nodeElements);
           // For UserParameterLayer
           if (nodeElements.length == 4) {
+            // Last and secondlast element
             var last = _.last(nodeElements);
             nodeElements.pop();
             var secondlast = _.last(nodeElements);
-            if (!opcH.detectIfArray(last)) {
-              var temp = {};
-              temp[last] = item;
-              userParameter.push(temp);
+
+            // userparemeter (secondlast) only for specified parameter (see above)
+            if (opcH.detectIfArray(secondlast)) {
+              if (parameter == opcH.stripArrayKey(secondlast)) {
+                // var temp = {};
+                // temp[last] = item;
+                // userParameter.push(temp);
+                console.log('now were talking');
+              }
             }
 
           }
