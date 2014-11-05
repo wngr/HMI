@@ -61,3 +61,17 @@ function _stripArray(node) {
   var result = node.match(exp);
   return result[0];
 }
+exports.stripArray = _stripArray;
+
+/**
+ * 
+ * @param node
+ *          <string> (e.g. 'Recipe[0]')
+ * @return <string> (e.g. 0)
+ */
+function _stripArrayKey(node) {
+  var exp = /([0-9])+/
+  var result = node.match(exp);
+  return result[1];
+}
+exports.stripArrayKey = _stripArrayKey;

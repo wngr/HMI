@@ -74,10 +74,22 @@ function detectArrayElement(node){
 
 //detect if array:
 function stripArray(node){
-  var exp = /\w*/
-  var result = node.match(exp);
-  return result[0];
+var exp = /\w*/
+var result = node.match(exp);
+return result[0];
 }
+//detect if array:
+function stripArrayKey(node){
+  var exp = /([0-9]+)/
+  var result = node.match(exp);
+  return result[1];
+}
+
+console.log('es sollte', stripArrayKey('Test[4]'));
+
+console.log('))))))))))))))))))))))))))))))))))))))');
+console.log('))))))))))))))))))))))))))))))))))))))');
+console.log('))))))))))))))))))))))))))))))))))))))');
 
 console.log(_.map(result, function(item){ return detectIfArray(item); }));
 console.log(_.map(result, function(item){ return detectArrayElement(item); }));

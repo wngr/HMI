@@ -39,7 +39,7 @@ opc.initialize(function(err) {
   function(callback) {
     var recipe = opc._structRecipeBase('MI5.Recipe[0].');
     opc.mi5ReadArray(recipe, function(err, data) {
-      console.log(data);
+      // console.log(data);
 
       /**
        * Create Jade-Compatible Array
@@ -49,27 +49,40 @@ opc.initialize(function(err) {
        * @return
        */
       function _convertMi5ReadArrayToJade(data) {
-        var jade = new Array;
+        var recipe = new Array;
         data.forEach(function(item) {
-          var nodeIdSplit = opcH.splitNodeId(item.nodeId);
-          console.log(nodeIdSplit);
-
-          // Top Layer
-
-          var depth = 0;
-          nodeIdSplit.forEach(function(node) {
-            var arrayNumber = opcH.detectArrayElement(node);
-            if (arrayNumber) {
-              // Array Element
-              console.log(arrayNumber);
-            } else {
-              // Normal Element
-              jade[node] = item
+          var nodeElements = opcH.splitNodeId(item.nodeId);
+          console.log(nodeElements);
+          // For Recipe-layer
+          if (nodeElements.length == 3) {
+            var last = _.last(nodeElements);
+            if (!opcH.detectIfArray(last)) {
+              var temp = {};
+              temp[last] = item;
+              recipe.push(temp);
             }
-            depth++;
-          });
+          }
         });
-        return jade;
+        var userParameter = new Array;
+        var parameter = 0;
+        data.forEach(function(item) {
+          var nodeElements = opcH.splitNodeId(item.nodeId);
+          console.log(nodeElements);
+          // For UserParameterLayer
+          if (nodeElements.length == 4) {
+            var last = _.last(nodeElements);
+            nodeElements.pop();
+            var secondlast = _.last(nodeElements);
+            if (!opcH.detectIfArray(last)) {
+              var temp = {};
+              temp[last] = item;
+              userParameter.push(temp);
+            }
+
+          }
+        });
+
+        return recipe;
       }
 
       var output = _convertMi5ReadArrayToJade(data);
