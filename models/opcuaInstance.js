@@ -89,17 +89,10 @@ exports.server = function(endPointUrl) {
       },
 
       disconnect : function() {
-        if (isNested(this)) {
-          opcua.client.disconnect(function() {
-            console.log('OK - disconnect()');
-          });
-          opcua.emit('disconnected');
-        } else {
-          this.client.disconnect(function() {
-            console.log('OK - disconnect()');
-          });
-          this.emit('disconnected');
-        }
+        opcua.client.disconnect(function() {
+          console.log('OK - disconnect()');
+        });
+        opcua.emit('disconnected');
       },
 
       browse : function(folder) {
@@ -425,6 +418,7 @@ exports.server = function(endPointUrl) {
       readArrayCB : function(nodeIdArrayToRead, callback) {
         var max_age = 0, nodes = opcua.addNamespaceAndAttributeIdToNodeId(nodeIdArrayToRead);
         // console.log('OK - ReadArray Called');
+        console.log(nodes);
         opcua.session.read(nodes, max_age, callback);
       },
 
@@ -571,8 +565,7 @@ exports.server = function(endPointUrl) {
         if (err) {
           console.log('ERR - ' + errmsg);
           console.log(err);
-          // this.client.disconnect(function(){ console.log('disconnect() after ERR'); });
-          // this.disconnect();
+          opcua.emit('err', err);
           return false;
         } else {
           console.log('OK - ' + sucmsg);

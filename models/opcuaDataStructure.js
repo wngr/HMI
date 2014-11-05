@@ -18,7 +18,7 @@ function ParameterOutputSingle(nodeIdToParameterSet, numberOfParameter) {
   // var endParameter = 0; // for i=0 i<=0 //on time
   var parameterArray = [ 'Dummy', 'ID', 'Name', 'Unit', 'Required', 'Default', 'MinValue',
       'MaxValue' ];
-  var path = nodeIdToParameterSet + '.ParameterOutput' + numberOfParameter + '.';
+  var path = nodeIdToParameterSet + '[' + numberOfParameter + '].';
 
   // Add the path to the node
   parameterArray = _.map(parameterArray, function(node) {
@@ -40,7 +40,7 @@ exports.ParameterOutputSingle = ParameterOutputSingle;
 function ParameterInputSingle(nodeIdToParameterSet, numberOfParameter) {
   // var endParameter = 0; // for i=0 i<=0 //on time
   var parameterArray = [ 'Value', 'StringValue' ];
-  var path = nodeIdToParameterSet + '.ParameterInput' + numberOfParameter + '.';
+  var path = nodeIdToParameterSet + '[' + numberOfParameter + '].';
 
   // Add the path to the node
   parameterArray = _.map(parameterArray, function(node) {
@@ -61,7 +61,7 @@ exports.ParameterInputSingle = ParameterInputSingle;
  */
 function SkillOutputSingle(nodeIdToSkillOutput, numberOfSkill) {
   var skillArray = [ 'Dummy', 'ID', 'Name', 'Activated', 'Ready', 'Busy', 'Done', 'Error' ];
-  var path = nodeIdToSkillOutput + '.SkillOutput' + numberOfSkill + '.';
+  var path = nodeIdToSkillOutput + '[' + numberOfSkill + '].';
 
   // Add the path to every node
   skillArray = _.map(skillArray, function(node) {
@@ -82,7 +82,7 @@ exports.SkillOutputSingle = SkillOutputSingle;
  */
 function SkillInputSingle(nodeIdToSkill, numberOfSkill) {
   var skillArray = [ 'Execute' ];
-  var path = nodeIdToSkill + '.SkillInput' + numberOfSkill + '.';
+  var path = nodeIdToSkill + '[' + numberOfSkill + '].';
 
   // Add the path to every node
   skillArray = _.map(skillArray, function(node) {

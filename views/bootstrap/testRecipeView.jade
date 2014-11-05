@@ -8,6 +8,12 @@ block content
         ul
             li Systemtime
                 div#serverTime ...
+        if error
+            h1 ERROR
+            p= error.Error
+            p= error.code
+            p= error.errno
+            p= error.syscal
                     
      
      if recipes
