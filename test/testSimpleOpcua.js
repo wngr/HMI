@@ -8,7 +8,8 @@ GLOBAL.CONFIG = require('./../config.js');
 var async = require('async');
 var opc = require('./../models/simpleOpcua').server('opc.tcp://localhost:4334/');
 // var opc = require('./../models/simpleOpcua').server('opc.tcp://192.168.175.230:4840/');
-var opcH = require('./../models/simpleOpcuaHelper');
+GLOBAL.opcH = require('./../models/simpleOpcuaHelper');
+var jadeH = require('./../models/simpleJadeHelper');
 
 opc.initialize(function(err) {
   if (err) {
@@ -41,60 +42,7 @@ opc.initialize(function(err) {
     opc.mi5ReadArray(recipe, function(err, data) {
       // console.log(data);
 
-      /**
-       * Create Jade-Compatible Array
-       * 
-       * @param data
-       *          <array> (e.g. [{nodeId: ..., value: ..., sub...},{},{}]
-       * @return
-       */
-      function _convertMi5ReadArrayRecipeToJade(data) {
-        var NumberOfSubArrayParameters = 5; // Recipe UserParameter[0-5]
-        var NameOfSubArrayObject = 'UserParameters';
-
-        var recipe = new Object;
-        data.forEach(function(item) {
-          var nodeElements = opcH.splitNodeId(item.nodeId);
-          // console.log(nodeElements);
-          // For Recipe-layer
-          if (nodeElements.length == 3) {
-            var last = _.last(nodeElements);
-            if (!opcH.detectIfArray(last)) {
-              recipe[last] = item;
-            }
-          }
-        });
-        var parameterArray = new Array;
-        for (var parameter = 0; parameter <= NumberOfSubArrayParameters; parameter++) {
-          var singleParameterArray = new Object;
-          data.forEach(function(item) {
-            var nodeElements = opcH.splitNodeId(item.nodeId);
-            // console.log(nodeElements);
-            // For UserParameterLayer
-            if (nodeElements.length == 4) { // only work on this level.
-              // Last and secondlast element
-              var last = _.last(nodeElements);
-              nodeElements.pop();
-              var secondlast = _.last(nodeElements);
-
-              // userparemeter (secondlast) only for specified parameter (see above)
-              if (opcH.detectIfArray(secondlast)) {
-                if (parameter == opcH.stripArrayKey(secondlast)) {
-                  singleParameterArray[last] = item;
-                  // console.log('now were talking');
-                }
-              }
-            }
-          });
-          parameterArray.push(singleParameterArray);
-        }
-        // console.log(parameterArray);
-        recipe[NameOfSubArrayObject] = parameterArray;
-
-        return recipe;
-      }
-
-      var output = _convertMi5ReadArrayRecipeToJade(data);
+      var output = jadeH.convertMi5ReadArrayRecipeToJade(data);
       // console.log(JSON.stringify(output, null, 1));
       // console.log(output[0].UserParameter);
       // console.log(output.UserParameters[0].Name);

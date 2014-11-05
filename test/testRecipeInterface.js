@@ -17,14 +17,14 @@ GLOBAL.IO = require('socket.io').listen(server);
 GLOBAL._ = require('underscore');
 GLOBAL.md5 = require('MD5');
 
-var recipeInterface = require('./../models/recipeInterface');
-recipeInterface.setRecipeUrl('opc.tcp://localhost:4334/');
+var recipeInterface = require('./../models/simpleRecipeInterface');
+// recipeInterface.setRecipeUrl('opc.tcp://localhost:4334/');
 // recipeInterface.setRecipeUrl('opc.tcp://192.168.175.230:4840/');
 
 // Test for all recipes -- first
-recipeInterface.getAllRecipes(function(recipes) {
-  console.log(recipes);
-});
+// recipeInterface.getAllRecipes(function(recipes) {
+// console.log(recipes);
+// });
 
 // Test for recipeIdArray
 // recipeInterface.getRecipes([ 0, 2 ], function(recipes) {
@@ -36,6 +36,7 @@ recipeInterface.getAllRecipes(function(recipes) {
 // console.log('QueueReady');
 // });
 
-// recipeInterface.order(0, [ 40, 20 ], 3, function() {
-// console.log('order executed');
-// });
+recipeInterface.order(12, [ 40, 20 ], function(err) {
+  console.log('order executed');
+  console.log(err);
+});

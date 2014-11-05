@@ -18,12 +18,12 @@ block content
      
      if recipes
         for recipe in recipes
-          //- console.log(recipe.parameters)
+          //- console.log(recipe.UserParameters)
           div.col-xs-12.well
-            p (#{recipe.ID.value}) #{recipe.Name.value} - halloho
+            p (#{recipe.RecipeID.value}) #{recipe.Name.value} - halloho
             p= recipe.Description.value
-            form.form-horizontal(role="form", action="?recipeId="+recipe.ID.value, method="POST")
-                for parameter in recipe.parameters
+            form.form-horizontal(role="form", action="?recipeId="+recipe.RecipeID.value, method="POST")
+                for parameter in recipe.UserParameters
                     //- console.log(parameter)
                     +userParameterInForm(parameter.Default.value, parameter.MinValue.value, parameter.MaxValue.value)
                     p Slider on this level
