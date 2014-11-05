@@ -27,6 +27,7 @@ exports.router = function(app) {
   app.get('/testModuleView', testModuleView.completeModule);
   app.get('/testRecipeView', testRecipeView.index);
   app.post('/testRecipeView', testRecipeView.placeOrder);
+  app.get('/testRecipeViewMock', testRecipeView.mockup);
   // app.get('/orderRecipe' )
   return app;
 };

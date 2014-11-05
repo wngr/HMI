@@ -18,12 +18,15 @@ block content
      
      if recipes
         for recipe in recipes
+          //- console.log(recipe.parameters)
           div.col-xs-12.well
-            p (#{recipe.ID.value}) #{recipe.Name.value}
+            p (#{recipe.ID.value}) #{recipe.Name.value} - halloho
             p= recipe.Description.value
             form.form-horizontal(role="form", action="?recipeId="+recipe.ID.value, method="POST")
                 for parameter in recipe.parameters
-                    +userParameterInForm(parameter.Default.value, parameter.MinValue.value, parameter.MaxValue.value) 
+                    //- console.log(parameter)
+                    +userParameterInForm(parameter.Default.value, parameter.MinValue.value, parameter.MaxValue.value)
+                    p Slider on this level
                 button.btn.btn-default(type="submit") Place your order
      else
         div.col-xs-12.well       
