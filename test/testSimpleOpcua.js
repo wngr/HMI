@@ -6,8 +6,8 @@ GLOBAL.CONFIG = require('./../config.js');
 // nodeServer4334 = require("./../misc/myTestSampleServer.js").newOpcuaServer(4321);
 
 var async = require('async');
-var opc = require('./../models/simpleOpcua').server('opc.tcp://localhost:4334/');
-// var opc = require('./../models/simpleOpcua').server('opc.tcp://192.168.175.230:4840/');
+// var opc = require('./../models/simpleOpcua').server('opc.tcp://localhost:4334/');
+var opc = require('./../models/simpleOpcua').server('opc.tcp://192.168.175.230:4840/');
 GLOBAL.opcH = require('./../models/simpleOpcuaHelper');
 var jadeH = require('./../models/simpleJadeHelper');
 
@@ -20,7 +20,8 @@ opc.initialize(function(err) {
   console.log('initialized');
 
   // opc.mi5Subscribe();
-  // var mon = opc.mi5Monitor('MI5.Queue.Queue0.UserParameter.UserParameter0.Value');
+  // var mon = opc.mi5Monitor('<mi5
+  // class="Q"></mi5>ueue.Queue0.UserParameter.UserParameter0.Value');
   // mon.on("changed", function(data) {
   // console.log('CHANGED', data);
   // });
@@ -37,19 +38,46 @@ opc.initialize(function(err) {
   // });
   // },
 
+  // function(callback) {
+  // /*
+  // * Test Recipe Read
+  // */
+  // var recipe = opc._structRecipeBase('MI5.Recipe[0].');
+  // opc.mi5ReadArray(recipe, function(err, data) {
+  // // console.log(data);
+  //
+  // var output = jadeH.convertMi5ReadArrayRecipeToJade(data);
+  // // console.log(JSON.stringify(output, null, 1));
+  // console.log(JSON.stringify(output, null, 1));
+  // callback(err);
+  // });
+  // // console.log(structRecipeBase('MI5.Recipe[0].'));
+  // },
   function(callback) {
-    var recipe = opc._structRecipeBase('MI5.Recipe[0].');
-    opc.mi5ReadArray(recipe, function(err, data) {
-      // console.log(data);
-
-      var output = jadeH.convertMi5ReadArrayRecipeToJade(data);
-      // console.log(JSON.stringify(output, null, 1));
-      // console.log(output[0].UserParameter);
-      // console.log(output.UserParameters[0].Name);
-      console.log(output);
-      callback(err);
+    /*
+     * Test Recipe Read
+     */
+    // opc.mi5WriteOrder(baseNode, order, userParameter, function(err) {
+    var dataObject = {
+      Name : '647372737',
+      TaskID : 6798,
+      Description : '6798',
+      RecipeID : 6789,
+      Locked : false,
+      Pending : true
+    };
+    var userParameters = [ {
+      Value : 666789
+    }, {
+      Value : 7312
+    }, {
+      Value : 9987
+    } ];
+    opc.mi5WriteOrder('MI5.Order[0].', dataObject, userParameters, function(err, bla, blubb) {
+      console.log('write done');
+      callback(err, bla, blubb);
     });
-    // console.log(structRecipeBase('MI5.Recipe[0].'));
+
   }
 
   // function(callback) {
