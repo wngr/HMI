@@ -140,113 +140,125 @@ exports.server = function(endPointUrl) {
       },
 
       /**
-       * Writes a whole Object to OPC UA
+       * Writes an order
        * 
-       * Accepts objects with nested Arrays
        * 
        * @async
        * @param baseNode
-       *          (e.g. 'MI5.Queue.Queu.0')
-       * @param objectToWrite
-       *          (e.g. {Name: 'Schnaps', UserParameter: [10, 20]})
+       *          (e.g. 'MI5.Order[X]')
+       * @param order
+       *          <object> (e.g. {Name: 'Schnaps', Description: 'Das ist "eetwas"'})
+       * @param userParameter
+       *          <array> (e.g. [{Value: 16}, {Value: 1}]
        * @param callback
        * @callback func(err)
        */
-      mi5WriteObject : function(baseNode, objectToWrite, callback) {
-        var nodeDataArray = opcua._convertObjectToNodeDataArray(baseNode, objectToWrite);
-        // console.log(JSON.stringify(nodeDataArray, null, 1));
-        var nodeDataArray = [ {
-          "nodeId" : "ns=4;s=MI5.Order[0].RecipeID",
-          "attributeId" : 13,
-          "value" : {
-            "value" : {
-              "dataType" : opcua.DataType.Int16,
-              "arrayType" : "Scalar",
-              "value" : 5
-            },
-            "statusCode" : {
-              "value" : 0,
-              "description" : "No Error",
-              "name" : "Good"
-            },
-            "sourcePicoseconds" : 0,
-            "serverPicoseconds" : 0
-          }
-        } ];
+      mi5WriteOrder : function(baseNode, order, userParameters, callback) {
+        var mapping = require('./simpleDataTypeMapping');
+        var nodeDataArray = [];
 
+        // handle Order
+        assert(_.isObject(order));
+        nodeDataArray.push(opcua._convertMi5ListToNodeData(baseNode, order, mapping.Mi5Order));
+
+        // handle UserParameters
+        assert(_.isArray(userParameters));
+        assert(userParameters.length <= 6);
+        for (var i = 0; i < userParameters.length; i++) {
+          var userParameter = userParameters[i];
+          var tempBaseNode = baseNode + 'UserParameter[' + i + '].';
+
+          var nodeData = opcua._convertMi5ListToNodeData(tempBaseNode, userParameter,
+              mapping.Mi5OrderUserParameter);
+          nodeDataArray.push(nodeData);
+        }
+        nodeDataArray = _.flatten(nodeDataArray, true);
         opcua.session.write(nodeDataArray, callback);
       },
 
       /**
-       * convert an Object with one dimension of nested arrays to the NodeDataArray
+       * convert list to an array of NodeData
        * 
-       * ``` var baseNode = 'ns=4;s=MI5.Queue.Queue0.'; var object = { Name : 'Schnaps', Description :
-       * 'Special Order for Thomas Frei', RecipeID : 12, TaskID : 1337, Parameters : [ { value : 12 }, {
-       * value : 14 } ] }; ```
+       * If you use this function multiple times in a specific write method, you need to use
+       * upper.push() with the return value of this function, and then later flatten it again by
+       * one! (_.flatten(array,true);)
+       * 
+       * <pre>
+       * var baseNode = 'ns=4;s=MI5.Order.0.';
+       * var dataObject = {
+       *   Name : 'hallo',
+       *   Description : 'text',
+       *   RecipeID : 123,
+       *   Locked : true
+       * };
+       * </pre>
        * 
        * @needs opcua-Object
        * 
        * @param baseNode
        *          (e.g. 'MI5.Queue.Queue0')
-       * @param object
+       * @param list
+       *          <object> {Name: 'hallo', Locked: true}
+       * @param mapping
+       *          <Function> Returns DataType for a VariableName
        * @returns {Array}
+       * 
        */
-      _convertObjectToNodeDataArray : function(baseNode, dataObject) {
+      _convertMi5ListToNodeData : function(baseNode, list, mapping) {
         var nodeDataArray = new Array;
-
         baseNode = opcua._checkBaseNode(baseNode);
 
-        // Help Function for data-structure of NodeDataArrayEntry
-        function thisCreateNodeArrayEntry(baseNode, nodeIdSuffix, value) {
-          if (!isNaN(value)) { // is not a numeric, so if it is a numeric:
-            var type = nodeopcua.DataType.Double;
-            value = parseInt(value);
-          } else if (_.isString(value)) {
-            var type = nodeopcua.DataType.String;
-          } else {
-            console.log('ERR - no Datatype recognized:', value);
-          }
+        _.keys(list).forEach(function(key) {
+          nodeDataArray.push(opcua._structNodeData(baseNode + key, list[key], mapping(key)));
+        });
 
-          // NodeDataArrayEntry structure
-          nodeData = {
-            nodeId : baseNode + nodeIdSuffix,
-            attributeId : 13,
-            value : new nodeopcua.DataValue({
-              value : new nodeopcua.Variant({
-                dataType : type,
-                value : value
-              })
-            })
-          };
+        console.log(JSON.stringify(nodeDataArray, null, 1)); // debug
+        return nodeDataArray;
+      },
 
-          return nodeData;
+      /**
+       * Creates a nodeData Struct for the array
+       * 
+       * @param nodeId
+       *          <string> nodeId to value (e.g. MI5.Order[0].TaskID)
+       * @param value
+       *          <scalar> the value to write (e.g. "hallo", 1, 23, 2.5, true)
+       * @param type
+       *          <string> corresponding type (e.g. String, Int16, Int32, Float, Boolean)
+       * @return <nodeData>
+       */
+      _structNodeData : function(nodeId, value, type) {
+        assert(typeof nodeId === 'string');
+        assert(typeof type === 'string');
+        // Match Datatypes:
+        if (type === 'String') {
+          type = nodeopcua.DataType.String;
+        } else if (type === 'Double') {
+          type = nodeopcua.DataType.Double
+        } else if (type === 'Float') {
+          type = nodeopcua.DataType.Float
+        } else if (type === 'Int16') {
+          type = nodeopcua.DataType.Int16
+        } else if (type === 'Boolean') {
+          type = nodeopcua.DataType.Boolean
+        } else {
+          console.log('Datatype is not supported by simpleOpcua Model');
+          assert(false); // TODO: nicer way
         }
 
-        // loop over the elements in the given object
-        _.keys(dataObject).forEach(
-            function(name) {
-              if (_.isArray(dataObject[name])) {
-                // Loop over elements and adapt the baseNode and NodeSuffix to react to array
-                // structure
-                // on OPC UA
-                dataObject[name].forEach(function(value, key) {
-                  // value (e.g. [{value: 1, busy: 0}]
-                  _.keys(value).forEach(
-                      // looping over ['value','busy']
-                      function(name2) { // name2 (e.g. value, busy)
-                        tempEntry = thisCreateNodeArrayEntry(baseNode + name + "." + name + key
-                            + ".", name2, value[name2]); // value[name2] (e.g. 1,0)
-                      });
-                  nodeDataArray.push(tempEntry);
-                });
-              } else {
-                tempEntry = thisCreateNodeArrayEntry(baseNode, name, dataObject[name]);
-                nodeDataArray.push(tempEntry);
-              }
-            });
+        // NodeDataArrayEntry structure
+        nodeData = {
+          nodeId : nodeId,
+          attributeId : 13,
+          value : new nodeopcua.DataValue({
+            value : new nodeopcua.Variant({
+              dataType : type,
+              value : value
+            })
+          })
+        };
 
-        // console.log(JSON.stringify(nodeDataArray, null, 1));
-        return nodeDataArray;
+        return nodeData;
       },
 
       /**
