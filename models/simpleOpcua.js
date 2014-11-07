@@ -229,6 +229,35 @@ exports.server = function(endPointUrl) {
        */
       _structNodeData : function(nodeId, value, type) {
         assert(typeof nodeId === 'string');
+        type = opcua._convertDataType(type);
+
+        // NodeDataArrayEntry structure
+        nodeData = {
+          nodeId : nodeId,
+          attributeId : 13,
+          value : new nodeopcua.DataValue({
+            value : new nodeopcua.Variant({
+              dataType : type,
+              value : value
+            })
+          })
+        };
+
+        return nodeData;
+      },
+
+      /**
+       * returns Node-OPCUA Datatype according to normal datatype.
+       * 
+       * @param nodeId
+       *          <string> nodeId to value (e.g. MI5.Order[0].TaskID)
+       * @param value
+       *          <scalar> the value to write (e.g. "hallo", 1, 23, 2.5, true)
+       * @param type
+       *          <string> corresponding type (e.g. String, Int16, Int32, Float, Boolean)
+       * @return <nodeData>
+       */
+      _convertDataType : function(type) {
         assert(typeof type === 'string');
         // Match Datatypes:
         if (type === 'String') {
@@ -247,18 +276,7 @@ exports.server = function(endPointUrl) {
         }
 
         // NodeDataArrayEntry structure
-        nodeData = {
-          nodeId : nodeId,
-          attributeId : 13,
-          value : new nodeopcua.DataValue({
-            value : new nodeopcua.Variant({
-              dataType : type,
-              value : value
-            })
-          })
-        };
-
-        return nodeData;
+        return type;
       },
 
       /**
