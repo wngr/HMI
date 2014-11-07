@@ -17,7 +17,7 @@ var opcuaDataStructure = require('./opcuaDataStructure');
  */
 function getRecipes(recipeIdArray, callback) {
 
-  var opc = require('./../models/simpleOpcua').server('opc.tcp://192.168.175.209:4840/');
+  var opc = require('./../models/simpleOpcua').server('opc.tcp://192.168.175.230:4840/');
   opc.initialize(function(err) {
     if (err) {
       console.log(err);
@@ -25,7 +25,7 @@ function getRecipes(recipeIdArray, callback) {
       return 0;
     }
 
-    recipesArray = new Array;
+    recipesArray = [];
     // Loop
     recipeIdArray.forEach(function(id) {
       var recipe = opc._structRecipeBase('MI5.Recipe[' + id + '].');
