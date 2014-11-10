@@ -6,9 +6,7 @@
  * @author Thomas Frei
  * @date 2014-11-03
  */
-var opcH = require('./simpleOpcuaHelper');
 var jadeH = require('./simpleJadeHelper');
-var opcuaDataStructure = require('./opcuaDataStructure');
 
 /**
  * Get recipes
@@ -71,20 +69,18 @@ exports.getAllRecipes = getAllRecipes;
 
 /**
  * 
+ * 
  * @async
  * @param recipeId
  * @param userparameters
  * @callback callback(taskId)
  */
-function order(order, userParameters, callback) {
+function setOrder(order, userParameters, callback) {
   var assert = require('assert');
   assert(typeof callback === 'function');
   assert(typeof order === 'object');
   assert(_.isArray(userParameters));
 
-  // HMI Dev
-  // var opc = require('./../models/simpleOpcua').server('opc.tcp://192.168.175.209:4840/');
-  // Real XTS
   var opc = require('./../models/simpleOpcua').server(CONFIG.OPCUAOrder);
   opc.initialize(function(err) {
     if (err) {
@@ -105,7 +101,7 @@ function order(order, userParameters, callback) {
           opc.mi5WriteOrder('MI5.Order[0]', order, userParameters, callback);
         } ], function(err) {
           opc.disconnect();
-          callback(err);
+          callback(err); // final callback
         });
       } else {
         // no action, wait until queue is ready
@@ -116,4 +112,4 @@ function order(order, userParameters, callback) {
   });
 
 }
-exports.order = order;
+exports.setOrder = setOrder;

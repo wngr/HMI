@@ -45,21 +45,12 @@ function placeOrder(req, res) {
   }
 
   // Parse UserParameters Array
-  var userParameters = new Array;
-  if (postParameters) {
-    postParameters.forEach(function(value) {
-      userParameters.push({
-        Value : parseFloat(value)
-      });
-    });
-  } else {
-    // do nothing
-  }
+  var userParameters = _handlePostParameters(postParameters);
 
   // Debug
   console.log(order, userParameters);
 
-  recipeInterface.order(order, userParameters, function(err, callback) {
+  recipeInterface.setOrder(order, userParameters, function(err, callback) {
     if (err) {
       var jadeData = {
         content : 'Error',
@@ -82,6 +73,29 @@ function placeOrder(req, res) {
 
 }
 exports.placeOrder = placeOrder;
+
+function _handlePostParameters(postParameters) {
+  var userParameters = new Array;
+
+  if (postParameters) {
+    if (_.isArray(postParameters)) {
+      // Handle Array (1+ parameter)
+      postParameters.forEach(function(value) {
+        userParameters.push({
+          Value : parseFloat(value)
+        });
+      });
+    } else {
+      // Handle 1 parameter
+      userParameters.push({
+        Value : parseFloat(postParameters)
+      });
+    }
+    return userParameters;
+  } else {
+    return userParameters; // empty array
+  }
+}
 
 /**
  * Mockup for Bjoern, to develop slider

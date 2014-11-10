@@ -172,7 +172,9 @@ exports.server = function(endPointUrl) {
               mapping.Mi5OrderUserParameter);
           nodeDataArray.push(nodeData);
         }
+        // .push adds an array to an array => flatten one dimension
         nodeDataArray = _.flatten(nodeDataArray, true);
+
         opcua.session.write(nodeDataArray, callback);
       },
 
@@ -212,7 +214,7 @@ exports.server = function(endPointUrl) {
           nodeDataArray.push(opcua._structNodeData(baseNode + key, list[key], mapping(key)));
         });
 
-        console.log(JSON.stringify(nodeDataArray, null, 1)); // debug
+        // console.log(JSON.stringify(nodeDataArray, null, 1)); // debug
         return nodeDataArray;
       },
 
