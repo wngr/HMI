@@ -497,6 +497,22 @@ exports.server = function(endPointUrl) {
           return baseNode + item;
         });
         return nodes;
+      },
+
+      /**
+       * 
+       * @param baseNode
+       *          string
+       * @return array
+       */
+      _structMessageFeed : function(baseNode) {
+        var nodes = [ 'ID', 'Level', 'Message', 'Timestamp' ];
+        // Prepend baseNode
+        nodes = _.map(nodes, function(item) {
+          return baseNode + item;
+        });
+
+        return nodes;
       }
 
     };
