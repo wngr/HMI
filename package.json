@@ -8,14 +8,15 @@
     "test": "mocha"
   },
   "dependencies": {
+    "MD5": "*",
+    "async": "*",
     "express": "3.2.6",
     "jade": "*",
+    "mongodb": "^1.4.19",
     "node-opcua": "*",
-    "async": "*",
-    "socket.io": "latest",
     "openssl": "*",
-    "underscore": "*",
-    "MD5": "*"
+    "socket.io": "latest",
+    "underscore": "*"
   },
   "devDependencies": {
     "jscs": "^1.7.3",

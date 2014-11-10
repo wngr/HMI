@@ -1,20 +1,16 @@
 /**
- * New node file
+ * Router File
  */
-
 var hmiDev = require('./hmidev');
-var testBootstrap = require('./testBootstrap');
-// var dashBoard = require('./routes/dashboard');
-var testJonas = require('./testJonas');
+var recipeView = require('./recipeView');
 var testModuleView = require('./testModuleView');
-var testRecipeView = require('./testRecipeView');
 
 function index(req, res) {
   jadeData = {
     content : 'Overview of all the testing modules that are available',
     list : [ {
-      href : 'testModuleView',
-      title : 'Module View (Test)'
+      href : 'testRecipeView',
+      title : 'Recipe View (Test)'
     } ]
   }
   res.render('./bootstrap/blank', jadeData);
@@ -22,21 +18,23 @@ function index(req, res) {
 
 exports.router = function(app) {
   app.get('/', index);
-  app.get('/testBootstrap', testBootstrap.index);
-  app.get('/testJonas', testJonas.index);
-  app.get('/testModuleView', testModuleView.completeModule);
-  app.get('/testRecipeView', testRecipeView.index);
-  app.post('/testRecipeView', testRecipeView.placeOrder);
-  app.get('/testRecipeViewMock', testRecipeView.mockup);
-  app.post('/testRecipeViewMock', testRecipeView.placeOrder);
+  app.get('/testModuleView', testModuleView.index)
+  app.get('/testRecipeView', recipeView.index);
+  app.post('/testRecipeView', recipeView.placeOrder);
+  app.get('/testRecipeViewMock', recipeView.mockup);
   // app.get('/orderRecipe' )
   return app;
 };
 
-/**
+/*
  * Socket Events
  */
 // SystemTime
 setInterval(function() {
   IO.emit('serverTime', Date().toString());
 }, 1000);
+
+/*
+ * MessageFeedHandler
+ */
+messageFeed = require('./messageFeed');

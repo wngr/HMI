@@ -52,3 +52,27 @@ function Mi5OrderUserParameter(variableName) {
 
 }
 exports.Mi5OrderUserParameter = Mi5OrderUserParameter;
+
+function Mi5MessageFeed(variableName) {
+  assert(typeof variableName === "string");
+  var type;
+
+  switch (variableName) {
+  case "ID":
+  case "Level":
+    type = 'Int16';
+    break;
+  case "Message":
+  case "Timestamp":
+    type = 'String';
+    break;
+  default:
+    console.log('According to the Orderlist, the given variableName does not exist');
+    // assert(false);
+    break;
+  }
+
+  return type;
+
+}
+exports.Mi5OrderUserParameter = Mi5OrderUserParameter;
