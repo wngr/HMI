@@ -8,28 +8,16 @@
  * @date 2014-10-10
  */
 
-/**
- * endpointUrl to the OPC UA Server.
+/*
+ * OPCUA Servers 
  */
-exports.endpointUrl = 'opc.tcp://localhost:4334/UA/SampleServer';
-//exports.endpointUrl = "opc.tcp://192.168.175.230:4840";
-
-/**
- * Exit Node-JS Application after n seconds. 
- */
-//exports.terminateAfterTimeout = 20*1000;
-
-/**
- * Terminates the application after disconnect
- */
-exports.terminateAfterDisconnect = true;
-
-exports.taskId = 1;
+exports.OPCUARecipe = 'opc.tcp://192.168.175.230:4840/'; //.209 for virtual machine hmidev
+exports.OPCUAOrder = 'opc.tcp://192.168.175.230:4840/';
 
 /*
- * MessageFeed
+ * Starting TaskID, will be incremented during program
  */
-exports.messageFeedUrl = 'opc.tcp://192.168.175.230:4840';
+exports.TaskId = 1;
 
 function ModuleIdEndpointUrl(moduleId){
   var endpointUrl = '';
