@@ -1,24 +1,20 @@
 /**
- * New node file
+ * Recipe View Router
  */
-
-console.log('testRecipeView.js / root');
-// SystemTime
-setInterval(function() {
-  IO.emit('serverTime', Date().toString());
-}, 1000);
 
 function index(req, res) {
   var jadeData = new Object;
   var recipeInterface = require('./../models/simpleRecipeInterface');
 
-  recipeIdArray = [ 1, 2 ]; // Mockdata
-  recipeInterface.getRecipes(recipeIdArray, function(err, recipes) {
+  // recipeIdArray = [ 0, 1 ];
+  // recipeInterface.getRecipes(recipeIdArray, function(err, recipes) {
+  recipeInterface.getAllRecipes(function(err, recipes) {
     if (err) {
       jadeData.error = err;
     } else {
       jadeData.recipes = recipes;
-      console.log(JSON.stringify(recipes));
+      // console.log(JSON.stringify(recipes, null, 1));
+      console.log('jadeDate recipes added');
     }
 
     res.render('bootstrap/testRecipeView', jadeData);
@@ -34,40 +30,56 @@ exports.index = index;
  * @author Thomas Frei
  */
 function placeOrder(req, res) {
-  console.log(req.body);
-  console.log(req.query);
+  var recipeInterface = require('./../models/simpleRecipeInterface');
+
   var recipeId = req.query.recipeId;
-
-  //
-  var taskId = _.uniqueId();
-
   var postParameters = req.body.userparameter;
+
+  var taskId = CONFIG.TaskId++;
+
+  // Parse Order Object
+  var order = {
+    Pending : true,
+    RecipeID : parseInt(recipeId),
+    TaskID : parseInt(taskId),
+  }
+
+  // Parse UserParameters Array
   var userParameters = new Array;
-  postParameters.forEach(function(value) {
-    userParameters.push({
-      Value : value
+  if (postParameters) {
+    postParameters.forEach(function(value) {
+      userParameters.push({
+        Value : parseFloat(value)
+      });
     });
+  } else {
+    // do nothing
+  }
+
+  // Debug
+  console.log(order, userParameters);
+
+  recipeInterface.order(order, userParameters, function(err, callback) {
+    if (err) {
+      var jadeData = {
+        content : 'Error',
+      };
+      res.render('bootstrap/blank', jadeData);
+
+    }
+    var jadeData = {
+      content : 'Order has been placed! The corresponding (unique) TaskID is :' + taskId,
+      list : [ {
+        href : '/taskViewTest?taskId=' + taskId,
+        title : 'Redirect to specific TaskView'
+      }, {
+        href : '/taskViewTest',
+        title : 'Redirect to global TaskView'
+      } ]
+    };
+    res.render('bootstrap/blank', jadeData);
   });
 
-  var queueInterface = require('./../models/recipeInterface');
-  // recipeInterface.setRecipeUrl('opc.tcp://localhost:4334/');
-  recipeInterface.setRecipeUrl('opc.tcp://192.168.175.230:4840/');
-  queueInterface.order(recipeId, userParameters, function() {
-    console.log('order set');
-  });
-
-  var jadeData = {
-    content : 'Order has been placed! The corresponding (unique) TaskID is :' + taskId,
-    list : [ {
-      href : '/taskViewTest?taskId=' + taskId,
-      title : 'Redirect to specific TaskView'
-    }, {
-      href : '/taskViewTest',
-      title : 'Redirect to global TaskView'
-    } ]
-  };
-  res.render('bootstrap/blank', jadeData);
-  res.end();
 }
 exports.placeOrder = placeOrder;
 

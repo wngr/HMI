@@ -73,9 +73,9 @@ opc.initialize(function(err) {
     }, {
       Value : 9987
     } ];
-    opc.mi5WriteOrder('MI5.Order[0].', dataObject, userParameters, function(err, bla, blubb) {
+    opc.mi5WriteOrder('MI5.Order[0].', dataObject, userParameters, function(err) {
       console.log('write done');
-      callback(err, bla, blubb);
+      callback(err);
     });
 
   }

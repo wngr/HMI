@@ -18,13 +18,14 @@ function _convertMi5ReadArrayRecipeToJade(data) {
     // console.log(nodeElements);
     // For Recipe-layer
     if (nodeElements.length == 3) {
-      var last = _.last(nodeElements);
+      var last = _.last(nodeElements); // get Name of desired Parameter (last = RecipeID)
       if (!opcH.detectIfArray(last)) {
         recipe[last] = item;
       }
     }
   });
   var parameterArray = new Array;
+
   // Loop over the whole array
   for (var parameter = 0; parameter <= NumberOfSubArrayParameters; parameter++) {
     var singleParameterArray = new Object;
@@ -33,9 +34,9 @@ function _convertMi5ReadArrayRecipeToJade(data) {
       // console.log(nodeElements);
       // Look only on UserParameterLayer
       if (nodeElements.length == 4) {
-        var last = _.last(nodeElements);
+        var last = _.last(nodeElements); // e.g. Value
         nodeElements.pop();
-        var secondlast = _.last(nodeElements);
+        var secondlast = _.last(nodeElements); // e.g. UserParameter[1]
 
         if (opcH.detectIfArray(secondlast)) {
           // and only add it, if userParameter is the x-th element in the for-loop
@@ -45,7 +46,12 @@ function _convertMi5ReadArrayRecipeToJade(data) {
         }
       }
     });
-    parameterArray.push(singleParameterArray);
+    // Do not push dummy parameters:
+    if (singleParameterArray.Dummy.value === false) {
+      parameterArray.push(singleParameterArray);
+    } else {
+      // do nothing
+    }
   }
   // console.log(parameterArray);
   recipe[NameOfSubArrayObject] = parameterArray;

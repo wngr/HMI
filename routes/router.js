@@ -28,6 +28,15 @@ exports.router = function(app) {
   app.get('/testRecipeView', testRecipeView.index);
   app.post('/testRecipeView', testRecipeView.placeOrder);
   app.get('/testRecipeViewMock', testRecipeView.mockup);
+  app.post('/testRecipeViewMock', testRecipeView.placeOrder);
   // app.get('/orderRecipe' )
   return app;
 };
+
+/**
+ * Socket Events
+ */
+// SystemTime
+setInterval(function() {
+  IO.emit('serverTime', Date().toString());
+}, 1000);

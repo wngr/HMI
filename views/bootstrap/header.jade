@@ -17,3 +17,16 @@ div.navbar.navbar-inverse.navbar-fixed-top(role='navigation')
      a(href="/testModuleView") Module View (Test)
     li
      a(href="/testRecipeView") Recipe View (Test)
+
+div.container
+    div.col-xs-12.well
+        ul
+            li Systemtime
+                div#serverTime ...
+                script socket.on('serverTime', function(msg){ $('#serverTime').html(msg); });
+            li Message Feed
+                div#messageFeed ...
+                script socket.on('messageFeed', function(msg){ $('#messageFeed').html(msg); });
+            li Status Messages
+                div#statusMessages ...
+                script socket.on('statusMessages', function(msg){ $('#statusMessages').html(msg); });

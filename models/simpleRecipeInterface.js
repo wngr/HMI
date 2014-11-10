@@ -1,6 +1,8 @@
 /**
  * RecipeInterface
  * 
+ * We need GLOBAL.CONFIG = require('./config.js');
+ * 
  * @author Thomas Frei
  * @date 2014-11-03
  */
@@ -16,8 +18,8 @@ var opcuaDataStructure = require('./opcuaDataStructure');
  * @function callback(err, recipesArray)
  */
 function getRecipes(recipeIdArray, callback) {
+  var opc = require('./../models/simpleOpcua').server(CONFIG.OPCUARecipe);
 
-  var opc = require('./../models/simpleOpcua').server('opc.tcp://192.168.175.230:4840/');
   opc.initialize(function(err) {
     if (err) {
       console.log(err);
@@ -32,7 +34,11 @@ function getRecipes(recipeIdArray, callback) {
       opc.mi5ReadArray(recipe, function(err, data) {
         // Push Jade-Formatted Data
         var output = jadeH.convertMi5ReadArrayRecipeToJade(data);
-        recipesArray.push(output);
+
+        // Check for Dummy
+        if (output.Dummy.value != true) {
+          recipesArray.push(output);
+        }
 
         // console.log(output.UserParameters[0].Name);
         // console.log(output);
@@ -48,8 +54,20 @@ function getRecipes(recipeIdArray, callback) {
 }
 exports.getRecipes = getRecipes;
 
-function getAllRecipes() {
+/**
+ * Get all recipes
+ * 
+ * @async
+ */
+function getAllRecipes(callback) {
+  recipeIdArray = [];
+  for (var i = 0; i <= 30; i++) {
+    recipeIdArray.push(i);
+  }
+
+  getRecipes(recipeIdArray, callback);
 }
+exports.getAllRecipes = getAllRecipes;
 
 /**
  * 
@@ -58,11 +76,16 @@ function getAllRecipes() {
  * @param userparameters
  * @callback callback(taskId)
  */
-function order(recipeId, userParameterArray, callback) {
+function order(order, userParameters, callback) {
   var assert = require('assert');
   assert(typeof callback === 'function');
+  assert(typeof order === 'object');
+  assert(_.isArray(userParameters));
 
-  var opc = require('./../models/simpleOpcua').server('opc.tcp://192.168.175.209:4840/');
+  // HMI Dev
+  // var opc = require('./../models/simpleOpcua').server('opc.tcp://192.168.175.209:4840/');
+  // Real XTS
+  var opc = require('./../models/simpleOpcua').server(CONFIG.OPCUAOrder);
   opc.initialize(function(err) {
     if (err) {
       console.log(err);
@@ -70,48 +93,27 @@ function order(recipeId, userParameterArray, callback) {
       return 0;
     }
 
-    whenQueueReady(opc, function(err) {
-      console.log('order now!');
-      newTaskId = _.uniqueId();
-      async.series([ function(callback) {
-        var nodeDataObject = {
-          Name : 'Test',
-          RecipeID : recipeId,
-          UserParameter : userParameterArray
-        };
+    opc.mi5Subscribe();
+    var queue = opc.mi5Monitor('MI5.Order[0].Pending');
+    queue.on('changed', function(data) {
+      if (data.value.value === false) {
+        // Queue is ready
+        console.log('monitor .Pending:', data.value.value, 'order!');
 
-        var nodeDataObject = {
-          RecipeID : 5
-        };
-
-        opc.mi5WriteObject('MI5.Order[0]', nodeDataObject, callback);
-      } ], function(err) {
-        opc.disconnect();
-        callback(err);
-      });
+        // Write Order in MI5.Order
+        async.series([ function(callback) {
+          opc.mi5WriteOrder('MI5.Order[0]', order, userParameters, callback);
+        } ], function(err) {
+          opc.disconnect();
+          callback(err);
+        });
+      } else {
+        // no action, wait until queue is ready
+        console.log('Pending is: ', data.value.value);
+      }
     });
+
   });
 
 }
 exports.order = order;
-
-/**
- * 
- * @async
- * @param opc
- *          <object> Instance of simpleOpcua
- * @param callback
- * @returns
- */
-function whenQueueReady(opc, callback) {
-  opc.mi5Subscribe();
-
-  var mon = opc.mi5Monitor('MI5.Order[0].Pending');
-  mon.on('changed', function(data) {
-    if (data.value.value == 0) {
-      callback(data.value.value);
-    }
-  });
-  return 0;
-}
-exports.whenQueueReady = whenQueueReady;

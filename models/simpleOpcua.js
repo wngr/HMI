@@ -117,7 +117,7 @@ exports.server = function(endPointUrl) {
         };
         var timestampToReturn = nodeopcua.read_service.TimestampsToReturn.Both;
 
-        var monitoredNode = this.subscription.monitor(itemToMonitor, requestedParameters,
+        var monitoredNode = opcua.subscription.monitor(itemToMonitor, requestedParameters,
             timestampToReturn);
 
         return monitoredNode;
@@ -166,7 +166,7 @@ exports.server = function(endPointUrl) {
         assert(userParameters.length <= 6);
         for (var i = 0; i < userParameters.length; i++) {
           var userParameter = userParameters[i];
-          var tempBaseNode = baseNode + 'UserParameter[' + i + '].';
+          var tempBaseNode = baseNode + '.UserParameter[' + i + '].';
 
           var nodeData = opcua._convertMi5ListToNodeData(tempBaseNode, userParameter,
               mapping.Mi5OrderUserParameter);
