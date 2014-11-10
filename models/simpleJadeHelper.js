@@ -59,3 +59,15 @@ function _convertMi5ReadArrayRecipeToJade(data) {
   return recipe;
 }
 exports.convertMi5ReadArrayRecipeToJade = _convertMi5ReadArrayRecipeToJade;
+
+function convertMi5ReadArrayMessageFeed(data) {
+  var entry = new Object;
+  data.forEach(function(item) {
+    var nodeElements = opcH.splitNodeId(item.nodeId);
+    // console.log(nodeElements);
+    var last = _.last(nodeElements); // get Name of desired Parameter (e.g. last = Level)
+    entry[last] = item;
+  });
+  return entry;
+}
+exports.convertMi5ReadArrayMessageFeed = convertMi5ReadArrayMessageFeed;

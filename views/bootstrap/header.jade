@@ -17,6 +17,13 @@ div.navbar.navbar-inverse.navbar-fixed-top(role='navigation')
      a(href="/testModuleView") Module View (Test)
     li
      a(href="/testRecipeView") Recipe View (Test)
+     
+mixin messageFeedHtml()
+        script socket.on('messageFeed', function(msg){ 
+         | $('#messageFeed').html( 
+         | 'ID:'+msg.ID.value+' | Level: '+msg.Level.value+' | Msg: '+msg.Message.value+' | Timestamp: '+msg.Timestamp.value
+         | ); console.log(msg); 
+         | });
 
 div.container
     div.col-xs-12.well
@@ -26,7 +33,10 @@ div.container
                 script socket.on('serverTime', function(msg){ $('#serverTime').html(msg); });
             li Message Feed
                 div#messageFeed ...
-                script socket.on('messageFeed', function(msg){ $('#messageFeed').html(msg); });
+                +messageFeedHtml()
             li Status Messages
                 div#statusMessages ...
                 script socket.on('statusMessages', function(msg){ $('#statusMessages').html(msg); });
+              
+              
+              
