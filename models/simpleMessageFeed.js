@@ -48,6 +48,7 @@ exports.createMonitoredItems = createMonitoredItems;
 
 function _readMessageEntry(baseNode) {
   opc.mi5ReadArray(opc._structMessageFeed(baseNode), function(err, data) {
+
     jadeData = jadeH.convertMi5ReadArrayMessageFeed(data);
     if (err) {
       console.log(err);

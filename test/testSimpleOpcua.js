@@ -19,12 +19,11 @@ opc.initialize(function(err) {
 
   console.log('initialized');
 
-  // opc.mi5Subscribe();
-  // var mon = opc.mi5Monitor('<mi5
-  // class="Q"></mi5>ueue.Queue0.UserParameter.UserParameter0.Value');
-  // mon.on("changed", function(data) {
-  // console.log('CHANGED', data);
-  // });
+  opc.mi5Subscribe();
+  var mon = opc.mi5Monitor('MI5.Queue.Queue0.UserParameter.UserParameter0.Value');
+  mon.on("changed", function(data) {
+    console.log('CHANGED', data);
+  });
 
   async.series([ function(callback) {
     callback();

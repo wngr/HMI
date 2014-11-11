@@ -14,6 +14,8 @@ function showModule(req, res) {
 
     jadeData.manualModule = mi5Data;
 
+    interface.subscribeModuleData(rawData);
+
     res.render('bootstrap/testManualModuleView', jadeData);
   });
 }

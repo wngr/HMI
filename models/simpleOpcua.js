@@ -83,13 +83,13 @@ exports.server = function(endPointUrl) {
           publishingEnabled : true,
           priority : 10
         };
-        this.subscription = new nodeopcua.ClientSubscription(this.session, subscriptionSettings);
+        opcua.subscription = new nodeopcua.ClientSubscription(opcua.session, subscriptionSettings);
 
-        this.subscription.on("started", function() {
+        opcua.subscription.on("started", function() {
           console.log("SUBS: subscription started - subscriptionId=",
               opcua.subscription.subscriptionId);
         });
-        this.subscription.on("keepalive", function() {
+        opcua.subscription.on("keepalive", function() {
           // console.log('SUBS: keepalive');
         }).on("terminated", function() {
           console.log('SUBS: terminated');
