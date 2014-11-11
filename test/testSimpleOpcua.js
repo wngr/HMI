@@ -7,7 +7,7 @@ GLOBAL.CONFIG = require('./../config.js');
 
 var async = require('async');
 // var opc = require('./../models/simpleOpcua').server('opc.tcp://localhost:4334/');
-var opc = require('./../models/simpleOpcua').server('opc.tcp://192.168.175.230:4840/');
+var opc = require('./../models/simpleOpcua').server(CONFIG.OPCUATask);
 GLOBAL.opcH = require('./../models/simpleOpcuaHelper');
 var jadeH = require('./../models/simpleJadeHelper');
 
@@ -53,31 +53,52 @@ opc.initialize(function(err) {
   // });
   // // console.log(structRecipeBase('MI5.Recipe[0].'));
   // },
+
+  /*
+   * write
+   */
+  // function(callback) {
+  // /*
+  // * Test Recipe Read
+  // */
+  // // opc.mi5WriteOrder(baseNode, order, userParameter, function(err) {
+  // var dataObject = {
+  // Name : '647372737',
+  // TaskID : 6798,
+  // Description : '6798',
+  // RecipeID : 6789,
+  // Locked : false,
+  // Pending : true
+  // };
+  // var userParameters = [ {
+  // Value : 666789
+  // }, {
+  // Value : 7312
+  // }, {
+  // Value : 9987
+  // } ];
+  // opc.mi5WriteOrder('MI5.Order[0].', dataObject, userParameters, function(err) {
+  // console.log('write done');
+  // callback(err);
+  // });
+  //
+  // }
+  /*
+   * browse
+   */
   function(callback) {
-    /*
-     * Test Recipe Read
-     */
-    // opc.mi5WriteOrder(baseNode, order, userParameter, function(err) {
-    var dataObject = {
-      Name : '647372737',
-      TaskID : 6798,
-      Description : '6798',
-      RecipeID : 6789,
-      Locked : false,
-      Pending : true
-    };
-    var userParameters = [ {
-      Value : 666789
-    }, {
-      Value : 7312
-    }, {
-      Value : 9987
-    } ];
-    opc.mi5WriteOrder('MI5.Order[0].', dataObject, userParameters, function(err) {
-      console.log('write done');
+    opc.mi5Browse('ns=4;s=MI5', function(err, results) {
+      console.log(JSON.stringify(results, null, 1));
+
+      /*
+       * look at references
+       */
+      results.references.forEach(function(item) {
+
+      });
+
       callback(err);
     });
-
   }
 
   // function(callback) {

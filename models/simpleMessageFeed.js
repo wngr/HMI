@@ -57,7 +57,7 @@ function _readMessageEntry(baseNode) {
     if (jadeData) {
       // only do something if ID != 0
       if (jadeData.ID.value != 0) {
-        console.log(jadeData);
+        // console.log(jadeData);
         IO.emit('messageFeed', jadeData);
       }
     }

@@ -179,6 +179,18 @@ exports.server = function(endPointUrl) {
       },
 
       /**
+       * 
+       * @param folder
+       *          (e.g. 'ns=4;s=MI5')
+       * @param callback(err,
+       *          browseResults)
+       */
+      mi5Browse : function(folder, callback) {
+        // example: folder = 'RootFolder'
+        this.session.browse(folder, callback);
+      },
+
+      /**
        * convert list to an array of NodeData
        * 
        * If you use this function multiple times in a specific write method, you need to use
@@ -512,6 +524,73 @@ exports.server = function(endPointUrl) {
           return baseNode + item;
         });
 
+        return nodes;
+      },
+
+      /**
+       * Adds Parameters to a basenode :ProductionList[0].YYYYYYYYYY
+       * 
+       * @param baseNode
+       *          string
+       * @return array
+       */
+      _structTaskBase : function(baseNode) {
+        var numberOfSkills = 5; // 50
+        var nodes = [ 'Dummy', 'Name', 'RecipeID', 'State', 'TaskID', 'Timestamp' ];
+        // Add all 50 Skills
+        for (var i = 0; i <= numberOfSkills; i++) {
+          var temp = opcua._structTaskSkill('Skill[' + i + '].');
+          temp.forEach(function(item) {
+            nodes.push(item);
+          });
+        }
+        // Prepend baseNode
+        nodes = _.map(nodes, function(item) {
+          return baseNode + item;
+        });
+
+        return nodes;
+      },
+
+      /**
+       * Adds nodes to Skill[x].YYYYYYYYYYY
+       * 
+       * @param baseNode
+       *          string
+       * @return array
+       */
+      _structTaskSkill : function(baseNode) {
+        var numberOfParameters = 2; // 5
+        var nodes = [ 'AssignedModuleID', 'AssignedModuleName', 'AssignedModulePosition', 'Dummy',
+            'ID', 'Name' ];
+        // Add all 5 Parameters
+        for (var i = 0; i <= numberOfParameters; i++) {
+          var temp = opcua._structTaskSkillParameter('UserParameter[' + i + '].');
+          temp.forEach(function(item) {
+            nodes.push(item);
+          });
+        }
+        // Prepend baseNode
+        nodes = _.map(nodes, function(item) {
+          return baseNode + item;
+        });
+        return nodes;
+      },
+
+      /**
+       * Adds nodes to UserParameter[x].YYYYYYYYYYY
+       * 
+       * @param baseNode
+       *          string
+       * @return array
+       */
+      _structTaskSkillParameter : function(baseNode) {
+        var nodes = [ 'Dummy', 'ID', 'Name', 'Unit', 'Required', 'Defualt', 'MinValue', 'MaxValue',
+            'Value' ];
+        // Prepend baseNode
+        nodes = _.map(nodes, function(item) {
+          return baseNode + item;
+        });
         return nodes;
       }
 

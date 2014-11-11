@@ -105,7 +105,7 @@ function setOrder(order, userParameters, callback) {
         });
       } else {
         // no action, wait until queue is ready
-        console.log('Pending is: ', data.value.value);
+        console.log('Waiting... Pending is: ', data.value.value);
       }
     });
 

@@ -19,10 +19,11 @@ div.navbar.navbar-inverse.navbar-fixed-top(role='navigation')
      a(href="/testRecipeView") Recipe View (Test)
      
 mixin messageFeedHtml()
-        script socket.on('messageFeed', function(msg){ 
-         | $('#messageFeed').html( 
-         | 'ID:'+msg.ID.value+' | Level: '+msg.Level.value+' | Msg: '+msg.Message.value+' | Timestamp: '+msg.Timestamp.value
-         | ); console.log(msg); 
+        script socket.on('messageFeed', function(msg){
+         | var currText = $('#messageFeed').val();
+         | var newText = 'ID:'+msg.ID.value+' | Level: '+msg.Level.value+' | Msg: '+msg.Message.value+' | Timestamp: '+msg.Timestamp.value;
+         | $('#messageFeed').val(newText+"\n"+currText); 
+         | console.log(msg); 
          | });
 
 div.container
@@ -31,8 +32,8 @@ div.container
             li Systemtime
                 div#serverTime ...
                 script socket.on('serverTime', function(msg){ $('#serverTime').html(msg); });
-            li Message Feed
-                div#messageFeed ...
+            li
+                textarea(rows=3, cols=50, id="messageFeed") ...
                 +messageFeedHtml()
             li Status Messages
                 div#statusMessages ...
