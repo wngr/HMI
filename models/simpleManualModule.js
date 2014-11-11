@@ -14,6 +14,11 @@ var assert = require('assert');
  */
 var NumberOfParameters = 5; // 5
 
+/*
+ * persistent connection
+ */
+var opcConnection = undefined;
+
 /**
  * @async
  * @function callback(err, mi5Object, rawData)
@@ -43,10 +48,39 @@ function getModuleData(handModuleID, callback) {
 }
 exports.getModuleData = getModuleData;
 
-function subscribeHandModule(rawData, callback) {
+/**
+ * 
+ * @param rawData
+ * @param callback
+ */
+function subscribeModuleData(rawData) {
   assert(_.isArray(rawData));
-  assert(typeof callback === "function");
+
+  opcConnection = require('./../models/simpleOpcua').server(CONFIG.OPCUAHandModule);
+  /*
+   * Subscribe to everything
+   */
+  opcConnection.initialize(function(err) {
+    if (err) {
+      console.log(err);
+      callback(err);
+      return 0;
+    }
+
+    opcConnection.mi5Subscribe();
+    rawData.forEach(function(entry) {
+      var myNode = opcConnection.mi5Monitor(entry.nodeId);
+      myNode.on('changed', function(data) {
+        console.log('changed:', entry.nodeId, data);
+        IO.emit(entry.updateEvent, data);
+      });
+      console.log('added subscription');
+    });
+  });
+
+  return 0;
 }
+exports.subscribeModuleData = subscribeModuleData;
 
 /**
  * @returns {___anonymous278_400}
