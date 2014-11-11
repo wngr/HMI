@@ -9,12 +9,57 @@
 var jadeH = require('./simpleJadeHelper');
 var opcH = require('./simpleOpcuaHelper');
 
+/*
+ * Config Production List
+ */
+var NumberOfParameters = 2; // 5
+var NumberOfSkills = 5; // 50
+
+/**
+ * Get recipes
+ * 
+ * @async
+ * @param taskIdArray
+ * @function callback(err, recipesArray)
+ */
+function getTasks(taskIdArray, callback) {
+  var opc = require('./../models/simpleOpcua').server(CONFIG.OPCUATask);
+
+  opc.initialize(function(err) {
+    if (err) {
+      console.log(err);
+      callback(err);
+      return 0;
+    }
+
+    tasksArray = [];
+    // Read Base
+    taskIdArray.forEach(function(id) {
+      var baseNodeTask = structTask('MI5.ProductionList[' + id + '].');
+
+      opc.mi5ReadArray(baseNodeTask, function(err, data) {
+
+        var mi5Object = mapMi5ArrayToObject(data, structTaskObjectBlank());
+        tasksArray.push(mi5Object);
+
+        // Callback on very last element
+        if (id == _.last(taskIdArray)) {
+          callback(err, tasksArray); // final callback
+          opc.disconnect();
+        }
+      }); // end opc.mi5ReadArray
+    }); // end for
+  }); // end opc.initialize()
+
+}
+exports.getTasks = getTasks;
+
 /**
  * Get Blank Task-Struct
  * 
  * @returns {___anonymous278_400}
  */
-function getBlankTask() {
+function structTaskObjectBlank() {
   // Base
   var taskDummy = {
     Dummy : '',
@@ -25,8 +70,8 @@ function getBlankTask() {
     TaskID : '',
     Timestamp : ''
   };
-  // Add Skills
-  _123n(0, 5).forEach(function(i) {
+  // Skills
+  _123n(0, NumberOfSkills).forEach(function(i) {
     var skillDummy = {
       AssignedModuleID : '',
       AssignedModuleName : '',
@@ -36,8 +81,9 @@ function getBlankTask() {
       Name : '',
       UserParameter : []
     };
-    // Add UserParameters
-    _123n(0, 2).forEach(function(j) {
+
+    // UserParameters
+    _123n(0, NumberOfParameters).forEach(function(j) {
       var parameterDummy = {
         Dummy : '',
         ID : '',
@@ -50,91 +96,130 @@ function getBlankTask() {
         Value : ''
       };
       skillDummy.UserParameter.push(parameterDummy);
-    });
+    }); // end forEach UserParameters
+
     taskDummy.Skill.push(skillDummy);
-  });
+  }); // end forEach Skills
+
   return taskDummy;
 }
-exports.getBlankTask = getBlankTask;
 
 /**
- * Get recipes
+ * Adds Parameters to a basenode :ProductionList[0].YYYYYYYYYY
  * 
- * @async
- * @param taskIdArray
- * @function callback(err, recipesArray)
+ * @param baseNode
+ *          string
+ * @return array
  */
-function getTasks(taskIdArray, callback) {
-  var opc = require('./../models/simpleOpcua').server(CONFIG.OPCUATask);
+function structTask(baseNode) {
+  var numberOfSkills = NumberOfSkills; // 50
+  var nodes = [ 'Dummy', 'Name', 'RecipeID', 'State', 'TaskID', 'Timestamp' ];
+  // Add all 50 Skills
+  for (var i = 0; i <= numberOfSkills; i++) {
+    var temp = structTaskSkill('Skill[' + i + '].');
+    temp.forEach(function(item) {
+      nodes.push(item);
+    });
+  }
+  // Prepend baseNode
+  nodes = _.map(nodes, function(item) {
+    return baseNode + item;
+  });
 
-  opc
-      .initialize(function(err) {
-        if (err) {
-          console.log(err);
-          callback(err);
-          return 0;
+  return nodes;
+}
+
+/**
+ * Adds nodes to Skill[x].YYYYYYYYYYY
+ * 
+ * @param baseNode
+ *          <string>
+ * @return array
+ */
+function structTaskSkill(baseNode) {
+  var numberOfParameters = NumberOfParameters; // 5
+  var nodes = [ 'AssignedModuleID', 'AssignedModuleName', 'AssignedModulePosition', 'Dummy', 'ID',
+      'Name' ];
+  // Add all 5 Parameters
+  for (var i = 0; i <= numberOfParameters; i++) {
+    var temp = structTaskSkillParameter('UserParameter[' + i + '].');
+    temp.forEach(function(item) {
+      nodes.push(item);
+    });
+  }
+  // Prepend baseNode
+  nodes = _.map(nodes, function(item) {
+    return baseNode + item;
+  });
+  return nodes;
+}
+
+/**
+ * Adds nodes to UserParameter[x].YYYYYYYYYYY
+ * 
+ * @param baseNode
+ *          <string>
+ * @return <array>
+ */
+function structTaskSkillParameter(baseNode) {
+  var nodes = [ 'Dummy', 'ID', 'Name', 'Unit', 'Required', 'Defualt', 'MinValue', 'MaxValue',
+      'Value' ];
+  // Prepend baseNode
+  nodes = _.map(nodes, function(item) {
+    return baseNode + item;
+  });
+  return nodes;
+}
+
+/**
+ * *magic* Maps mi5ReadArray complete node to a correspondant blank Object.
+ * 
+ * We use dummy[node][i] as dummy.node[i]
+ * 
+ * e.g. {nodeId: ..., value: xx, ...} => {Name: {nodeId, value},... Skills: [{Dummy:...}]}
+ * 
+ * @param data
+ *          <array>
+ * @param dummyObject
+ *          <object> (mixed object)
+ * @returns
+ */
+function mapMi5ArrayToObject(data, dummyObject) {
+  assert(_.isArray(data));
+  assert(_.isObject(dummyObject));
+
+  data
+      .forEach(function(entry) {
+        var splitNodeId = opcH.splitNodeId(entry.nodeId); // [0]: MI5; [1]:
+        // ProductionList[x]
+
+        if (splitNodeId.length == 3) {
+          // splitNodeId[2] // Name
+          dummyObject[splitNodeId[2]] = entry;
+        }
+        if (splitNodeId.length == 4) {
+          // splitNodeId[2] // Skill[x]
+          // splitNodeId[3] // Name
+          skillArrayName = opcH.stripArray(splitNodeId[2]);
+          skillArrayElement = opcH.detectArrayElement(splitNodeId[2]);
+          dummyObject[skillArrayName][skillArrayElement][splitNodeId[3]] = entry;
+        }
+        if (splitNodeId.length == 5) {
+          // splitNodeId[2] // Skill[x]
+          // splitNodeId[3] // UserParameter[y]
+          // splitNodeId[4] // Name
+          skillArrayName = opcH.stripArray(splitNodeId[2]);
+          skillArrayElement = opcH.detectArrayElement(splitNodeId[2]);
+
+          parameterArrayName = opcH.stripArray(splitNodeId[3]);
+          parameterArrayElement = opcH.detectArrayElement(splitNodeId[3]);
+
+          dummyObject[skillArrayName][skillArrayElement][parameterArrayName][parameterArrayElement][splitNodeId[4]] = entry;
         }
 
-        tasksArray = [];
-        // Read Base
-        taskIdArray
-            .forEach(function(id) {
-              var baseNodeTask = opc._structTaskBase('MI5.ProductionList[' + id + '].');
-              // console.log(baseNodeTask);
-              opc
-                  .mi5ReadArray(
-                      baseNodeTask,
-                      function(err, data) {
-                        var dummyTask = getBlankTask();
-                        // console.log(dummyTask);
+      });
 
-                        data
-                            .forEach(function(entry) {
-                              var splitNodeId = opcH.splitNodeId(entry.nodeId); // [0]: MI5; [1]:
-                              // ProductionList[x]
-
-                              if (splitNodeId.length == 3) {
-                                // splitNodeId[2] // Name
-                                dummyTask[splitNodeId[2]] = entry
-                              }
-                              if (splitNodeId.length == 4) {
-                                // splitNodeId[2] // Skill[x]
-                                // splitNodeId[3] // Name
-                                skillArrayName = opcH.stripArray(splitNodeId[2]);
-                                skillArrayElement = opcH.detectArrayElement(splitNodeId[2]);
-                                dummyTask[skillArrayName][skillArrayElement][splitNodeId[3]] = entry;
-                              }
-                              if (splitNodeId.length == 5) {
-                                // splitNodeId[2] // Skill[x]
-                                // splitNodeId[3] // UserParameter[y]
-                                // splitNodeId[4] // Name
-                                skillArrayName = opcH.stripArray(splitNodeId[2]);
-                                skillArrayElement = opcH.detectArrayElement(splitNodeId[2]);
-
-                                parameterArrayName = opcH.stripArray(splitNodeId[3]);
-                                parameterArrayElement = opcH.detectArrayElement(splitNodeId[3]);
-
-                                dummyTask[skillArrayName][skillArrayElement][parameterArrayName][parameterArrayElement][splitNodeId[4]] = entry;
-                              }
-                            });
-
-                        // Callback on very last element
-                        if (id == _.last(taskIdArray)) {
-                          callback(err, dummyTask); // final callback
-                          opc.disconnect();
-                        }
-                      }); // end opc.mi5ReadArray
-            }); // end for
-      }); // end opc.initialize()
-
-}
-exports.getTasks = getTasks;
-
-/*
- * 
- */
-function _NodeArray(nodeArray, callback) {
-
+  return dummyObject;
 }
 
 /**

@@ -25,7 +25,7 @@ var taskInterface = require('./../models/simpleTaskInterface');
 // });
 
 // Test Blank
-var blankTask = taskInterface.getBlankTask();
+// var blankTask = taskInterface.getBlankTask();
 // Test for taskIdArray
 taskInterface.getTasks([ 0, 2 ], function(err, tasks) {
   console.log(err, tasks);
