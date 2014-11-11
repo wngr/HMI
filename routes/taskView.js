@@ -2,26 +2,26 @@
  * Recipe View Router
  */
 
-function index(req, res) {
+function showTask(req, res) {
   var jadeData = new Object;
-  var recipeInterface = require('./../models/simpleTaskInterface');
+  var interface = require('./../models/simpleTaskInterface');
 
   // recipeIdArray = [ 0, 1 ];
   // recipeInterface.getRecipes(recipeIdArray, function(err, recipes) {
-  recipeInterface.getAllRecipes(function(err, recipes) {
+  interface.getTasks([ 0 ], function(err, data) {
     if (err) {
       jadeData.error = err;
     } else {
-      jadeData.recipes = recipes;
+      jadeData.tasks = data;
       // console.log(JSON.stringify(recipes, null, 1));
-      console.log('jadeDate recipes added');
+      console.log('data to jadeDate added');
     }
 
-    res.render('bootstrap/testRecipeView', jadeData);
+    res.render('bootstrap/testTaskView', jadeData);
     res.end();
   });
 }
-exports.index = index;
+exports.showTask = showTask;
 
 /**
  * View to place the order

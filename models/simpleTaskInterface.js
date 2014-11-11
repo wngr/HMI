@@ -39,7 +39,7 @@ function getTasks(taskIdArray, callback) {
 
       opc.mi5ReadArray(baseNodeTask, function(err, data) {
 
-        var mi5Object = mapMi5ArrayToObject(data, structTaskObjectBlank());
+        var mi5Object = opcH.mapMi5ArrayToObject(data, structTaskObjectBlank());
         tasksArray.push(mi5Object);
 
         // Callback on very last element
@@ -169,57 +169,6 @@ function structTaskSkillParameter(baseNode) {
     return baseNode + item;
   });
   return nodes;
-}
-
-/**
- * *magic* Maps mi5ReadArray complete node to a correspondant blank Object.
- * 
- * We use dummy[node][i] as dummy.node[i]
- * 
- * e.g. {nodeId: ..., value: xx, ...} => {Name: {nodeId, value},... Skills: [{Dummy:...}]}
- * 
- * @param data
- *          <array>
- * @param dummyObject
- *          <object> (mixed object)
- * @returns
- */
-function mapMi5ArrayToObject(data, dummyObject) {
-  assert(_.isArray(data));
-  assert(_.isObject(dummyObject));
-
-  data
-      .forEach(function(entry) {
-        var splitNodeId = opcH.splitNodeId(entry.nodeId); // [0]: MI5; [1]:
-        // ProductionList[x]
-
-        if (splitNodeId.length == 3) {
-          // splitNodeId[2] // Name
-          dummyObject[splitNodeId[2]] = entry;
-        }
-        if (splitNodeId.length == 4) {
-          // splitNodeId[2] // Skill[x]
-          // splitNodeId[3] // Name
-          skillArrayName = opcH.stripArray(splitNodeId[2]);
-          skillArrayElement = opcH.detectArrayElement(splitNodeId[2]);
-          dummyObject[skillArrayName][skillArrayElement][splitNodeId[3]] = entry;
-        }
-        if (splitNodeId.length == 5) {
-          // splitNodeId[2] // Skill[x]
-          // splitNodeId[3] // UserParameter[y]
-          // splitNodeId[4] // Name
-          skillArrayName = opcH.stripArray(splitNodeId[2]);
-          skillArrayElement = opcH.detectArrayElement(splitNodeId[2]);
-
-          parameterArrayName = opcH.stripArray(splitNodeId[3]);
-          parameterArrayElement = opcH.detectArrayElement(splitNodeId[3]);
-
-          dummyObject[skillArrayName][skillArrayElement][parameterArrayName][parameterArrayElement][splitNodeId[4]] = entry;
-        }
-
-      });
-
-  return dummyObject;
 }
 
 /**

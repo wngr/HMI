@@ -12,13 +12,13 @@ div.navbar.navbar-inverse.navbar-fixed-top(role='navigation')
     li
      a(href="/") Home
     li
+     a(href="/testGuiElements") GUI - Elements V1
+    li
      a(href="/testModuleView") Module View (Test)
     li
      a(href="/testRecipeView") Recipe View (Test)
     li
      a(href="/testTaskView") Task View (Test)
-    li
-     a(href="/testManualModuleView") HandModule View (Test)
      
 mixin messageFeedHtml()
         script socket.on('messageFeed', function(msg){
