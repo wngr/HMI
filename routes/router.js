@@ -1,28 +1,26 @@
 /**
  * Router File
  */
+var testModuleView = require('./testModuleView');
 var hmiDev = require('./hmidev');
 var recipeView = require('./recipeView');
-var testModuleView = require('./testModuleView');
+var taskView = require('./taskView');
 
-function index(req, res) {
-  jadeData = {
-    content : 'Overview of all the testing modules that are available',
-    list : [ {
-      href : 'testRecipeView',
-      title : 'Recipe View (Test)'
-    } ]
-  }
-  res.render('./bootstrap/blank', jadeData);
-}
+/**
+ * Background Service
+ */
+var messageFeed = require('./messageFeed');
 
+/**
+ * Routes
+ */
 exports.router = function(app) {
   app.get('/', index);
   app.get('/testModuleView', testModuleView.index)
   app.get('/testRecipeView', recipeView.index);
   app.post('/testRecipeView', recipeView.placeOrder);
   app.get('/testRecipeViewMock', recipeView.mockup);
-  // app.get('/orderRecipe' )
+  app.get('/testTaskView', taskView.index);
   return app;
 };
 
@@ -35,6 +33,15 @@ setInterval(function() {
 }, 1000);
 
 /*
- * MessageFeedHandler
+ * Dashboard List
  */
-messageFeed = require('./messageFeed');
+function index(req, res) {
+  jadeData = {
+    content : 'Overview of all the testing modules that are available',
+    list : [ {
+      href : 'testRecipeView',
+      title : 'Recipe View (Test)'
+    } ]
+  }
+  res.render('./bootstrap/blank', jadeData);
+}
