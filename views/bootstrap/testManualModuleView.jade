@@ -1,0 +1,23 @@
+extends layout
+include mixins/gui-elements
+
+block content
+    div.container
+     div.col-xs-12.well
+        h1 Test for Hand Module View
+        if error
+            h1 ERROR
+            p= error.Error
+            p= error.code
+            p= error.errno
+            p= error.syscal
+    
+     if manualModule
+          div.col-xs-12.well
+            // - console.log(manualModule);
+            p= manualModule.SkillDescription.containerId
+     else
+        div.col-xs-12.well       
+            p no handModule data to display
+    
+    

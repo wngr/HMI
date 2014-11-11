@@ -1,0 +1,24 @@
+extends layout
+include mixins/gui-elements
+
+block content
+    div.container
+     div.col-xs-12.well
+        h1 Test for Task View
+        if error
+            h1 ERROR
+            p= error.Error
+            p= error.code
+            p= error.errno
+            p= error.syscal
+    
+     if tasks
+        for task in tasks
+          div.col-xs-12.well
+            - console.log(task);
+            p= task.Dummy.value
+     else
+        div.col-xs-12.well       
+            p no task to display
+    
+    

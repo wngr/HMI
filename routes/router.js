@@ -2,9 +2,9 @@
  * Router File
  */
 var testModuleView = require('./testModuleView');
-var hmiDev = require('./hmidev');
 var recipeView = require('./recipeView');
 var taskView = require('./taskView');
+var manualModule = require('./manualModule');
 
 /**
  * Background Service
@@ -20,7 +20,8 @@ exports.router = function(app) {
   app.get('/testRecipeView', recipeView.index);
   app.post('/testRecipeView', recipeView.placeOrder);
   app.get('/testRecipeViewMock', recipeView.mockup);
-  app.get('/testTaskView', taskView.index);
+  app.get('/testTaskView', taskView.showTask);
+  app.get('/testManualModuleView', manualModule.showModule);
   return app;
 };
 
