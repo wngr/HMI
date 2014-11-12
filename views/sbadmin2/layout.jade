@@ -7,7 +7,7 @@ html(lang="en")
    block meta
     meta(charset='utf-8')
     meta(http-equiv='X-UA-Compatible', content='IE=edge')
-    // Viewpoert needed, so that it is showd in the right scale on smartphones
+    // Viewport needed, so that it is showd in the right scale on smartphones
     meta(name='viewport', content='width=device-width, initial-scale=1')
     meta(name='description', content='')
     meta(name='keywords', content='')
@@ -23,9 +23,38 @@ html(lang="en")
     // /socket.io/ is served by the socket.io node package
     script(src='/socket.io/socket.io.js')
     script var socket = io();
+    | <!--[if lt IE 9]>
+    |   <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+    |   <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    | <![endif]-->
+    
  body
-  include header
-  
-  block content
+ 
+   include mixinsSbAdmin
+
+   div#wrapper
+     include navigation
+     
+     div#page-wrapper
+       div.container-fluid
+         block content
+
+
+
+
+  div.container
+    div.col-xs-12.well
+        ul
+            li Systemtime
+                div#serverTime ...
+                script socket.on('serverTime', function(msg){ $('#serverTime').html(msg); });
+            li
+                textarea(rows=3, cols=50, id="messageFeed") ...
+                +messageFeedHtml()
+            li Status Messages
+                div#statusMessages ...
+                script socket.on('statusMessages', function(msg){ $('#statusMessages').html(msg); });
+              
 
   include footer
+   
