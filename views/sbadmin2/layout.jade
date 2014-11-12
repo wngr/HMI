@@ -1,21 +1,26 @@
 doctype html
-html
+html(lang="en")
  head
   block head
    block title
-    title Program Name
+    title SB Admin V2 - Mi5 - HMI
    block meta
+    meta(charset='utf-8')
+    meta(http-equiv='X-UA-Compatible', content='IE=edge')
+    // Viewpoert needed, so that it is showd in the right scale on smartphones
+    meta(name='viewport', content='width=device-width, initial-scale=1')
     meta(name='description', content='')
     meta(name='keywords', content='')
-    meta(name='viewport', content='width=device-width, initial-scale=1')
    block css
-    link(rel='stylesheet', href='/assets/bootstrap/css/bootstrap.min.css')
-    link(rel='stylesheet', href='/assets/dashboard/dashboard.css')
+    link(rel='stylesheet', href='/assets/sbadmin2/css/bootstrap.min.css')
+    link(rel='stylesheet', href='/assets/sbadmin2/css/plugins/metisMenu/metisMenu.min.css')
+    link(rel='stylesheet', href='/assets/sbadmin2/css/sb-admin-2.css')
+    link(rel='stylesheet', href='/assets/sbadmin2/font-awesome-4.1.0/css/font-awesome.min.css', type='text/css')  
     | <style>
-    | body { padding-top: 60px; }
+    | //body { padding-top: 60px; }
     | </style>
    block scripts
-    script(src='/assets/bootstrap/js/jquery-1.11.1.min.js')
+    // /socket.io/ is served by the socket.io node package
     script(src='/socket.io/socket.io.js')
     script var socket = io();
  body
