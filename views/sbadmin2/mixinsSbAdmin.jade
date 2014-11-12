@@ -1,0 +1,32 @@
+mixin dropdown-messages()
+      ul.nav.navbar-top-links.navbar-right
+        li.dropdown
+          a.dropdown-toggle(href='#',data-toggle='dropdown')
+            i.fa.fa-envelope.fa.fw
+            i.fa.fa-caret-down
+          ul.dropdown-menu.dropdown-messages
+            li
+              a(href='#')
+                div
+                  strong John Smith
+                  span.pull-right.text-muted
+                    em Yesterday
+                div
+                  Short summary of the first email of John
+            li.divider
+            li     
+              a(href='#')
+                div
+                  strong John Smith
+                  span.pull-right.text-muted
+                    em Yesterday
+                    
+                    
+
+mixin messageFeedHtml()
+        script socket.on('messageFeed', function(msg){
+         | var currText = $('#messageFeed').val();
+         | var newText = 'ID:'+msg.ID.value+' | Level: '+msg.Level.value+' | Msg: '+msg.Message.value+' | Timestamp: '+msg.Timestamp.value;
+         | $('#messageFeed').val(newText+"\n"+currText); 
+         | console.log(msg); 
+         | });
