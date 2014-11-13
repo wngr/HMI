@@ -7,9 +7,10 @@ nav.navbar.navbar-default.navbar-static-top(role='navigation',style='margin-bott
           span.icon-bar
           span.icon-bar
         a.navbar-brand(href='#') Mi5-Dashboard  
-      +dropdown-messages()
-      +dropdown-messages()
-      +dropdown-messages()
+    ul.nav.navbar-top-links.navbar-right
+      +dropdown-alerts()
+      +dropdown-notifications()
+      +dropdown-tasks()
       
       
     div.navbar-default.sidebar(role='navigation')
@@ -27,18 +28,51 @@ nav.navbar.navbar-default.navbar-static-top(role='navigation',style='margin-bott
               | Dashboard
           li
             a(href='#')
-              i.fa.fa-dashboard.fa-fw
-              | Dashboard
+              i.fa.fa-edit.fa-fw
+              | Order
+          li
+            a(herf='#')
+              i.fa.fa-shopping-cart.fa-fw
+              | Tasks
+          li
+            a(href='#')
+              i.fa.fa-bar-chart-o.fa-fw
+              | Overview
+           li
+             a(href='#')
+               i.fa.fa-globe.fa-fw
+               | Simulation      
+           li
+             a(href='#')
+               i.fa.fa-camera.fa-fw
+               | Camera  
+           li
+            a(href='#')
+              i.fa.fa-sitemap.fa-fw
+              | Modules
               span.fa.arrow
             ul.nav.nav-second-level
               li
-                a(href='#') Charts
+                a(href='#')
+                  i.fa.fa-link.fa-fw
+                  | 1000 - Cookie
               li
                 a(href='#')
-                  | Morris
-                  span.fa.arrow
-                ul.nav.nav-third-level
-                  li
-                    a(href='#') 
-                      i.fa.fa-sitemap.fa-fw
-                      | Sitemap               
+                  i.fa.fa-link.fa-fw
+                  | 1100 - Cocktail
+              li
+                a(href='#')
+                  i.fa.fa-link.fa-fw
+                  | 1200 - Cream
+              li
+                a(href='#')
+                  i.fa.fa-link.fa-fw
+                  | 1300 - XTS
+              li
+                a(href='#')
+                  i.fa.fa-link.fa-fw
+                  | 1400 - Manual
+              li
+                a(href='#')
+                  i.fa.fa-link.fa-fw
+                  | 2003 - Output
