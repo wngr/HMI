@@ -23,7 +23,10 @@ exports.router = function(app) {
   app.get('/testTaskView', taskView.showTask);
   app.get('/testManualModuleView', manualModule.showModule);
   app.get('/sbadmin2', function(req, res) {
-    res.render('sbadmin2/welcome');
+    res.render('sbadmin2/_welcome');
+  });
+  app.get('/sbadmin2Home', function(req, res) {
+    res.render('sbadmin2/_home');
   });
   return app;
 };
