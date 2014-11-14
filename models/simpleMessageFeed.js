@@ -9,6 +9,8 @@
 var opc = require('./../models/simpleOpcua').server(CONFIG.OPCUAMessageFeed);
 var jadeH = require('./../models/simpleJadeHelper');
 
+var messageFeedArray = [];
+
 /**
  * Subscribe and monitor all messageFeed entries
  * 
@@ -59,9 +61,45 @@ function _readMessageEntry(baseNode) {
       // only do something if ID != 0
       if (jadeData.ID.value != 0) {
         // console.log(jadeData);
-        IO.emit('messageFeed', jadeData);
+        _pushMessage(jadeData);
+        _emitMessageFeedArray();
+        _emitMessageFeed()
       }
     }
 
   });
+}
+
+/**
+ * Push message to messageFeedArray
+ * 
+ * @uses messageFeedArray <array>
+ * @param message
+ *          <object>
+ */
+function _pushMessage(message) {
+  assert(_.isObject(message));
+
+  messageFeedArray.push(message);
+
+  console.log('Message was pushed to the Feed Array:: ', message.Message.value,
+      message.Timestamp.value);
+}
+
+/**
+ * Emit whole Message Feed Array (not used yet)
+ * 
+ * @async
+ */
+function _emitMessageFeedArray() {
+  IO.emit('messageFeedArray', messageFeedArray);
+}
+
+/**
+ * Emit one single Message
+ * 
+ * @async
+ */
+function _emitMessageFeed() {
+  IO.emit('messageFeed', jadeData);
 }

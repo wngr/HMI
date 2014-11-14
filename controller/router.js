@@ -7,11 +7,6 @@ var taskView = require('./taskView');
 var manualModule = require('./manualModule');
 
 /**
- * Background Service
- */
-var messageFeed = require('./messageFeed');
-
-/**
  * Routes
  */
 exports.router = function(app) {
@@ -30,21 +25,6 @@ exports.router = function(app) {
   });
   return app;
 };
-
-/*
- * Socket Events
- */
-// ServerTime
-setInterval(function() {
-  var now = moment();
-  var serverTime = {
-    serverTime : now.format('MMMM Do YYYY, H:mm:ss'),
-    serverTimeHMS : now.format('H:mm:ss'),
-    serverTimeDay : now.format('dddd'),
-    serverDate : now.format('MMMM Do YYYY')
-  }
-  IO.emit('serverTime', serverTime);
-}, 1000);
 
 /*
  * Dashboard List

@@ -4,10 +4,7 @@
  */
 GLOBAL.CONFIG = require('./config.js'); 
 
-/**
- * Node-Module dependencies.
- * https://www.digitalocean.com/community/tutorials/how-to-install-express-a-node-js-framework-and-set-up-socket-io-on-a-vps
- */
+// Server Modules
 var path = require('path'),
   express = require('express'),
   app = express(),
@@ -20,8 +17,11 @@ GLOBAL._ = require('underscore');
 GLOBAL.md5 = require('MD5');
 GLOBAL.moment = require('moment');
 
+// Background Services
+var services = require('./controller/backgroundServices'); 
+
 // Basic controller
-var router = require('./routes/router'); // Control
+var router = require('./controller/router'); // Control
 
 // Express Environments
 app.set('port', process.env.PORT || 3000);
