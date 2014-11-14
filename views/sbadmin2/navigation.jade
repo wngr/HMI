@@ -14,8 +14,11 @@ nav.navbar.navbar-default.navbar-static-top(role='navigation',style='margin-bott
       +dropdown-notifications()
       +dropdown-tasks()
       li
-        a(href='#')
+        a(href='#', style='color:#999999')
           i.fa.fa-shield.fa-fw
+      li
+        a(href='#', style='color:#999999')
+          i.fa.fa-signal.fa-fw
       +dropdown-time()
       
       
@@ -40,20 +43,24 @@ nav.navbar.navbar-default.navbar-static-top(role='navigation',style='margin-bott
             a(href='#')
               i.fa.fa-shopping-cart.fa-fw
               | Tasks
-          li
+          li 
             a(href='#')
+              i.fa.fa-user.fa-fw
+              | Manual Module
+          li
+            a(href='#', style='color:#999999')
               i.fa.fa-bar-chart-o.fa-fw
               | Overview
           li
-            a(href='#')
+            a(h='#', style='color:#999999')
               i.fa.fa-globe.fa-fw
               | Simulation      
           li
-            a(href='#')
+            a(h='#', style='color:#999999')
               i.fa.fa-camera.fa-fw
               | Camera  
           li
-            a(href='#')
+            a(href='#', style='color:#999999')
               i.fa.fa-sitemap.fa-fw
               | Modules
               span.fa.arrow
