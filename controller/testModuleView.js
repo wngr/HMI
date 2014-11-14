@@ -4,12 +4,6 @@
  * Strange: Sometimes it works, sometimes not.
  * Somehow it has to do with IO connection and socket I think.
  */
-console.log('testModuleView.js / root');
-// SystemTime
-setInterval(function() {
-  IO.emit('serverTime', Date().toString());
-}, 1000);
-
 exports.completeModule = function(req, res) {
   jadeData = {};
 
@@ -30,26 +24,6 @@ exports.completeModule = function(req, res) {
   });
 };
 
-var connectedClients = 0;
-IO.on('connection', function(socket) {
-  connectedClients++;
-  console.log('Connected Clients: ', connectedClients);
-
-  // Disconnect
-  socket.on('disconnect', function() {
-    console.log('Number of users from ', connectedClients, ' to ');
-    connectedClients--;
-    console.log(connectedClients);
-
-    if (connectedClients === 0) {
-      try {
-        opcuaInstance.disconnect();
-      } catch (err) {
-        console.log(err);
-      }
-    }
-  });
-});
 
 /*
  * deprecated

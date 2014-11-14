@@ -43,6 +43,7 @@ function getRecipes(recipeIdArray, callback) {
 
         // Callback on last element
         if (id == _.last(recipeIdArray)) {
+          opc.disconnect();
           callback(err, recipesArray);
         }
       }); // end opc.mi5ReadArray

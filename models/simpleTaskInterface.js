@@ -12,15 +12,32 @@ var opcH = require('./simpleOpcuaHelper');
 /*
  * Config Production List
  */
-var NumberOfParameters = 2; // 5
-var NumberOfSkills = 5; // 50
+var NumberOfParameters = 1; // 5 // only works with 2 !!!!!! TODO
+var NumberOfSkills = 1; // 50 // only works with 5 !!!!!!!!! TODO
+var NumberOfTasks = 30; // 30 (Production List Size)
 
 /**
- * Get recipes
+ * Get all Tasks
+ * 
+ * @async
+ * @function callback(err, tasksArray)
+ */
+function getAllTasks(callback) {
+  taskIdArray = [];
+  for (var i = 0; i <= NumberOfTasks; i++) {
+    taskIdArray.push(i);
+  }
+
+  getTasks(taskIdArray, callback);
+}
+exports.getAllTasks = getAllTasks;
+
+/**
+ * Get selected Tasks
  * 
  * @async
  * @param taskIdArray
- * @function callback(err, recipesArray)
+ * @function callback(err, tasksArray)
  */
 function getTasks(taskIdArray, callback) {
   var opc = require('./../models/simpleOpcua').server(CONFIG.OPCUATask);
@@ -38,9 +55,13 @@ function getTasks(taskIdArray, callback) {
       var baseNodeTask = structTask('MI5.ProductionList[' + id + '].');
 
       opc.mi5ReadArray(baseNodeTask, function(err, data) {
-
+        // Convert opc.Mi5 object to jadeData
         var mi5Object = opcH.mapMi5ArrayToObject(data, structTaskObjectBlank());
-        tasksArray.push(mi5Object);
+
+        // only push if no dummy
+        if (mi5Object.Dummy.value === false) {
+          tasksArray.push(mi5Object);
+        }
 
         // Callback on very last element
         if (id == _.last(taskIdArray)) {

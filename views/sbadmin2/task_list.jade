@@ -1,0 +1,44 @@
+extends layout
+
+block content
+  if error
+    div.row
+      div.col-lg-12
+        h1 ERROR
+        p= error.Error
+        p= error.code
+        p= error.errno
+        p= error.syscal
+  
+  div.row
+    div.col-lg-8
+      div.panel.panel-default 
+        div.panel-heading
+          i.fa.fa-clock-o.fa-fw
+          | All Tasks in a Timeline
+        div.panel-body
+          ul.timeline
+            if tasks
+              for task in tasks
+                li
+                  div.timeline-badge
+                    | #{task.TaskID.value}
+                  div.timeline-panel
+                    div.timeline-heading
+                      h4.timeline-title= task.Name.value
+                      p
+                        small.text-muted
+                          i.fa.fa-clock-o= task.Timestamp.value
+                    div.timeline-body
+                      p RecipeID: #{task.RecipeID.value}
+            
+            else
+                li
+                  div.timeline-badge
+                    i.fa.fa-circle-o
+                  div.timeline-panel
+                    div.timeline-heading
+                      h4.timeline-title No Task
+                    div.timeline-body
+                      p There are no tasks in the Production List
+    

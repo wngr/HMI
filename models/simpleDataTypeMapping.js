@@ -34,6 +34,29 @@ function Mi5Order(variableName) {
 }
 exports.Mi5Order = Mi5Order;
 
+/**
+ * Write: Order[0].Pending
+ * 
+ * @param variableName
+ * @returns {String}
+ */
+function Mi5DebugPendingFalse(variableName) {
+  assert(typeof variableName === "string");
+  var type;
+
+  switch (variableName) {
+  case "Pending":
+    type = 'Boolean';
+    break;
+  default:
+    console.log('According to the Orderlist, the given variableName does not exist');
+    break;
+  }
+
+  return type;
+}
+exports.Mi5DebugPendingFalse = Mi5DebugPendingFalse;
+
 function Mi5OrderUserParameter(variableName) {
   assert(typeof variableName === "string");
   var type;
