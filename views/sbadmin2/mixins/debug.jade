@@ -1,0 +1,26 @@
+//- Dropdown notification 
+//- With JS Tag to update list
+mixin dropdown-debug()
+        li.dropdown
+          a.dropdown-toggle.text-success(href='#',data-toggle='dropdown')
+            i.fa.fa-puzzle-piece.fa-fw
+            i.fa.fa-caret-down
+          ul.dropdown-menu.dropdown-messages#messageFeedList
+            li     
+              a(href='#',onclick="socket.emit('bgDebugOrderPendingFalse',1);")
+                div
+                  i.fa.fa-pencil.fa-fw
+                  strong Mi5.Order[0].pending
+                  span.pull-right.text-muted
+                    em = false
+           
+mixin notification-element-innerJS(level, message, time)
+            li     
+              a(href='#')
+                div
+                  //- is used inside an ''-JS braces, therefore we need to close, add and reopen
+                  strong '+#{level}+'
+                  span.pull-right.text-muted
+                    em '+#{time}+'
+                div '+#{message}+'
+            li.divider

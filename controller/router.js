@@ -2,8 +2,8 @@
  * Router File
  */
 var testModuleView = require('./testModuleView');
-var recipeView = require('./recipeView');
-var taskView = require('./taskView');
+var recipes = require('./recipes');
+var tasks = require('./tasks');
 var manualModule = require('./manualModule');
 
 /**
@@ -11,11 +11,18 @@ var manualModule = require('./manualModule');
  */
 exports.router = function(app) {
   app.get('/', index);
-  app.get('/testModuleView', testModuleView.index)
-  app.get('/testRecipeView', recipeView.index);
-  app.post('/testRecipeView', recipeView.placeOrder);
-  app.get('/testRecipeViewMock', recipeView.mockup);
-  app.get('/testTaskView', taskView.showTask);
+  app.get('/testModuleView', testModuleView.index);
+  
+  // Recipes / Order
+  app.get('/order', recipes.index);
+  app.get('/order/direct/:recipeId', recipes.directOrder);
+  app.get('/order/placed/:taskId', recipes.orderPlaced);
+  app.get('/order/ifeellucky', recipes.ifeellucky);
+  app.post('/testRecipeView', recipes.placeOrder);
+  app.get('/testRecipeViewMock', recipes.mockup);
+  
+  // Tasks
+  app.get('/task_list', tasks.taskList);
   app.get('/testManualModuleView', manualModule.showModule);
   app.get('/sbadmin2', function(req, res) {
     res.render('sbadmin2/_welcome');
@@ -30,12 +37,26 @@ exports.router = function(app) {
  * Dashboard List
  */
 function index(req, res) {
-  jadeData = {
-    content : 'Overview of all the testing modules that are available',
-    list : [ {
-      href : 'testRecipeView',
-      title : 'Recipe View (Test)'
-    } ]
-  }
-  res.render('./bootstrap/blank', jadeData);
+  res.redirect('/order');
 }
+
+
+var connectedClients = 0;
+IO.on('connection', function(socket) {
+  connectedClients++;
+  console.log('Connected Clients now:', connectedClients);
+
+  // Disconnect
+  socket.on('disconnect', function() {
+    var oldClients = connectedClients;
+    connectedClients--;
+    console.log('Number of users from '+oldClients+' to '+connectedClients);
+
+    if (connectedClients === 0) {
+    }
+  });
+  
+  // Register Listeners for backgroundDebug
+  require('./../controller/backgroundDebug').listeners(socket);
+  
+});

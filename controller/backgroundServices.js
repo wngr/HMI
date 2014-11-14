@@ -9,9 +9,13 @@
 var messageFeed = require('./backgroundMessageFeed');
 messageFeed.work();
 
-// Time
+//Time
 var serverTime = require('./backgroundTime.js');
 serverTime.work();
+
+// Debug
+var debug = require('./backgroundDebug.js');
+debug.work();
 
 // Check OPC UA Connection
 function checkOpcuaConnection(){

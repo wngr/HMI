@@ -139,6 +139,17 @@ exports.server = function(endPointUrl) {
         });
       },
 
+      mi5WriteObject : function(baseNode, object, mappingFunction, callback) {
+        var mapping = require('./simpleDataTypeMapping');
+
+        // handle object
+        assert(_.isObject(object));
+        var nodeData = opcua._convertMi5ListToNodeData(baseNode, object, mappingFunction);
+
+        // write
+        opcua.session.write(nodeData, callback);
+      },
+
       /**
        * Writes an order
        * 
@@ -151,7 +162,7 @@ exports.server = function(endPointUrl) {
        * @param userParameter
        *          <array> (e.g. [{Value: 16}, {Value: 1}]
        * @param callback
-       * @callback func(err)
+       * @callback callback(err)
        */
       mi5WriteOrder : function(baseNode, order, userParameters, callback) {
         var mapping = require('./simpleDataTypeMapping');

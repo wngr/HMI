@@ -1,0 +1,39 @@
+extends layout
+
+block content
+  div.row
+    div.col-lg-12
+      div.jumbotron
+        h1 Order something!
+        p You may choose whatever you want!
+        p Underneath you will find anything we can produce. Please select something.
+        p If there are too many things, let us surprise you!
+        p 
+         a.btn.btn-default.btn-lg(href='/order/ifeellucky/',role='button') 
+           i.fa.fa-magic.fa-lg
+           | I feel lucky!
+  
+  
+  div.row
+     if recipes
+        for recipe in recipes
+          div.col-lg-3.col-md-6
+             div.panel.panel-primary
+              a.panel-primary(href='#')
+               div.panel-heading.panel-primary
+                 div.row
+                   div.col-xs-3
+                     i.fa.fa-trophy.fa-4x
+                   div.col-xs9.text-right(style='padding-right: 5px')
+                     div ID: # #{recipe.RecipeID.value}
+                     div= recipe.Name.value 
+               a(href="/order/direct/"+recipe.RecipeID.value)
+                  div.panel-footer
+                    span.pull-left 1-click order!
+                    span.pull-right 
+                      i.fa.fa-arrow-circle-right
+                    div.clearfix
+     else
+       p no recipe to display
+      
+      

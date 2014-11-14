@@ -85,6 +85,8 @@ exports.stripArrayKey = _stripArrayKey;
  * 
  * e.g. {nodeId: ..., value: xx, ...} => {Name: {nodeId, value},... Skills: [{Dummy:...}]}
  * 
+ * @author Thomas Frei
+ * @date 2014-11-09
  * @param data
  *          <array>
  * @param dummyObject
