@@ -40,19 +40,4 @@ html(lang="en")
        div.container-fluid
          block content
 
-
-
-
-  div.container
-    div.col-xs-12.well
-        ul
-            li
-                textarea(rows=3, cols=50, id="messageFeed") ...
-                +messageFeedHtml()
-            li Status Messages
-                div#statusMessages ...
-                script socket.on('statusMessages', function(msg){ $('#statusMessages').html(msg); });
-              
-
-  include footer
-   
+   include footer

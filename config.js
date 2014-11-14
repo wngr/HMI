@@ -9,13 +9,24 @@
  */
 
 /*
- * OPCUA Servers 
+ * OPCUA Live Server (XTS-room)
  */
-exports.OPCUARecipe       = 'opc.tcp://192.168.175.230:4840/'; //.209 for virtual machine hmidev
-exports.OPCUAOrder        = 'opc.tcp://192.168.175.230:4840/';
-exports.OPCUAMessageFeed  = 'opc.tcp://192.168.175.230:4840/';
-exports.OPCUATask         = 'opc.tcp://192.168.175.230:4840/';
-exports.OPCUAHandModule   = 'opc.tcp://192.168.175.230:4840/';
+//exports.OPCUARecipe       = 'opc.tcp://192.168.175.230:4840/'; //.209 for virtual machine hmidev
+//exports.OPCUAOrder        = 'opc.tcp://192.168.175.230:4840/';
+//exports.OPCUAMessageFeed  = 'opc.tcp://192.168.175.230:4840/';
+//exports.OPCUATask         = 'opc.tcp://192.168.175.230:4840/';
+//exports.OPCUAHandModule   = 'opc.tcp://192.168.175.230:4840/';
+//
+
+/*
+ * OPCUA Test Server-Configuration (Thomas Frei)
+ */
+exports.OPCUARecipe       = 'opc.tcp://192.168.0.22:4840/'; //.209 for virtual machine hmidev
+exports.OPCUAOrder        = 'opc.tcp://192.168.0.22:4840/';
+exports.OPCUAMessageFeed  = 'opc.tcp://192.168.0.22:4840/';
+exports.OPCUATask         = 'opc.tcp://192.168.0.22:4840/';
+exports.OPCUAHandModule   = 'opc.tcp://192.168.0.22:4840/';
+
 
 /*
  * Starting TaskID, will be incremented during program

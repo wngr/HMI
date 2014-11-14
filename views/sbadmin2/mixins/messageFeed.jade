@@ -1,0 +1,31 @@
+//- Dropdown notification 
+//- With JS Tag to update list
+mixin dropdown-notifications()
+        li.dropdown
+          a.dropdown-toggle(href='#',data-toggle='dropdown')
+            i.fa.fa-envelope.fa.fw
+            i.fa.fa-caret-down
+          ul.dropdown-menu.dropdown-messages#messageFeedList
+            li     
+              a(href='#')
+                div
+                  strong Site has been loaded
+                  span.pull-right.text-muted
+                    em just now
+          script socket.on('messageFeed', function(msg){
+           | console.log(msg); 
+           | $("#messageFeedList").append('
+           +notification-element-innerJS('msg.Level.value', 'msg.Message.value', 'msg.Timestamp.value')
+           | ');
+           | });
+           
+mixin notification-element-innerJS(level, message, time)
+            li     
+              a(href='#')
+                div
+                  //- is used inside an ''-JS braces, therefore we need to close, add and reopen
+                  strong '+#{level}+'
+                  span.pull-right.text-muted
+                    em '+#{time}+'
+                div '+#{message}+'
+            li.divider
