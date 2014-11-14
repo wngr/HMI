@@ -34,9 +34,16 @@ exports.router = function(app) {
 /*
  * Socket Events
  */
-// SystemTime
+// ServerTime
 setInterval(function() {
-  IO.emit('serverTime', Date().toString());
+  var now = moment();
+  var serverTime = {
+    serverTime : now.format('MMMM Do YYYY, H:mm:ss'),
+    serverTimeHMS : now.format('H:mm:ss'),
+    serverTimeDay : now.format('dddd'),
+    serverDate : now.format('MMMM Do YYYY')
+  }
+  IO.emit('serverTime', serverTime);
 }, 1000);
 
 /*

@@ -46,9 +46,6 @@ html(lang="en")
   div.container
     div.col-xs-12.well
         ul
-            li Systemtime
-                div#serverTime ...
-                script socket.on('serverTime', function(msg){ $('#serverTime').html(msg); });
             li
                 textarea(rows=3, cols=50, id="messageFeed") ...
                 +messageFeedHtml()
