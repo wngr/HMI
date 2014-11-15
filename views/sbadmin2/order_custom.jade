@@ -3,36 +3,39 @@ extends layout
 block content
   br
   div.row
-    div.col-lg-6.col-md-6
-        img(id="cocktail_pictore" src="/assets/images/cocktails/cubalibre.jpg" style="border-radius: 100%")
-    div.col-lg-6.col-md-6
-        div.jumbotron
-            h1 Cuba Libre
-            p A well tasting drink with cola, rum and lime juice
-    div.col-lg-12.col-md-12
         if recipes
             for recipe in recipes
+                div.col-lg-6.col-md-6
+                    img(id="pictureRecipe"+recipe.RecipeID.value src="/assets/images/recipes/recipe"+recipe.RecipeID.value+"/cocktail.jpg" style="border-radius: 100%; horizontal-align: middle; vertical-align: middle; width:50%")
+                div.col-lg-6.col-md-6
+                    div.jumbotron
+                        h1= recipe.Name.value
+                        p= recipe.Description.value
                 for userParameter in recipe.UserParameter
-                    br
-                    div.col-lg-12
+                   div.col-lg-12.col-md-12
                         div.col-lg-3.col-md-3
-                            h1= userParameter.Name.value
-                        div.row
-                            div.col-lg-1.col-md-1.col-sm-1
-                                p= userParameter.MinValue.value
-                            div.col-lg-6.col-md-6.col-sm-6
-                                - console.log("userparameter.default value: " + userParameter.Default.value);
-                                input.span2(id=userParameter.Name.containerId, type="text", data-slider-value=userParameter.Default.value, data-slider-min=userParameter.MinValue.value, data-slider-max=userParameter.MaxValue.value, data-slider-step=userParameter.Step.value, style="width: 100%")
-                            div.col-lg-1.col-md-1.col-sm-1
-                                p= userParameter.MaxValue.value
-                        script.
-                            $(function(){
-                                $('##{userParameter.Name.containerId}').slider({
-                                    formater: function(value) {
-                                        return value;
-                                    }
+                            p.lead= userParameter.Name.value
+                        div.col-lg-9
+                            div.row
+                                div.col-lg-1.col-md-1.col-sm-1.col-xs-1
+                                    p.lead= userParameter.MinValue.value
+                                div.col-lg-6.col-md-6.col-sm-10.col-xs-10
+                                    -//set Step on one when its zero and round it on one
+                                    - var myStep=Math.round(userParameter.Step.value);
+                                    - console.log("mystep: "+myStep);
+                                    - if(myStep == 0){ myStep = 5; }
+                                    input.span2(id=userParameter.Name.containerId, type="text", data-slider-value=userParameter.Default.value, data-slider-min=userParameter.MinValue.value, data-slider-max=userParameter.MaxValue.value, data-slider-step=myStep, style="width: 100%")
+                                div.col-lg-1.col-md-1.col-sm-1.col-xs-1
+                                    p.lead= userParameter.MaxValue.value
+                            script.
+                                $(function(){
+                                    $('##{userParameter.Name.containerId}').slider({
+                                        formater: function(value) {
+                                            return value;
+                                        }
+                                    });
                                 });
-                            });
+                br
                 span.pull-left
                     a.btn.btn-primary.btn-lg(href="/order" role="button") Back
                 span.pull-right
