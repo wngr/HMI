@@ -192,7 +192,7 @@ function customOrder(req, res) {
 
   console.log(recipeId);
   // recipeInterface.getRecipes(recipeIdArray, function(err, recipes) {
-  recipeInterface.getRecipes([ recipeId ], function(err, recipes) {
+  recipeInterface.getRecipeByRecipeId(recipeId, function(err, recipes) {
     if (err) {
       jadeData.error = err;
     } else {
