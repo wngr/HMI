@@ -13,6 +13,8 @@ block content
         div.col-lg-12
           h1.page-header= manualModule.SkillDescription.value
            
+           - console.log(manualModule)
+           
       div.row
         div.col-lg-12
           div.panel.panel-default 
@@ -23,21 +25,34 @@ block content
               ul.timeline
                 //- Wait for Execute
                 li.timeline
-                  div.timeline-badge
-                    i.fa.fa-cog.fa-spin
+                  div.timeline-badge(id=manualModule.Execute.containerId+'badge')
+                    i.fa.fa-cog.fa-spin(id=manualModule.Execute.containerId+'icon')
                   div.timeline-panel
                     div.timeline-heading
-                      h4.timeline-title(id=manualModule.Execute.containerId) Waiting...   
-                      script socket.on("#{manualModule.Execute.updateEvent}", function(data){ if(data===true){ $("##{manualModule.Execute.containerId}").html(data); } })
+                      h4.timeline-title(id=manualModule.Execute.containerId) Waiting for turn...   
+                      script.
+                       socket.on("#{manualModule.Execute.updateEvent}", function(data){ 
+                        if(data.value.value===true){ 
+                         $("##{manualModule.Execute.containerId}icon").removeClass('fa-cog fa-spin'); 
+                         $("##{manualModule.Execute.containerId}icon").addClass('fa-check');
+                         $("##{manualModule.Execute.containerId}badge").addClass('success');
+                        }
+                       });
                               
                 //- Start Button
                 li.timeline-inverted
-                  div.timeline-badge(onclick="socket.emit('#{manualModule.Busy.submitEvent}', {nodeId: '#{manualModule.Busy.nodeId}', value: true});", style="cursor: pointer")
+                  div.timeline-badge(id=manualModule.Busy.containerId+'badge', onclick="socket.emit('#{manualModule.Busy.submitEvent}', {nodeId: '#{manualModule.Busy.nodeId}', value: true});", style="cursor: pointer")
                     | start
                   div.timeline-panel
                     div.timeline-heading
                       h4.timeline-title Press on Start to accept the Task
-                
+                      script.
+                       socket.on("#{manualModule.Busy.updateEvent}", function(data){ 
+                        if(data.value.value===true){ 
+                         $("##{manualModule.Busy.containerId}icon").addClass('fa-check');
+                         $("##{manualModule.Busy.containerId}badge").addClass('success');
+                        }
+                       });                
                 for parameter in manualModule.Parameter
                     if parameter.Name.value != ''
                      li
@@ -48,14 +63,20 @@ block content
                           h4.timeline-title= parameter.Name.value
                         div.timeline-body
                           p #{parameter.Value.value} #{parameter.Unit.value}
+                          p #{parameter.StringValue.value}
                 
                 li.timeline-inverted
-                  div.timeline-badge
+                  div.timeline-badge(id=manualModule.Done.containerId+'badge', onclick="socket.emit('#{manualModule.Done.submitEvent}', {nodeId: '#{manualModule.Done.nodeId}', value: true});", style="cursor: pointer")
                     | end
                   div.timeline-panel
                     div.timeline-heading
                       h4.timeline-title Press left, if you are finished
-
+                      script.
+                       socket.on("#{manualModule.Done.updateEvent}", function(data){ 
+                        if(data.value.value===true){ 
+                         $("##{manualModule.Done.containerId}badge").addClass('success');
+                        }
+                       });
      
      if manualModule
           div.col-xs-12.well

@@ -5,7 +5,7 @@
 function showModule(req, res) {
   var jadeData = new Object;
 
-  var manualModuleId = 2401;
+  var manualModuleId = 2403;
   mManualModule.getModuleData(manualModuleId, function(err, mi5Data, rawData) {
     if (err) {
       console.log(err);
