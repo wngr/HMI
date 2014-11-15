@@ -24,7 +24,6 @@ var NumberOfParameters = 5; // 5
  * persistent connection for subscriptions
  */
 var opcConnection = require('./../models/simpleOpcua').server(CONFIG.OPCUAHandModule);
-;
 
 /**
  * In IO.on('connection')
@@ -62,7 +61,7 @@ function getModuleData(handModuleID, callback) {
       callback(err);
       return 0;
     }
-    console.log('inited');
+    console.log('OK? - getModuleData'); // TODO: it seems, as if this is always called, PERFORMANCE?
 
     var baseNodeTask = structManualModule('MI5.Module' + handModuleID + 'Manual.');
     opcConnection.mi5ReadArray(baseNodeTask, function(err, data) {
@@ -110,28 +109,52 @@ function registerListeners(socket) {
   manualModuleRawData.forEach(function(item) {
     socket.on(item.submitEvent, function(data) {
       console.log('Gute Neuigkeiten:', data);
+      // Write to OPC
+      if (data.nodeId) {
+        setValue(data.nodeId, data.value)
+        console.log('basenode:', baseNode);
+      }
     });
-
   });
   console.log('OK - All Event Listeners for Manual Module registered');
 }
 exports.registerListeners = registerListeners;
 
+function setValue(nodeId, value) {
+  var baseNode = opcH.cutLastElement(nodeId);
+  console.log(baseNode);
+  var parameter = opcH.getLastElement(nodeId);
+  console.log(parameter);
+
+  if (parameter === 'Busy') {
+    var writethis = {
+      Busy : true
+    };
+  } else if (parameter === 'Done') {
+    var writethis = {
+      Done : true,
+      Busy : false
+    };
+  } else {
+    console.log('Err - No object for parameter predefined. Parameter:', parameter);
+  }
+
+  var Mi5ManualModule = require('./../models/simpleDataTypeMapping.js').Mi5ManualModule;
+  opcConnection.mi5WriteObject(baseNode, writethis, Mi5ManualModule, function(err) {
+    console.log('Mi5ManualModule written - no error feedback possible');
+  });
+}
+exports.setValue = setValue;
+
 function getRawData() {
   return manualModuleRawData;
 }
 exports.getRawData = getRawData;
+
 function getJadeData() {
   return manualModuleJadeData;
 }
 exports.getJadeData = getJadeData;
-
-function readyToRegister(callback) {
-  opcConnection.on('rawDataGathered', function() {
-    callback();
-  });
-}
-exports.readyToRegister = readyToRegister;
 
 function disconnect() {
   opcConnection.disconnect();

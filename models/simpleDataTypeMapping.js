@@ -72,7 +72,6 @@ function Mi5OrderUserParameter(variableName) {
   }
 
   return type;
-
 }
 exports.Mi5OrderUserParameter = Mi5OrderUserParameter;
 
@@ -96,6 +95,38 @@ function Mi5MessageFeed(variableName) {
   }
 
   return type;
-
 }
 exports.Mi5OrderUserParameter = Mi5OrderUserParameter;
+
+function Mi5ManualModule(variableName) {
+  assert(typeof variableName === "string");
+  var type;
+
+  switch (variableName) {
+  case "Execute":
+  case "Ready":
+  case "Busy":
+  case "Done":
+  case "Error":
+    type = 'Boolean';
+    break;
+  case "ErrorID":
+  case "SkillID":
+  case "TaskID":
+    type = 'Int16';
+    break;
+  case "SkillDescription":
+    type = 'String';
+    break;
+  case "Position":
+    type = 'Double';
+    break;
+  default:
+    console.log('According to the Orderlist, the given variableName does not exist');
+    // assert(false);
+    break;
+  }
+
+  return type;
+}
+exports.Mi5ManualModule = Mi5ManualModule;

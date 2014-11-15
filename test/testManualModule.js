@@ -23,4 +23,5 @@ var interface = require('./../models/simpleManualModule');
 interface.getModuleData(2401, function(err, tasks, data) {
   console.log(err, tasks, data);
   // console.log(JSON.stringify(tasks, null, 1));
+  interface.setValue('MI5.Module2401Manual.Busy', true);
 });
