@@ -28,7 +28,7 @@ block content
                   div.timeline-panel
                     div.timeline-heading
                       h4.timeline-title(id=manualModule.Execute.containerId) Waiting...   
-                      script socket.on("#{manualModule.Execute.updateEvent}", function(data){ $("##{manualModule.Execute.containerId}").html(data);
+                      script socket.on("#{manualModule.Execute.updateEvent}", function(data){ if(data===true){ $("##{manualModule.Execute.containerId}").html(data); } })
                               
                 //- Start Button
                 li.timeline-inverted
@@ -68,7 +68,7 @@ block content
               
            //- Add socket-listener update events
            for mm in manualModule
-              script socket.on('#{mm.updateEvent}', function(data){ console.log(data); $("##{mm.containerId}").html(data.value.value); });
+              // script socket.on('#{mm.updateEvent}', function(data){ console.log(data); $("##{mm.containerId}").html(data.value.value); });
            
            button.btn.btn-primary.btn-lg(type='button',onclick="socket.emit('#{manualModule.Busy.submitEvent}', 1);") Start! (busy=true)
      else

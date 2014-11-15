@@ -16,6 +16,18 @@ function _splitNodeId(nodeId) {
 exports.splitNodeId = _splitNodeId;
 
 /**
+ * Get last element in a nodeId
+ * 
+ * @param nodeId
+ * @returns
+ */
+function _getLastElement(nodeId) {
+  var split = _splitNodeId(nodeId);
+  return _.last(split);
+}
+exports.getLastElement = _getLastElement;
+
+/**
  * Detect if nodeId contains array-signature
  * 
  * @param node
@@ -31,6 +43,24 @@ function _detectIfArray(node) {
   }
 }
 exports.detectIfArray = _detectIfArray;
+
+/**
+ * deletes last element in a nodeId
+ * 
+ * @param nodeId
+ *          <string> Mi5.Recipe[0].Value
+ * @returns {String} Mi5.Recipe[0].
+ */
+function _cutLastElement(nodeId) {
+  var split = _splitNodeId(nodeId);
+  split.pop();
+  var result = '';
+  split.forEach(function(item) {
+    result = result + item + '.';
+  });
+  return result;
+}
+exports.cutLastElement = _cutLastElement;
 
 /**
  * Detect if nodeId contains array-signature and returns the number
