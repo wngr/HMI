@@ -28,7 +28,8 @@ block content
                       h4.timeline-title= task.Name.value
                       p
                         small.text-muted
-                          i.fa.fa-clock-o= task.Timestamp.value
+                          i.fa.fa-clock-o
+                          |&nbsp;#{task.Timestamp.value}
                     div.timeline-body
                       p RecipeID: #{task.RecipeID.value}
             

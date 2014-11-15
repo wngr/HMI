@@ -13,6 +13,7 @@ var assert = require('assert');
  * RawData object for listeners
  */
 var manualModuleRawData = undefined;
+var manualModuleJadeData = undefined;
 
 /*
  * Config Production List
@@ -26,6 +27,28 @@ var opcConnection = require('./../models/simpleOpcua').server(CONFIG.OPCUAHandMo
 ;
 
 /**
+ * In IO.on('connection')
+ * 
+ * @async
+ * @param socket
+ */
+function start(socket) {
+  assert(typeof socket !== "undefined");
+
+  getModuleData(2401, function(err, mi5Data, rawData) {
+    if (err) {
+      console.log(err);
+      return 0;
+    }
+
+    subscribeModuleData();
+    registerListeners(socket);
+
+  });
+}
+exports.start = start;
+
+/**
  * @async
  * @function callback(err, mi5Object, rawData)
  */
@@ -33,22 +56,20 @@ function getModuleData(handModuleID, callback) {
   assert(typeof handModuleID === "number");
   assert(typeof callback === "function");
 
-  var opc = require('./../models/simpleOpcua').server(CONFIG.OPCUAHandModule);
-
-  opc.initialize(function(err) {
+  opcConnection.initialize(function(err) {
     if (err) {
       console.log(err);
       callback(err);
       return 0;
     }
+    console.log('inited');
 
     var baseNodeTask = structManualModule('MI5.Module' + handModuleID + 'Manual.');
-    opc.mi5ReadArray(baseNodeTask, function(err, data) {
+    opcConnection.mi5ReadArray(baseNodeTask, function(err, data) {
       var mi5Object = opcH.mapMi5ArrayToObject(data, structManualModuleObjectBlank());
 
-      opc.disconnect();
       manualModuleRawData = data;
-      opcConnection.emit('rawDataGathered', 1);
+      manualModuleJadeData = mi5Object;
       callback(err, mi5Object, data); // final callback
     }); // end opc.mi5ReadArray
   }); // end opc.initialize()
@@ -61,28 +82,21 @@ exports.getModuleData = getModuleData;
  * @param rawData
  * @param callback
  */
-function subscribeModuleData(rawData) {
-  assert(_.isArray(rawData));
+function subscribeModuleData() {
+  assert(_.isArray(manualModuleRawData));
+  assert(typeof opcConnection !== "undefined");
 
   /*
    * Subscribe to everything
    */
-  opcConnection.initialize(function(err) {
-    if (err) {
-      console.log(err);
-      callback(err);
-      return 0;
-    }
-
-    opcConnection.mi5Subscribe();
-    rawData.forEach(function(entry) {
-      var myNode = opcConnection.mi5Monitor(entry.nodeId);
-      myNode.on('changed', function(data) {
-        console.log('changed:', entry.nodeId);
-        IO.emit(entry.updateEvent, data);
-      });
-      console.log('Monitored item for:', entry.nodeId);
+  opcConnection.mi5Subscribe();
+  manualModuleRawData.forEach(function(entry) {
+    var myNode = opcConnection.mi5Monitor(entry.nodeId);
+    myNode.on('changed', function(data) {
+      console.log('changed:', entry.nodeId);
+      IO.emit(entry.updateEvent, data);
     });
+    console.log('Monitored item for:', entry.nodeId);
   });
 
   return 0;
@@ -90,24 +104,28 @@ function subscribeModuleData(rawData) {
 exports.subscribeModuleData = subscribeModuleData;
 
 function registerListeners(socket) {
-  opcConnection.on('rawDataGathered', function() {
-    console.log('opcConnection.on: rawDataGathered');
-
-    // console.log(manualModuleRawData);
-    manualModuleRawData.forEach(function(item) {
-      console.log('@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@');
-      console.log(item.submitEvent);
-      socket.on(item.submitEvent, function(data) {
-        console.log('Gute Neuigkeiten:', data);
-      })
+  manualModuleRawData.forEach(function(item) {
+    console.log('@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@');
+    console.log(item.submitEvent);
+    socket.on(item.submitEvent, function(data) {
+      console.log('Gute Neuigkeiten:', data);
     });
   });
 }
 exports.registerListeners = registerListeners;
 
+function getRawData() {
+  return manualModuleRawData;
+}
+exports.getRawData = getRawData;
+function getJadeData() {
+  return manualModuleJadeData;
+}
+exports.getJadeData = getJadeData;
+
 function readyToRegister(callback) {
   opcConnection.on('rawDataGathered', function() {
-    callback(manualModuleRawData);
+    callback();
   });
 }
 exports.readyToRegister = readyToRegister;
