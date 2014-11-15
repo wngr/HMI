@@ -64,6 +64,7 @@ IO.on('connection', function(socket) {
   // Register Listeners for backgroundDebug
   require('./../controller/backgroundDebug').listeners(socket);
   
+  
   // Register Manual Module Listeners
   require('./../models/simpleManualModule').readyToRegister(function(rawData){
     rawData.forEach(function(item){
