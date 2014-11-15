@@ -16,6 +16,8 @@ GLOBAL.IO = require('socket.io').listen(server);
 GLOBAL._ = require('underscore');
 GLOBAL.md5 = require('MD5');
 GLOBAL.moment = require('moment');
+// Models
+GLOBAL.mManualModule = require('./models/simpleManualModule');
 
 // Background Services
 var services = require('./controller/backgroundServices'); 

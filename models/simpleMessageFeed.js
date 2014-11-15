@@ -82,7 +82,7 @@ function _pushMessage(message) {
 
   messageFeedArray.push(message);
 
-  console.log('Message was pushed to the Feed Array:: ', message.Message.value,
+  console.log('MessageFeed - New Message from ProcessTool:', message.Message.value,
       message.Timestamp.value);
 }
 

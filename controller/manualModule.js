@@ -4,9 +4,9 @@
 
 function showModule(req, res) {
   var jadeData = new Object;
-  var interface = require('./../models/simpleManualModule');
 
-  interface.getModuleData(2401, function(err, mi5Data, rawData) {
+  var manualModuleId = 2401;
+  mManualModule.getModuleData(manualModuleId, function(err, mi5Data, rawData) {
     if (err) {
       console.log(err);
       return 0;
@@ -15,9 +15,9 @@ function showModule(req, res) {
     jadeData.manualModule = mi5Data;
     // console.log(JSON.stringify(mi5Data, null, 1));
 
-    interface.subscribeModuleData(rawData);
+    mManualModule.subscribeModuleData(rawData);
 
-    res.render('sbadmin2/manual_module', jadeData);
+    res.render('sbadmin2/manual_module_2401', jadeData);
   });
 }
 exports.showModule = showModule;

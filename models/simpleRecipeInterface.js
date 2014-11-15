@@ -16,6 +16,9 @@ var jadeH = require('./simpleJadeHelper');
  * @function callback(err, recipesArray)
  */
 function getRecipes(recipeIdArray, callback) {
+  assert(_.isArray(recipeIdArray));
+  assert(typeof callback === "function");
+
   var opc = require('./../models/simpleOpcua').server(CONFIG.OPCUARecipe);
 
   opc.initialize(function(err) {

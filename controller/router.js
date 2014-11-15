@@ -1,5 +1,5 @@
 /**
- * Router File
+ * Router Files
  */
 var testModuleView = require('./testModuleView');
 var recipes = require('./recipes');
@@ -12,22 +12,23 @@ var manualModule = require('./manualModule');
 exports.router = function(app) {
   app.get('/', index);
   app.get('/testModuleView', testModuleView.index);
-  
+
   // Recipes / Order
   app.get('/order', recipes.index);
   app.get('/order/direct/:recipeId', recipes.directOrder);
+  app.get('/order/custom/:recipeId', recipes.customOrder);
   app.get('/order/placed/:taskId', recipes.orderPlaced);
   app.get('/order/ifeellucky', recipes.ifeellucky);
   app.post('/testRecipeView', recipes.placeOrder);
   app.get('/testRecipeViewMock', recipes.mockup);
-  
+
   // Tasks
   app.get('/task_list', tasks.taskList);
   app.get('/testManualModuleView', manualModule.showModule);
-  
+
   // Manual
   app.get('/manual', manualModule.showModule);
-  
+
   // Test
   app.get('/sbadmin2Welcome', function(req, res) {
     res.render('sbadmin2/_welcome');
@@ -45,7 +46,6 @@ function index(req, res) {
   res.redirect('/order');
 }
 
-
 var connectedClients = 0;
 IO.on('connection', function(socket) {
   connectedClients++;
@@ -55,16 +55,17 @@ IO.on('connection', function(socket) {
   socket.on('disconnect', function() {
     var oldClients = connectedClients;
     connectedClients--;
-    console.log('Number of users from '+oldClients+' to '+connectedClients);
+    console.log('Number of users from ' + oldClients + ' to ' + connectedClients);
 
     if (connectedClients === 0) {
+      mManualModule.disconnect();
     }
   });
-  
+
   // Register Listeners for backgroundDebug
   require('./../controller/backgroundDebug').listeners(socket);
-  
+
   // Manual Module
-  require('./../models/simpleManualModule').start(socket);
-  
+  mManualModule.start(socket);
+
 });

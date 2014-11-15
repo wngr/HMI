@@ -27,19 +27,19 @@ block content
                     //- console.log(parameter)
                     +userParameterInForm(parameter.Default.value, parameter.MinValue.value, parameter.MaxValue.value)
                     p Slider on this level
-<<<<<<< .mine                    p parameter.description.value: #{parameter.Description.value}
+                    p parameter.description.value: #{parameter.Description.value}
                     p= parameter.Name.value
                     p= parameter.Unit.value
                     p= parameter.Default.value
                     p= parameter.MinValue.value
                     p= parameter.MaxValue.value
                     p= parameter.Step.value
-=======                    ul
+                    ul
                         li Description
                         li= parameter.Description.value
                         li Name, Default, [min, max], default
                         li #{parameter.Name.value}
->>>>>>> .theirs                    div.col-xs-12.well
+                    div.col-xs-12.well
                         input(type="text" class="span2" value="500" id="slider"+recipe.RecipeID.value data-slider-min="10" data-slider-max="1000" data-slider-step="5")
                     form.form-horizontal(role="form", method="POST", id="form"+recipe.RecipeID.value)
                         Hieraus wird die Zahl des Sliders
@@ -57,12 +57,12 @@ block content
                                 //formater: function(value) {
                                 //the function which should be called when the slider is moved 
                                 //should be put here!
-                                //Funktion hier schreibt die ganze Zeit. Dafür sehr präzise
+                                //Funktion hier schreibt die ganze Zeit. Dafï¿½r sehr prï¿½zise
                                 //$("#testForm1").html(value);
                                 //return 'Current value: '+value;
                             //}
                             //});
-                            //Funktion speichert Wert erst bei stoppen des slidens. ist dafür ungenauer
+                            //Funktion speichert Wert erst bei stoppen des slidens. ist dafï¿½r ungenauer
                             $(sliderID).on("slideStop", function(slideEvent){
                                 $(formID).text(slideEvent.value);
                             });
@@ -76,7 +76,7 @@ block content
      else
         div.col-xs-12.well
             p no recipe to display
-<<<<<<< .mine    block socketscripts
+     block socketscripts
         script(src='/assets/bootstrap/js/bootstrap.min.js')
         script(src='/assets/bootstrap/js/bootstrap-slider.js')
         script.
@@ -85,15 +85,14 @@ block content
                     formater: function(value) {
                         //the function which should be called when the slider is moved 
                         //should be put here!
-                        //Funktion hier schreibt die ganze Zeit. Dafür sehr präzise
+                        //Funktion hier schreibt die ganze Zeit. Dafï¿½r sehr prï¿½zise
                         $("#testForm1").html(value);
                         return 'Current value: '+value;
                     }
                 });
-                //Funktion speichert Wert erst bei stoppen des slidens. ist dafür ungenauer
+                //Funktion speichert Wert erst bei stoppen des slidens. ist dafï¿½r ungenauer
                 //$('#slider1').on("slideStop", function(slideEvent){
                     //$("#testForm1").text(slideEvent.value);
                 //});
             });
-        script socket.on('serverTime', function(msg){ $('#serverTime').html(msg); });=======    
-    >>>>>>> .theirs
+        script socket.on('serverTime', function(msg){ $('#serverTime').html(msg); });

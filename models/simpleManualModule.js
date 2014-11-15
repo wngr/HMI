@@ -77,6 +77,9 @@ function getModuleData(handModuleID, callback) {
 }
 exports.getModuleData = getModuleData;
 
+function startTask() {
+}
+
 /**
  * 
  * @param rawData
@@ -96,21 +99,21 @@ function subscribeModuleData() {
       console.log('changed:', entry.nodeId);
       IO.emit(entry.updateEvent, data);
     });
-    console.log('Monitored item for:', entry.nodeId);
   });
-
+  console.log('OK - All Subscrptions and monitored items for Manual Module created');
   return 0;
 }
 exports.subscribeModuleData = subscribeModuleData;
 
 function registerListeners(socket) {
+  // console.log(manualModuleRawData);
   manualModuleRawData.forEach(function(item) {
-    console.log('@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@');
-    console.log(item.submitEvent);
     socket.on(item.submitEvent, function(data) {
       console.log('Gute Neuigkeiten:', data);
     });
+
   });
+  console.log('OK - All Event Listeners for Manual Module registered');
 }
 exports.registerListeners = registerListeners;
 
@@ -134,6 +137,7 @@ function disconnect() {
   opcConnection.disconnect();
   console.log('simpleManualModule - opcConnection.disconnect()');
 }
+exports.disconnect = disconnect;
 
 /**
  * @returns {___anonymous278_400}
@@ -178,8 +182,8 @@ function structManualModuleObjectBlank() {
  */
 function structManualModule(baseNode) {
   var numberOfParameters = NumberOfParameters; // 5
-  var nodes = [ 'Busy', 'Done', 'Error', 'ErrorID', 'Ready', 'SkillDescription', 'SkillID',
-      'TaskID' ];
+  var nodes = [ 'Execute', 'Busy', 'Done', 'Error', 'ErrorID', 'Ready', 'SkillDescription',
+      'SkillID', 'TaskID' ];
   // Add all 6 Parameters
   for (var i = 0; i <= numberOfParameters; i++) {
     var temp = structManuelModuleParameter('Parameter[' + i + '].');
