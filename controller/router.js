@@ -24,7 +24,12 @@ exports.router = function(app) {
   // Tasks
   app.get('/task_list', tasks.taskList);
   app.get('/testManualModuleView', manualModule.showModule);
-  app.get('/sbadmin2', function(req, res) {
+  
+  // Manual
+  app.get('/manual', manualModule.showModule);
+  
+  // Test
+  app.get('/sbadmin2Welcome', function(req, res) {
     res.render('sbadmin2/_welcome');
   });
   app.get('/sbadmin2Home', function(req, res) {
@@ -58,5 +63,20 @@ IO.on('connection', function(socket) {
   
   // Register Listeners for backgroundDebug
   require('./../controller/backgroundDebug').listeners(socket);
+  
+  // Register Manual Module Listeners
+  require('./../models/simpleManualModule').readyToRegister(function(rawData){
+    rawData.forEach(function(item){
+      console.log('///////////////////////////////////////////////');
+      console.log(item.submitEvent);
+      socket.on(item.submitEvent, function(data) {
+        console.log('Gute Neuigkeiten:', data);
+      });
+    });
+  });
+  
+  socket.on('submitEvMI5.Module2401Manual.TaskID', function(data){
+    console.log('manueller',data);
+  });
   
 });

@@ -10,14 +10,20 @@ var opcH = require('./simpleOpcuaHelper');
 var assert = require('assert');
 
 /*
+ * RawData object for listeners
+ */
+var manualModuleRawData = undefined;
+
+/*
  * Config Production List
  */
 var NumberOfParameters = 5; // 5
 
 /*
- * persistent connection
+ * persistent connection for subscriptions
  */
-var opcConnection = undefined;
+var opcConnection = require('./../models/simpleOpcua').server(CONFIG.OPCUAHandModule);
+;
 
 /**
  * @async
@@ -40,8 +46,10 @@ function getModuleData(handModuleID, callback) {
     opc.mi5ReadArray(baseNodeTask, function(err, data) {
       var mi5Object = opcH.mapMi5ArrayToObject(data, structManualModuleObjectBlank());
 
-      callback(err, mi5Object, data); // final callback
       opc.disconnect();
+      manualModuleRawData = data;
+      opcConnection.emit('rawDataGathered', 1);
+      callback(err, mi5Object, data); // final callback
     }); // end opc.mi5ReadArray
   }); // end opc.initialize()
 
@@ -56,7 +64,6 @@ exports.getModuleData = getModuleData;
 function subscribeModuleData(rawData) {
   assert(_.isArray(rawData));
 
-  opcConnection = require('./../models/simpleOpcua').server(CONFIG.OPCUAHandModule);
   /*
    * Subscribe to everything
    */
@@ -71,10 +78,10 @@ function subscribeModuleData(rawData) {
     rawData.forEach(function(entry) {
       var myNode = opcConnection.mi5Monitor(entry.nodeId);
       myNode.on('changed', function(data) {
-        console.log('changed:', entry.nodeId, data);
+        console.log('changed:', entry.nodeId);
         IO.emit(entry.updateEvent, data);
       });
-      console.log('added subscription');
+      console.log('Monitored item for:', entry.nodeId);
     });
   });
 
@@ -82,18 +89,48 @@ function subscribeModuleData(rawData) {
 }
 exports.subscribeModuleData = subscribeModuleData;
 
+function registerListeners(socket) {
+  opcConnection.on('rawDataGathered', function() {
+    console.log('opcConnection.on: rawDataGathered');
+
+    // console.log(manualModuleRawData);
+    manualModuleRawData.forEach(function(item) {
+      console.log('@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@');
+      console.log(item.submitEvent);
+      socket.on(item.submitEvent, function(data) {
+        console.log('Gute Neuigkeiten:', data);
+      })
+    });
+  });
+}
+exports.registerListeners = registerListeners;
+
+function readyToRegister(callback) {
+  opcConnection.on('rawDataGathered', function() {
+    callback(manualModuleRawData);
+  });
+}
+exports.readyToRegister = readyToRegister;
+
+function disconnect() {
+  opcConnection.disconnect();
+  console.log('simpleManualModule - opcConnection.disconnect()');
+}
+
 /**
  * @returns {___anonymous278_400}
  */
 function structManualModuleObjectBlank() {
   // Base
   var handModuleDummy = {
+    Ready : '',
     Busy : '',
     Done : '',
+    Execute : '',
     Error : '',
     ErrorID : '',
     Parameter : [],
-    Ready : '',
+    Position : '',
     SkillDescription : '',
     SkillID : '',
     TaskID : ''

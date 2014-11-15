@@ -13,10 +13,11 @@ function showModule(req, res) {
     }
 
     jadeData.manualModule = mi5Data;
+    //console.log(JSON.stringify(mi5Data, null, 1));
 
     interface.subscribeModuleData(rawData);
 
-    res.render('bootstrap/testManualModuleView', jadeData);
+    res.render('sbadmin2/manual_module', jadeData);
   });
 }
 exports.showModule = showModule;
