@@ -35,5 +35,16 @@ block content
                     div.clearfix
      else
        p no recipe to display
-      
-      
+     
+  div.row  
+    div.col-lg-3          
+        input.span2#slider1(type="text", value="500", data-slider-min="10", data-slider-max="1000", data-slider-step="20")
+
+        script.
+            $(function(){
+                $('#slider1').slider({//{
+                    formater: function(value) {
+                        return value;
+                    }
+                });
+            });

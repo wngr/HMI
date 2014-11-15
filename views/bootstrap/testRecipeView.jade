@@ -27,14 +27,73 @@ block content
                     //- console.log(parameter)
                     +userParameterInForm(parameter.Default.value, parameter.MinValue.value, parameter.MaxValue.value)
                     p Slider on this level
-                    ul
+<<<<<<< .mine                    p parameter.description.value: #{parameter.Description.value}
+                    p= parameter.Name.value
+                    p= parameter.Unit.value
+                    p= parameter.Default.value
+                    p= parameter.MinValue.value
+                    p= parameter.MaxValue.value
+                    p= parameter.Step.value
+=======                    ul
                         li Description
                         li= parameter.Description.value
                         li Name, Default, [min, max], default
                         li #{parameter.Name.value}
+>>>>>>> .theirs                    div.col-xs-12.well
+                        input(type="text" class="span2" value="500" id="slider"+recipe.RecipeID.value data-slider-min="10" data-slider-max="1000" data-slider-step="5")
+                    form.form-horizontal(role="form", method="POST", id="form"+recipe.RecipeID.value)
+                        Hieraus wird die Zahl des Sliders
+                    div.col-xs-12.well(id = "recipeID")=  recipe.RecipeID.value
+                    script.
+                        $(function(){
+                            var recipeID = 0;
+                            var recipeElement = document.getElementById('recipeID');
+                            recipeID = recipeElement.innerHTML;
+                            console.log("recipeID: "+ recipeID);
+                            var sliderID = '#slider'+recipeID;
+                            console.log("sliderID: "+sliderID);
+                            var formID = '#form'+recipeID;
+                            $(sliderID).slider();//{
+                                //formater: function(value) {
+                                //the function which should be called when the slider is moved 
+                                //should be put here!
+                                //Funktion hier schreibt die ganze Zeit. Dafür sehr präzise
+                                //$("#testForm1").html(value);
+                                //return 'Current value: '+value;
+                            //}
+                            //});
+                            //Funktion speichert Wert erst bei stoppen des slidens. ist dafür ungenauer
+                            $(sliderID).on("slideStop", function(slideEvent){
+                                $(formID).text(slideEvent.value);
+                            });
+                        });
+                        
                 button.btn.btn-default(type="submit") Place your order
+        div.col-xs-12.well
+            input(type="text" class="span2" value="500" id="slider1" data-slider-min="10" data-slider-max="1000" data-slider-step="20")
+        form.form-horizontal(role="form", method="POST", id="testForm1")
+            inhalt der form steht hier
      else
-        div.col-xs-12.well       
+        div.col-xs-12.well
             p no recipe to display
-    
-    
+<<<<<<< .mine    block socketscripts
+        script(src='/assets/bootstrap/js/bootstrap.min.js')
+        script(src='/assets/bootstrap/js/bootstrap-slider.js')
+        script.
+            $(function(){
+                $('#slider1').slider({//{
+                    formater: function(value) {
+                        //the function which should be called when the slider is moved 
+                        //should be put here!
+                        //Funktion hier schreibt die ganze Zeit. Dafür sehr präzise
+                        $("#testForm1").html(value);
+                        return 'Current value: '+value;
+                    }
+                });
+                //Funktion speichert Wert erst bei stoppen des slidens. ist dafür ungenauer
+                //$('#slider1').on("slideStop", function(slideEvent){
+                    //$("#testForm1").text(slideEvent.value);
+                //});
+            });
+        script socket.on('serverTime', function(msg){ $('#serverTime').html(msg); });=======    
+    >>>>>>> .theirs
