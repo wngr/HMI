@@ -32,8 +32,9 @@ exports.index = index;
 function placeOrder(req, res) {
   var recipeInterface = require('./../models/simpleRecipeInterface');
 
-  var recipeId = req.query.recipeId;
+  var recipeId = parseInt(req.params.recipeId, 10);
   var postParameters = req.body.userparameter;
+  console.log(postParameters);
 
   var taskId = CONFIG.TaskId++;
 
@@ -68,7 +69,7 @@ function placeOrder(req, res) {
         title : 'Redirect to global TaskView'
       } ]
     };
-    res.render('bootstrap/blank', jadeData);
+    res.redirect('/order/placed/' + taskId);
   });
 
 }
@@ -99,6 +100,8 @@ function _handlePostParameters(postParameters) {
 
 /**
  * Mockup for Bjoern, to develop slider
+ * 
+ * @deprecated
  * 
  * @static
  * @author Thomas Frei
@@ -173,8 +176,8 @@ function directOrder(req, res) {
   var recipeInterface = require('./../models/simpleRecipeInterface');
   recipeInterface.setOrder(order, userParameters, function(err, callback) {
     if (err) {
-      console.log('RecipeInterface - an error has occured:', err);
-      res.redirect('order/error/');
+      console.log('ERR - RecipeInterface - an error has occured:', err);
+      res.redirect('/order/error/');
     }
     res.redirect('/order/placed/' + taskId);
   });
@@ -185,7 +188,7 @@ exports.directOrder = directOrder;
 function customOrder(req, res) {
   var recipeId = parseInt(req.params.recipeId, 10);
   assert(_.isNumber(recipeId));
-  console.log('Perform direct order. RecipeID: ', recipeId);
+  console.log('OK - Custom order - RecipeID: ', recipeId);
 
   var jadeData = new Object;
   var recipeInterface = require('./../models/simpleRecipeInterface');
@@ -195,11 +198,10 @@ function customOrder(req, res) {
   recipeInterface.getRecipeByRecipeId(recipeId, function(err, recipes) {
     if (err) {
       jadeData.error = err;
+      console.log('ERR - Error in customOrder', err);
     } else {
       jadeData.recipes = recipes;
-      // console.log(JSON.stringify(recipes, null, 1));
-      console.log('getAllRecipes() done.');
-      console.log(recipes);
+      console.log('OK - read specific Recipe with UserParameters');
     }
 
     res.render('sbadmin2/order_custom', jadeData);
