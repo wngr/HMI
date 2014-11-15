@@ -86,7 +86,7 @@ exports.server = function(endPointUrl) {
         opcua.subscription = new nodeopcua.ClientSubscription(opcua.session, subscriptionSettings);
 
         opcua.subscription.on("started", function() {
-          console.log("SUBS: subscription started - subscriptionId=",
+          console.log("mi5Subscribe: subscription started - subscriptionId=",
               opcua.subscription.subscriptionId);
         });
         opcua.subscription.on("keepalive", function() {
