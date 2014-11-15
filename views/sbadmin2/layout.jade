@@ -13,6 +13,7 @@ html(lang="en")
     meta(name='keywords', content='')
    block css
     link(rel='stylesheet', href='/assets/sbadmin2/css/bootstrap.min.css')
+    link(rel='stylesheet', href='/assets/bootstrap-slider/css/bootstrap-slider.css')
     link(rel='stylesheet', href='/assets/sbadmin2/css/plugins/metisMenu/metisMenu.min.css')
     link(rel='stylesheet', href='/assets/sbadmin2/css/plugins/timeline.css')
     // link(rel='stylesheet', href='/assets/sbadmin2/css/sb-admin-2-darker.css')
@@ -24,6 +25,7 @@ html(lang="en")
     | </style>
    block scripts
     // /socket.io/ is served by the socket.io node package
+    script(src='/assets/sbadmin2/js/jquery.js' type='text/javascript')
     script(src='/socket.io/socket.io.js')
     script var socket = io();
     | <!--[if lt IE 9]>
