@@ -10,7 +10,7 @@ var opcH = require("./simpleOpcuaHelper");
  */
 function convertMi5ReadArrayRecipeToJade(data) {
   var NumberOfSubArrayParameters = 5; // Recipe UserParameter[0-5]
-  var NameOfSubArrayObject = 'UserParameters';
+  var NameOfSubArrayObject = 'UserParameter';
 
   var recipe = new Object;
   data.forEach(function(item) {

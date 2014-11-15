@@ -111,7 +111,7 @@ function mockup(req, res) {
 }
 exports.mockup = mockup;
 
-function ifeellucky(req,res){
+function ifeellucky(req, res) {
   var jadeData = {};
   var recipeInterface = require('./../models/simpleRecipeInterface');
   recipeInterface.getAllRecipes(function(err, recipes) {
@@ -120,13 +120,13 @@ function ifeellucky(req,res){
     } else {
       // Generate random Recipe ID
       var recipeIds = [];
-      recipes.forEach(function(recipe){
+      recipes.forEach(function(recipe) {
         recipeIds.push(recipe.RecipeID.value);
       })
       var luckyId = _.sample(recipeIds);
-      
+
       console.log('getAllRecipes() done - i feel lucky - LuckyRecipeId:', luckyId);
-      
+
       // Parse Order Object
       var taskId = CONFIG.TaskId++;
       var order = {
@@ -142,21 +142,21 @@ function ifeellucky(req,res){
       var recipeInterface = require('./../models/simpleRecipeInterface');
       recipeInterface.setOrder(order, userParameters, function(err, callback) {
         if (err) {
-          console.log('RecipeInterface - an error has occured:',err);
+          console.log('RecipeInterface - an error has occured:', err);
           res.redirect('order/error/');
         }
-        res.redirect('/order/placed/'+taskId);
+        res.redirect('/order/placed/' + taskId);
       });
-      
+
     }
   });
 }
 exports.ifeellucky = ifeellucky;
 
-function directOrder(req, res){
+function directOrder(req, res) {
   var recipeId = parseInt(req.params.recipeId, 10);
   assert(_.isNumber(recipeId));
-  console.log('Perform direct order. RecipeID: ',recipeId);
+  console.log('Perform direct order. RecipeID: ', recipeId);
 
   // Parse Order Object
   var taskId = CONFIG.TaskId++;
@@ -173,19 +173,46 @@ function directOrder(req, res){
   var recipeInterface = require('./../models/simpleRecipeInterface');
   recipeInterface.setOrder(order, userParameters, function(err, callback) {
     if (err) {
-      console.log('RecipeInterface - an error has occured:',err);
+      console.log('RecipeInterface - an error has occured:', err);
       res.redirect('order/error/');
     }
-    res.redirect('/order/placed/'+taskId);
+    res.redirect('/order/placed/' + taskId);
   });
-  
+
 }
 exports.directOrder = directOrder;
 
-function orderPlaced(req,res){
+function customOrder(req, res) {
+  var recipeId = parseInt(req.params.recipeId, 10);
+  assert(_.isNumber(recipeId));
+  console.log('Perform direct order. RecipeID: ', recipeId);
+
+  var jadeData = new Object;
+  var recipeInterface = require('./../models/simpleRecipeInterface');
+
+  console.log(recipeId);
+  // recipeInterface.getRecipes(recipeIdArray, function(err, recipes) {
+  recipeInterface.getRecipes([ recipeId ], function(err, recipes) {
+    if (err) {
+      jadeData.error = err;
+    } else {
+      jadeData.recipes = recipes;
+      // console.log(JSON.stringify(recipes, null, 1));
+      console.log('getAllRecipes() done.');
+      console.log(recipes);
+    }
+
+    res.render('sbadmin2/order_custom', jadeData);
+    res.end();
+  });
+
+}
+exports.customOrder = customOrder;
+
+function orderPlaced(req, res) {
   var taskId = parseInt(req.params.taskId, 10);
   assert(_.isNumber(taskId));
-  
+
   var jadeData = {};
   jadeData.taskId = taskId;
 
@@ -199,11 +226,11 @@ function orderPlaced(req,res){
       // console.log(JSON.stringify(recipes, null, 1));
       console.log('data to jadeDate added');
     }
-    
-    // mark the new task
-    //todo
 
-    res.render('sbadmin2/order_task_list', jadeData);
+    // mark the new task
+    // todo
+
+    res.render('sbadmin2/ordered_task_list', jadeData);
     res.end();
   });
 }

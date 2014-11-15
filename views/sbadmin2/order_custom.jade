@@ -2,19 +2,6 @@ extends layout
 
 block content
   div.row
-    div.col-lg-12
-      div.jumbotron
-        h1 Order something!
-        p You may choose whatever you want!
-        p Underneath you will find anything we can produce. Please select something.
-        p If there are too many things, let us surprise you!
-        p 
-         a.btn.btn-default.btn-lg(href='/order/ifeellucky/',role='button') 
-           i.fa.fa-magic.fa-lg
-           | I feel lucky!
-  
-  
-  div.row
      if recipes
         for recipe in recipes
           div.col-lg-3.col-md-6
