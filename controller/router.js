@@ -15,12 +15,13 @@ exports.router = function(app) {
 
   // Recipes / Order
   app.get('/order', recipes.index);
-  app.get('/order/direct/:recipeId', recipes.directOrder);
-  app.get('/order/custom/:recipeId', recipes.customOrder);
-  app.get('/order/placed/:taskId', recipes.orderPlaced);
+  // Direct Order
   app.get('/order/ifeellucky', recipes.ifeellucky);
-  app.post('/testRecipeView', recipes.placeOrder);
-  app.get('/testRecipeViewMock', recipes.mockup);
+  app.get('/order/direct/:recipeId', recipes.directOrder);
+  app.get('/order/placed/:taskId', recipes.orderPlaced);
+  // Custom Order
+  app.get('/order/custom/:recipeId', recipes.customOrder);
+  app.post('/order/order/:recipeId', recipes.placeOrder);
 
   // Tasks
   app.get('/task_list', tasks.taskList);
@@ -30,6 +31,8 @@ exports.router = function(app) {
   app.get('/manual', manualModule.showModule);
 
   // Test
+  app.post('/testRecipeView', recipes.placeOrder);
+  app.get('/testRecipeViewMock', recipes.mockup);
   app.get('/sbadmin2Welcome', function(req, res) {
     res.render('sbadmin2/_welcome');
   });
