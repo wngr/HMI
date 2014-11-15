@@ -7,16 +7,42 @@
  * @date 2014-11-03
  */
 var jadeH = require('./simpleJadeHelper');
+var assert = require('assert');
+
+/**
+ * Find the nodeId to the corresponding Recipe ID
+ * 
+ * @param recipeId
+ * @param callback
+ */
+function getRecipeByRecipeId(recipeId, callback) {
+  assert(_.isNumber(recipeId));
+  assert(typeof callback === "function");
+  assert(recipeId !== 0); // must not be 0
+
+  var recipeArray = [];
+
+  getAllRecipes(function(err, array) {
+    array.forEach(function(recipe) {
+      var id = parseInt(recipe.RecipeID.value, 10);
+      if (id == recipeId) {
+        recipeArray.push(recipe);
+        callback(err, recipeArray);
+      }
+    });
+  });
+}
+exports.getRecipeByRecipeId = getRecipeByRecipeId;
 
 /**
  * Get recipes
  * 
  * @async
- * @param recipeIdArray
+ * @param recipeStructIdArray
  * @function callback(err, recipesArray)
  */
-function getRecipes(recipeIdArray, callback) {
-  assert(_.isArray(recipeIdArray));
+function getRecipes(recipeStructIdArray, callback) {
+  assert(_.isArray(recipeStructIdArray));
   assert(typeof callback === "function");
 
   var opc = require('./../models/simpleOpcua').server(CONFIG.OPCUARecipe);
@@ -30,7 +56,7 @@ function getRecipes(recipeIdArray, callback) {
 
     recipesArray = [];
     // Loop
-    recipeIdArray.forEach(function(id) {
+    recipeStructIdArray.forEach(function(id) {
       var recipe = opc._structRecipeBase('MI5.Recipe[' + id + '].');
       opc.mi5ReadArray(recipe, function(err, data) {
         // Push Jade-Formatted Data
@@ -45,7 +71,7 @@ function getRecipes(recipeIdArray, callback) {
         // console.log(output);
 
         // Callback on last element
-        if (id == _.last(recipeIdArray)) {
+        if (id == _.last(recipeStructIdArray)) {
           opc.disconnect();
           callback(err, recipesArray);
         }

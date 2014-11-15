@@ -34,7 +34,7 @@ var opcConnection = require('./../models/simpleOpcua').server(CONFIG.OPCUAHandMo
 function start(socket) {
   assert(typeof socket !== "undefined");
 
-  getModuleData(2401, function(err, mi5Data, rawData) {
+  getModuleData(CONFIG.MANUALMODULEID, function(err, mi5Data, rawData) {
     if (err) {
       console.log(err);
       return 0;
@@ -53,6 +53,8 @@ exports.start = start;
  */
 function getModuleData(handModuleID, callback) {
   assert(typeof handModuleID === "number");
+  // OVERWRITE TODO
+  handModuleID = CONFIG.MANUALMODULEID;
   assert(typeof callback === "function");
 
   opcConnection.initialize(function(err) {
@@ -96,7 +98,11 @@ function subscribeModuleData() {
     var myNode = opcConnection.mi5Monitor(entry.nodeId);
     myNode.on('changed', function(data) {
       console.log('changed:', entry.nodeId);
+      // Send data to browser
       IO.emit(entry.updateEvent, data);
+
+      // Handle Server Events for state machine
+      handleServerEvents(entry.nodeId, data);
     });
   });
   console.log('OK - All Subscrptions and monitored items for Manual Module created');
@@ -104,43 +110,95 @@ function subscribeModuleData() {
 }
 exports.subscribeModuleData = subscribeModuleData;
 
+/**
+ * 
+ * @param socket
+ */
 function registerListeners(socket) {
   // console.log(manualModuleRawData);
   manualModuleRawData.forEach(function(item) {
-    socket.on(item.submitEvent, function(data) {
-      console.log('Gute Neuigkeiten:', data);
-      // Write to OPC
-      if (data.nodeId) {
-        setValue(data.nodeId, data.value)
-        console.log('basenode:', baseNode);
-      }
+    socket.on(item.submitEvent, function(eventData) {
+      console.log('OK - Hand Module - User Event :', eventData);
+
+      handleUserEvents(eventData);
     });
   });
+
   console.log('OK - All Event Listeners for Manual Module registered');
 }
 exports.registerListeners = registerListeners;
 
-function setValue(nodeId, value) {
-  var baseNode = opcH.cutLastElement(nodeId);
-  console.log(baseNode);
-  var parameter = opcH.getLastElement(nodeId);
-  console.log(parameter);
+/**
+ * Implement Hand Module Logic for User Side
+ * 
+ * @param eventData
+ */
+function handleUserEvents(eventData) {
+  assert(_.isObject(eventData));
 
+  var nodeId = eventData.nodeId;
+  var value = eventData.value;
+
+  var baseNode = opcH.cutLastElement(nodeId);
+  var parameter = opcH.getLastElement(nodeId);
+
+  // Write to OPC
   if (parameter === 'Busy') {
-    var writethis = {
+    setValue(baseNode, {
       Busy : true
-    };
-  } else if (parameter === 'Done') {
-    var writethis = {
-      Done : true,
-      Busy : false
-    };
-  } else {
-    console.log('Err - No object for parameter predefined. Parameter:', parameter);
+    })
+  }
+  if (parameter === 'Done') {
+    setValue(baseNode, {
+      Busy : false,
+      Done : true
+    });
+  }
+}
+exports.handleUserEvents = handleUserEvents;
+
+/**
+ * Implement Hand Module Logic for Server Side
+ * 
+ * @param eventData
+ */
+function handleServerEvents(nodeId, eventData) {
+  assert(typeof nodeId === "string");
+  assert(_.isObject(eventData));
+
+  var baseNode = opcH.cutLastElement(nodeId);
+  var parameter = opcH.getLastElement(nodeId);
+  var value = eventData.value.value;
+
+  // Process Tool recognizes, that this task is finished
+  if (parameter === 'Execute' && value === false) {
+    setValue(baseNode, {
+      Done : false,
+      Ready : true
+    });
+    console.log('HandModule - Done: false, Ready: true');
   }
 
+  // When we get an Execute from the PT, we are not longer ready
+  if (parameter === 'Execute' && value === true) {
+    setValue(baseNode, {
+      Ready : false
+    });
+    console.log('HandModule - Ready: false');
+  }
+}
+
+/**
+ * 
+ * @param nodeId
+ * @param value
+ */
+function setValue(baseNode, dataObject) {
+  assert(typeof baseNode === "string");
+  assert(_.isObject(dataObject));
+
   var Mi5ManualModule = require('./../models/simpleDataTypeMapping.js').Mi5ManualModule;
-  opcConnection.mi5WriteObject(baseNode, writethis, Mi5ManualModule, function(err) {
+  opcConnection.mi5WriteObject(baseNode, dataObject, Mi5ManualModule, function(err) {
     console.log('Mi5ManualModule written - no error feedback possible');
   });
 }

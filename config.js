@@ -31,21 +31,21 @@
 /*
  * OPCUA Test Server-Configuration ITQ Lan
  */
-//exports.OPCUARecipe       = 'opc.tcp://192.168.192.65:4840/';
-//exports.OPCUAOrder        = 'opc.tcp://192.168.192.65:4840/';
-//exports.OPCUAMessageFeed  = 'opc.tcp://192.168.192.65:4840/';
-//exports.OPCUATask         = 'opc.tcp://192.168.192.65:4840/';
-//exports.OPCUAHandModule   = 'opc.tcp://192.168.192.65:4840/';
+exports.OPCUARecipe       = 'opc.tcp://192.168.192.65:4840/';
+exports.OPCUAOrder        = 'opc.tcp://192.168.192.65:4840/';
+exports.OPCUAMessageFeed  = 'opc.tcp://192.168.192.65:4840/';
+exports.OPCUATask         = 'opc.tcp://192.168.192.65:4840/';
+exports.OPCUAHandModule   = 'opc.tcp://192.168.192.65:4840/';
 
 
 /*
- * OPCUA Test Server-Configuration ITQ Lan
+ * OPCUA Global Server-Configuration ITQ Lan
  */
-exports.OPCUARecipe       = 'opc.tcp://192.168.192.116:4840/';
-exports.OPCUAOrder        = 'opc.tcp://192.168.192.116:4840/';
-exports.OPCUAMessageFeed  = 'opc.tcp://192.168.192.116:4840/';
-exports.OPCUATask         = 'opc.tcp://192.168.192.116:4840/';
-exports.OPCUAHandModule   = 'opc.tcp://192.168.192.116:4840/';
+//exports.OPCUARecipe       = 'opc.tcp://192.168.192.116:4840/';
+//exports.OPCUAOrder        = 'opc.tcp://192.168.192.116:4840/';
+//exports.OPCUAMessageFeed  = 'opc.tcp://192.168.192.116:4840/';
+//exports.OPCUATask         = 'opc.tcp://192.168.192.116:4840/';
+//exports.OPCUAHandModule   = 'opc.tcp://192.168.192.116:4840/';
 
 
 /*
@@ -54,3 +54,5 @@ exports.OPCUAHandModule   = 'opc.tcp://192.168.192.116:4840/';
 exports.TaskId = 1;
 
 //exports.terminateAfterTimeout = 5000;
+
+exports.MANUALMODULEID = 2403;
