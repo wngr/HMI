@@ -64,20 +64,7 @@ IO.on('connection', function(socket) {
   // Register Listeners for backgroundDebug
   require('./../controller/backgroundDebug').listeners(socket);
   
-  
-  // Register Manual Module Listeners
-  require('./../models/simpleManualModule').readyToRegister(function(rawData){
-    rawData.forEach(function(item){
-      console.log('///////////////////////////////////////////////');
-      console.log(item.submitEvent);
-      socket.on(item.submitEvent, function(data) {
-        console.log('Gute Neuigkeiten:', data);
-      });
-    });
-  });
-  
-  socket.on('submitEvMI5.Module2401Manual.TaskID', function(data){
-    console.log('manueller',data);
-  });
+  // Manual Module
+  require('./../models/simpleManualModule').start(socket);
   
 });

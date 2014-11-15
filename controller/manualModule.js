@@ -13,7 +13,7 @@ function showModule(req, res) {
     }
 
     jadeData.manualModule = mi5Data;
-    //console.log(JSON.stringify(mi5Data, null, 1));
+    // console.log(JSON.stringify(mi5Data, null, 1));
 
     interface.subscribeModuleData(rawData);
 
