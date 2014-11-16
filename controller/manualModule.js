@@ -3,6 +3,7 @@
  */
 
 function showModule(req, res) {
+  ManualModuleActivated = 1;
   var jadeData = new Object;
 
   var manualModuleId = 2403;

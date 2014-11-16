@@ -4,6 +4,11 @@
  */
 GLOBAL.CONFIG = require('./config.js'); 
 
+/**
+ * Global variable, so that subscriptions dont take place all the time, only when manual Module viewed.
+ */
+GLOBAL.ManualModuleActivated = 0;
+
 // Server Modules
 var path = require('path'),
   express = require('express'),
