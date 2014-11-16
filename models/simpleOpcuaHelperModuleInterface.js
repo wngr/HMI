@@ -8,10 +8,45 @@ var _ = require('underscore');
  * @returns array (e.g. [ 'MI5', 'Recipe[0]', 'UserParameter[0]', 'Name' ])
  */
 function _splitNodeId(nodeId) {
-  var exp = /\w*\[?[0-9]*\]?/g
+  var exp = /\w*[0-9]*/g
   var result = nodeId.match(exp);
-  result = _.compact(result);
-  return result;
+  result = _.compact(result); // [ 'MI5', 'Module2501', 'SkillInput', 'SkillInput2',
+  // 'ParameterInput', 'ParameterInput4', 'Name' ]
+  var temp = [];
+
+  for (var i = 0; i <= 6;) {
+    var one = result[i];
+    var two = result[(i + 1)];
+    if (typeof two !== 'undefined') {
+      twoWith = two;
+      two = _stripArray(two);
+    }
+
+    // console.log(one, two);
+
+    if (one == two) {
+      // We got the old array structure (e.g. SkillInput)
+      if (typeof one != 'undefined') {
+        temp.push(twoWith);
+      }
+      i = i + 2;
+    } else {
+      if (typeof one != 'undefined') {
+        temp.push(one);
+      }
+      i++;
+    }
+
+  }
+
+  // Flatten, just to be sure
+  temp = _.flatten(temp);
+
+  // remove first element, module interface is just one nodeid element too much for mi5arraytoobject
+  temp.shift();
+
+  return _.flatten(temp);
+  // return result;
 }
 exports.splitNodeId = _splitNodeId;
 
@@ -35,7 +70,7 @@ exports.getLastElement = _getLastElement;
  * @return bool (e.g. true, false, true)
  */
 function _detectIfArray(node) {
-  var exp = /\[([0-9]+)\]/
+  var exp = /[a-zA-z]([0-9]{1,3}$)/
   if (node.match(exp)) {
     return true;
   } else {
@@ -71,7 +106,7 @@ exports.cutLastElement = _cutLastElement;
  */
 function _detectArrayElement(node) {
   if (_detectIfArray(node)) {
-    var exp = /\[([0-9]+)\]/
+    var exp = /([0-9]+)/
     var match = node.match(exp);
     return match[1];
   } else {
@@ -87,7 +122,7 @@ exports.detectArrayElement = _detectArrayElement;
  * @return <string> (e.g. MI5, Recipe)
  */
 function _stripArray(node) {
-  var exp = /\w*/
+  var exp = /\D*/
   var result = node.match(exp);
   return result[0];
 }
@@ -96,11 +131,11 @@ exports.stripArray = _stripArray;
 /**
  * 
  * @param node
- *          <string> (e.g. 'Recipe[0]')
+ *          <string> (e.g. 'Recipe0')
  * @return <string> (e.g. 0)
  */
 function _stripArrayKey(node) {
-  var exp = /([0-9])+/
+  var exp = /[0-9]+/
   var result = node.match(exp);
   return result[1];
 }
@@ -131,9 +166,11 @@ function mapMi5ArrayToObject(data, dummyObject) {
       .forEach(function(entry) {
         var splitNodeId = _splitNodeId(entry.nodeId); // [0]: MI5; [1]:
         // ProductionList[x]
+        console.log('in for each', splitNodeId);
 
         if (splitNodeId.length == 3) {
           // splitNodeId[2] // Name
+          console.log(splitNodeId[2], entry);
           dummyObject[splitNodeId[2]] = entry;
         }
         if (splitNodeId.length == 4) {

@@ -3,8 +3,8 @@
  * 
  * Facilitate the opcua access
  */
-var opcuaHelper = require('./opcuaHelper');
-var opcuaDataStructure = require('./opcuaDataStructure');
+var opcuaHelper = require('./trash/opcuaHelper');
+var opcuaDataStructure = require('./trash/opcuaDataStructure');
 
 var pEndpointUrl, pModule, pSkill; // p for property
 
@@ -33,7 +33,7 @@ exports.setSkill = setSkill;
  * Skills
  */
 function getSkills(callback) {
-  var opcuaInstance = require('./../models/opcuaInstance').server(pEndpointUrl);
+  var opcuaInstance = require('./../models/trash/opcuaInstance').server(pEndpointUrl);
   var baseNode = 'MI5.' + pModule + '.Output.SkillOutput';
   var skills = new Array;
 
@@ -71,7 +71,7 @@ function getSkills(callback) {
 exports.getSkills = getSkills;
 
 function getSkillsWithParameters(callback) {
-  var opcuaInstance = require('./../models/opcuaInstance').server(pEndpointUrl);
+  var opcuaInstance = require('./../models/trash/opcuaInstance').server(pEndpointUrl);
   var baseNode = 'MI5.' + pModule + '.Output.SkillOutput';
   var skills = new Array;
 
@@ -119,7 +119,7 @@ function getSkillsWithParameters(callback) {
 
   function addParameters(skillNumber, callback) {
     var parameters = new Array;
-    var parameterBaseNode = baseNode + '[' + skillNumber + '].ParameterOutput';
+    var parameterBaseNode = baseNode + '.SkillOutput' + skillNumber + '.UserParameter';
 
     for (var i = 0; i <= pLastParameter; i++) {
       if (i == pLastParameter) {
@@ -153,8 +153,8 @@ function getParameters(callback) {
   if (!pSkill) {
     console.log('ERR - No Skill is set!');
   }
-  var opcuaInstance = require('./../models/opcuaInstance').server(pEndpointUrl);
-  var baseNode = 'MI5.' + pModule + '.Output.SkillOutput[' + pSkill + '].ParameterOutput';
+  var opcuaInstance = require('./../models/trash/opcuaInstance').server(pEndpointUrl);
+  var baseNode = 'MI5.' + pModule + '.Output.SkillOutput.SkillOutput' + pSkill + '.UserParameter';
   var parameters = new Array;
 
   opcuaInstance.on('err', function(err) {
@@ -194,7 +194,7 @@ exports.getParameters = getParameters;
  * Module
  */
 function getModule(callback) {
-  var opcuaInstance = require('./../models/opcuaInstance').server(pEndpointUrl);
+  var opcuaInstance = require('./../models/trash/opcuaInstance').server(pEndpointUrl);
   var baseNode = 'MI5.' + pModule + '.Output';
   var module = new Array;
 
@@ -244,7 +244,7 @@ exports.getCompleteModuleData = getCompleteModuleData;
  * (deprecated?) for References
  */
 exports.readAndSubscribe = function(moduleName, endpointUrl) {
-  var opcuaInstance = require('./../models/opcuaInstance').server(endpointUrl);
+  var opcuaInstance = require('./../models/trash/opcuaInstance').server(endpointUrl);
   var jadeData = {};
 
   opcuaInstance.on('err', function(err) {

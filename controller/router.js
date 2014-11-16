@@ -34,9 +34,9 @@ exports.router = function(app) {
 
   // Overview
   app.get('/overview', overviewCharts.charts);
-  
+
   // Manual Input
-  app.get('/input', inputModule.completeModule);
+  app.get('/input', inputModule.index);
 
   // Test
   app.post('/testRecipeView', recipes.placeOrder);
