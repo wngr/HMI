@@ -48,6 +48,12 @@ function createMonitoredItems(callback) {
 }
 exports.createMonitoredItems = createMonitoredItems;
 
+function emitMessageFeedInitial() {
+  _emitMessageFeedArray(5);
+  _emitMessageFeedSingle()
+}
+exports.emitMessageFeedInitial = emitMessageFeedInitial;
+
 /**
  * Performs a read, on a designated MessageFeed entry
  * 
@@ -69,7 +75,7 @@ function _readMessageEntry(baseNode) {
         // console.log(jadeData);
         _pushMessage(jadeData);
         _emitMessageFeedArray(5);
-        _emitMessageFeed()
+        _emitMessageFeedSingle()
       }
     }
 
@@ -77,7 +83,7 @@ function _readMessageEntry(baseNode) {
 }
 
 /**
- * Push message to messageFeedArray
+ * Push message to top of messageFeedArray
  * 
  * @uses messageFeedArray <array>
  * @param message
@@ -116,6 +122,7 @@ function _emitMessageFeedArray(numberOfEntries) {
  * 
  * @async
  */
-function _emitMessageFeed() {
-  IO.emit('messageFeed', jadeData);
+function _emitMessageFeedSingle() {
+
+  IO.emit('messageFeedSingle', _.first(messageFeedArray));
 }

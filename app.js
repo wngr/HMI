@@ -23,6 +23,7 @@ GLOBAL.md5 = require('MD5');
 GLOBAL.moment = require('moment');
 // Models
 GLOBAL.mManualModule = require('./models/simpleManualModule');
+GLOBAL.mMessageFeed = require('./models/simpleMessageFeed');
 
 // Background Services
 var services = require('./controller/backgroundServices'); 

@@ -73,4 +73,7 @@ IO.on('connection', function(socket) {
     mManualModule.start(socket);
   }
 
+  // Message Module - Initial emit
+  mMessageFeed.emitMessageFeedInitial();
+
 });
