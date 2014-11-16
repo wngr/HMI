@@ -32,7 +32,7 @@ var services = require('./controller/backgroundServices');
 var router = require('./controller/router'); // Control
 
 // Express Environments
-app.set('port', process.env.PORT || 3000);
+app.set('port', process.env.PORT || CONFIG.Port);
 app.set('views', __dirname + '/views');
 app.set('view engine', 'jade');
 app.use(express.favicon());

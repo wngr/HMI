@@ -1,0 +1,43 @@
+// Button which opens a model on pressing it
+// input topic is the topic, element or site on which the feedback is given
+mixin feedbackButton(topic)
+  - var topicId = md5(topic);
+  btn.btn-primary.btn-sm.pull-right(data-toggle="modal" data-target="#feedbackModal#{topicId}" style="border-radius: 100%; margin-top: -4px")
+    i.fa.fa-thumbs-o-up
+  <!-- modal-->
+  div.modal.fade(id="feedbackModal#{topicId}" tabindex ="-1" role="dialog" aria-labelledby="feedbackModalLabel#{topicId}" aria-hidden="true")
+    <!-- form element to post the feedback -->
+    <!-- form(role="form", action="/order/order/"+recipe.RecipeID.value, method="POST")-->
+    div.modal-dialog
+        div.modal-content
+            div.modal-header
+                btn.close(data-dismiss="modal")
+                    span(aria-hidden="true") &times
+                    span.sr-only close
+                h4.modal-title#myModalLabel Please give us feedback!
+            div.modal-body(style="margin-top: 10px")
+              div.row(style="padding: 10px 10px")
+                div.col-xs-12
+                  div.form-group  
+                    h4 How do you like this page?
+                div.col-xs-1
+                    i.fa.fa-frown-o.fa-2x
+                div.col-xs-10
+                    input.span2(id="feedbackSlider#{topicId}", type="text", data-slider-value="5", data-slider-min="0", data-slider-max="10", data-slider-step="1", style="width: 100%")
+                div.col-xs-1
+                    i.fa.fa-smile-o.fa-2x
+                script.
+                    $(function(){
+                        $('#feedbackSlider#{topicId}').slider({
+                            formater: function(value) {
+                                return value;
+                            }
+                        });
+                    });
+                div.col-xs-12(role="form")
+                    div.form-group
+                        h4 Please tell us why:
+                        textarea.form-control#feedbackText
+            div.modal-footer
+                button.btn.btn-default(data-dismiss="modal") Close
+                button.btn.btn-primary(type="button" data-dismiss="modal") Save
