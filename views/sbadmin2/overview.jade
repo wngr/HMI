@@ -1,0 +1,78 @@
+extends layout
+
+block content
+  if error
+    div.row
+      div.col-lg-12
+        h1 ERROR
+        p= error.Error
+        p= error.code
+        p= error.errno
+        p= error.syscal
+  
+  div.row
+    h2 Overview of charts
+    div.col-lg-12
+      div.panel.panel-default 
+        div.panel-heading
+          h2 Liquids
+          +feedbackButton("liquidFillingLevel")
+        div.panel-body
+          div#liquidFillingLevel(style="width: 100%")
+          script.
+            Morris.Area({
+                element: 'liquidFillingLevel',
+                data: [
+                    { y: '2006', a: 250, b: 90 },
+                    { y: '2007', a: 230,  b: 65 },
+                    { y: '2008', a: 200,  b: 40 },
+                    { y: '2009', a: 150,  b: 10 },
+                    { y: '2010', a: 100,  b: 100 },
+                    { y: '2011', a: 75,  b: 65 },
+                    { y: '2012', a: 250, b: 30 }
+                ],
+                behaveLikeLine: true,//set this on false to stack the areas
+                xkey: 'y',
+                ykeys: ['a', 'b'],
+                labels: ['Cola', 'Rum']
+            });
+    div.col-lg-12
+      div.panel.panel-default 
+        div.panel-heading
+          h2 Produced Cookies
+          +feedbackButton("Produced Cookies")
+        div.panel-body
+          div#producedCookies(style="width: 100%")
+          script.
+            Morris.Bar({
+                element: 'producedCookies',
+                data: [
+                    { y: '2006', a: 10},
+                    { y: '2007', a: 20},
+                    { y: '2008', a: 15},
+                    { y: '2009', a: 17},
+                    { y: '2010', a: 16},
+                    { y: '2011', a: 22},
+                    { y: '2012', a: 13}
+                ],
+                xkey: 'y',
+                ykeys: ['a'],
+                labels: ['Produced Cookies']
+            });
+    div.col-lg-12
+      div.panel.panel-default 
+        div.panel-heading
+          h2 Ordered Recipes
+          +feedbackButton("orderedRecipesDonut")
+        div.panel-body
+          div#orderedRecipesDonut(style="width: 100%")
+          script.
+            Morris.Donut({
+                element: 'orderedRecipesDonut',
+                data: [
+                    { label: 'Cuba Libre', value: 5},
+                    { label: 'Beach Sunday', value: 15},
+                    { label: 'Gin Tonic', value: 8}
+                ],
+            });
+      

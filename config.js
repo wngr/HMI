@@ -33,22 +33,26 @@ var what = 'hmitest';
  * OPCUA Test Server-Configuration ITQ Lan
  */
 if (what == 'hmitest'){
-exports.OPCUARecipe       = 'opc.tcp://192.168.192.65:4840/';
-exports.OPCUAOrder        = 'opc.tcp://192.168.192.65:4840/';
-exports.OPCUAMessageFeed  = 'opc.tcp://192.168.192.65:4840/';
-exports.OPCUATask         = 'opc.tcp://192.168.192.65:4840/';
-exports.OPCUAHandModule   = 'opc.tcp://192.168.192.65:4840/';
+  exports.Port            = 3001;
+  exports.OPCUARecipe       = 'opc.tcp://192.168.192.65:4840/';
+  exports.OPCUAOrder        = 'opc.tcp://192.168.192.65:4840/';
+  exports.OPCUAMessageFeed  = 'opc.tcp://192.168.192.65:4840/';
+  exports.OPCUATask         = 'opc.tcp://192.168.192.65:4840/';
+  exports.OPCUAHandModule   = 'opc.tcp://192.168.192.65:4840/';
+  exports.OPCUAInputModule  = 'opc.tcp://192.168.192.116:4840/';
 }
 
 /*
  * OPCUA Global Server-Configuration ITQ Lan
  */
 if (what == 'live'){
-exports.OPCUARecipe       = 'opc.tcp://192.168.192.116:4840/';
-exports.OPCUAOrder        = 'opc.tcp://192.168.192.116:4840/';
-exports.OPCUAMessageFeed  = 'opc.tcp://192.168.192.116:4840/';
-exports.OPCUATask         = 'opc.tcp://192.168.192.116:4840/';
-exports.OPCUAHandModule   = 'opc.tcp://192.168.192.116:4840/';
+  exports.Port              = 3000;
+  exports.OPCUARecipe       = 'opc.tcp://192.168.192.116:4840/';
+  exports.OPCUAOrder        = 'opc.tcp://192.168.192.116:4840/';
+  exports.OPCUAMessageFeed  = 'opc.tcp://192.168.192.116:4840/';
+  exports.OPCUATask         = 'opc.tcp://192.168.192.116:4840/';
+  exports.OPCUAHandModule   = 'opc.tcp://192.168.192.116:4840/';
+  exports.OPCUAInputModule  = 'opc.tcp://192.168.192.116:4840/';
 }
 
 /*

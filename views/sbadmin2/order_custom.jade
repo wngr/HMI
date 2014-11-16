@@ -24,7 +24,7 @@ block content
                                     -//set Step on one when its zero and round it on one
                                     - var myStep=Math.round(userParameter.Step.value);
                                     - console.log("mystep: "+myStep);
-                                    - if(myStep == 0){ myStep = 5; }
+                                    - if(myStep == 0){ myStep = 1; }
                                     input.span2(name='userparameter', id=userParameter.Name.containerId, type="text", data-slider-value=userParameter.Default.value, data-slider-min=userParameter.MinValue.value, data-slider-max=userParameter.MaxValue.value, data-slider-step=myStep, style="width: 100%")
                                 div.col-lg-1.col-md-1.col-sm-1.col-xs-1
                                     p.lead= userParameter.MaxValue.value

@@ -8,7 +8,7 @@ function showTask(req, res) {
 
   // recipeIdArray = [ 0, 1 ];
   // recipeInterface.getRecipes(recipeIdArray, function(err, recipes) {
-  interface.getTasks([ 0 ], function(err, data) {
+  interface.getInputs([ 0 ], function(err, data) {
     if (err) {
       jadeData.error = err;
     } else {

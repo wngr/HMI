@@ -5,6 +5,8 @@ var testModuleView = require('./testModuleView');
 var recipes = require('./recipes');
 var tasks = require('./tasks');
 var manualModule = require('./manualModule');
+var overviewCharts = require('./overviewCharts');
+var inputModule = require('./inputModule');
 
 /**
  * Routes
@@ -27,8 +29,14 @@ exports.router = function(app) {
   app.get('/task_list', tasks.taskList);
   app.get('/testManualModuleView', manualModule.showModule);
 
-  // Manual
+  // Manual Module
   app.get('/manual', manualModule.showModule);
+
+  // Overview
+  app.get('/overview', overviewCharts.charts);
+  
+  // Manual Input
+  app.get('/input', inputModule.completeModule);
 
   // Test
   app.post('/testRecipeView', recipes.placeOrder);

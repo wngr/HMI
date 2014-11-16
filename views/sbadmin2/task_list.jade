@@ -11,11 +11,14 @@ block content
         p= error.syscal
   
   div.row
+    h2 Tasks
     div.col-lg-8
       div.panel.panel-default 
         div.panel-heading
           i.fa.fa-clock-o.fa-fw
           | All Tasks in a Timeline
+          +feedbackButton("tasks")
+
         div.panel-body
           ul.timeline
             if tasks

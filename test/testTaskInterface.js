@@ -27,7 +27,7 @@ var taskInterface = require('./../models/simpleTaskInterface');
 // Test Blank
 // var blankTask = taskInterface.getBlankTask();
 // Test for taskIdArray
-taskInterface.getTasks([ 0, 2 ], function(err, tasks) {
+taskInterface.getInputs([ 0, 2 ], function(err, tasks) {
   console.log(err, tasks);
   // console.log(JSON.stringify(tasks, null, 1));
 });
