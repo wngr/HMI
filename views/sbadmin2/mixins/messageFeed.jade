@@ -12,11 +12,23 @@ mixin dropdown-notifications()
                   strong Site has been loaded
                   span.pull-right.text-muted
                     em just now
-          script socket.on('messageFeed', function(msg){
-           | console.log(msg); 
-           | $("#messageFeedList").append('
+          script
+           | socket.on('messageFeedArray', function(msgs){
+           |  var newestMessageFeed = '';
+           |  msgs.forEach(function(msg){
+           |   newestMessageFeed = newestMessageFeed + '
            +notification-element-innerJS('msg.Level.value', 'msg.Message.value', 'msg.Timestamp.value')
-           | ');
+           |   '; //newestMessageFeed
+           |  });
+           |  $("#messageFeedList").html(newestMessageFeed);
+           |  console.log(newestMessageFeed);
+           |  $("#messageFeedList").append('
+           li
+             a(href="/messageFeed/")
+               div
+                 i.fa.fa-files-o.fa-fw.text-muted
+                 span.pull-right.text-muted See all messages.
+           | '); //append
            | });
            
 mixin notification-element-innerJS(level, message, time)

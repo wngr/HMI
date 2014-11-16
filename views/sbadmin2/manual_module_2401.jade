@@ -24,33 +24,41 @@ block content
             div.panel-body
               ul.timeline
                 //- Wait for Execute
-                li.timeline
+                li.timeline-inverted
                   div.timeline-badge(id=manualModule.Execute.containerId+'badge')
                     i.fa.fa-cog.fa-spin(id=manualModule.Execute.containerId+'icon')
                   div.timeline-panel
                     div.timeline-heading
-                      h4.timeline-title(id=manualModule.Execute.containerId) Waiting for turn...   
+                      h4.timeline-title
+                       span.text-muted(id=manualModule.Execute.containerId+'text') Waiting to get a task. 
                       script.
                        socket.on("#{manualModule.Execute.updateEvent}", function(data){ 
                         if(data.value.value===true){ 
                          $("##{manualModule.Execute.containerId}icon").removeClass('fa-cog fa-spin'); 
                          $("##{manualModule.Execute.containerId}icon").addClass('fa-check');
                          $("##{manualModule.Execute.containerId}badge").addClass('success');
+                         $("##{manualModule.Execute.containerId}text").html('Task received.');
                         }
                        });
                               
                 //- Start Button
                 li.timeline-inverted
                   div.timeline-badge(id=manualModule.Busy.containerId+'badge', onclick="socket.emit('#{manualModule.Busy.submitEvent}', {nodeId: '#{manualModule.Busy.nodeId}', value: true});", style="cursor: pointer")
-                    | start
+                    i.fa.fa-play
                   div.timeline-panel
                     div.timeline-heading
-                      h4.timeline-title Press on Start to accept the Task
+                      h4.timeline-title
+                       span.text-muted(id=manualModule.Busy.containerId+'text') Press
+                        span.fa-stack
+                         i.fa.fa-circle.fa-stack-2x
+                         i.fa.fa-play.fa-stack-1x.fa-inverse
+                        | when you are ready to start working.
                       script.
                        socket.on("#{manualModule.Busy.updateEvent}", function(data){ 
                         if(data.value.value===true){ 
                          $("##{manualModule.Busy.containerId}icon").addClass('fa-check');
                          $("##{manualModule.Busy.containerId}badge").addClass('success');
+                         $("##{manualModule.Busy.containerId}text").html('Started...');
                         }
                        });                
                 for parameter in manualModule.Parameter
@@ -67,32 +75,24 @@ block content
                 
                 li.timeline-inverted
                   div.timeline-badge(id=manualModule.Done.containerId+'badge', onclick="socket.emit('#{manualModule.Done.submitEvent}', {nodeId: '#{manualModule.Done.nodeId}', value: true});", style="cursor: pointer")
-                    | end
+                    i.fa.fa-stop
                   div.timeline-panel
                     div.timeline-heading
-                      h4.timeline-title Press left, if you are finished
+                      h4.timeline-title
+                       span.text-muted(id=manualModule.Done.containerId+'text') Press
+                        span.fa-stack.text-muted
+                         i.fa.fa-circle.fa-stack-2x
+                         i.fa.fa-stop.fa-stack-1x.fa-inverse
+                        | when you finished the task.
                       script.
                        socket.on("#{manualModule.Done.updateEvent}", function(data){ 
                         if(data.value.value===true){ 
                          $("##{manualModule.Done.containerId}badge").addClass('success');
+                         $("##{manualModule.Done.containerId}text").html('Done.');
                         }
                        });
      
-     if manualModule
-          div.col-xs-12.well
-           h2.text-muted Manual Module 
-           ul
-            - console.log(manualModule);
-            for mm in manualModule
-             li #{mm.nodeId} : 
-               span(id=mm.containerId) #{mm.value}
-              
-           //- Add socket-listener update events
-           for mm in manualModule
-              // script socket.on('#{mm.updateEvent}', function(data){ console.log(data); $("##{mm.containerId}").html(data.value.value); });
-           
-           button.btn.btn-primary.btn-lg(type='button',onclick="socket.emit('#{manualModule.Busy.submitEvent}', 1);") Start! (busy=true)
-     else
+    else
         div.col-xs-12.well       
             p no handModule data to display
     

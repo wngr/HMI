@@ -69,6 +69,8 @@ IO.on('connection', function(socket) {
   require('./../controller/backgroundDebug').listeners(socket);
 
   // Manual Module
-  mManualModule.start(socket);
+  if (ManualModuleActivated) {
+    mManualModule.start(socket);
+  }
 
 });

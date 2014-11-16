@@ -48,6 +48,12 @@ function createMonitoredItems(callback) {
 }
 exports.createMonitoredItems = createMonitoredItems;
 
+/**
+ * Performs a read, on a designated MessageFeed entry
+ * 
+ * @async
+ * @param baseNode
+ */
 function _readMessageEntry(baseNode) {
   opc.mi5ReadArray(opc._structMessageFeed(baseNode), function(err, data) {
 
@@ -62,7 +68,7 @@ function _readMessageEntry(baseNode) {
       if (jadeData.ID.value != 0) {
         // console.log(jadeData);
         _pushMessage(jadeData);
-        _emitMessageFeedArray();
+        _emitMessageFeedArray(5);
         _emitMessageFeed()
       }
     }
@@ -80,9 +86,9 @@ function _readMessageEntry(baseNode) {
 function _pushMessage(message) {
   assert(_.isObject(message));
 
-  messageFeedArray.push(message);
+  messageFeedArray.unshift(message); // unshift adds element at the top of the array
 
-  console.log('MessageFeed - New Message from ProcessTool:', message.Message.value,
+  console.log('OK - MessageFeed - New Message from ProcessTool:', message.Message.value,
       message.Timestamp.value);
 }
 
@@ -90,9 +96,19 @@ function _pushMessage(message) {
  * Emit whole Message Feed Array (not used yet)
  * 
  * @async
+ * @param numbeROfEntries
+ *          <mixed> (options: #number, 'complete')
  */
-function _emitMessageFeedArray() {
-  IO.emit('messageFeedArray', messageFeedArray);
+function _emitMessageFeedArray(numberOfEntries) {
+  numberOfEntries = typeof numberOfEntries !== 'undefined' ? numberOfEntries : 5; // default: 5
+
+  if (_.isNumber(numberOfEntries)) {
+    IO.emit('messageFeedArray', _.first(messageFeedArray, numberOfEntries));
+  } else {
+    IO.emit('messageFeedArray', messageFeedArray);
+  }
+  console.log('OK - MessageFeed - emit messageFeedArray');
+
 }
 
 /**

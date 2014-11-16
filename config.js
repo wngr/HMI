@@ -28,25 +28,28 @@
 //exports.OPCUAHandModule   = 'opc.tcp://192.168.0.22:4840/';
 
 
+var what = 'hmitest';
 /*
  * OPCUA Test Server-Configuration ITQ Lan
  */
+if (what == 'hmitest'){
 exports.OPCUARecipe       = 'opc.tcp://192.168.192.65:4840/';
 exports.OPCUAOrder        = 'opc.tcp://192.168.192.65:4840/';
 exports.OPCUAMessageFeed  = 'opc.tcp://192.168.192.65:4840/';
 exports.OPCUATask         = 'opc.tcp://192.168.192.65:4840/';
 exports.OPCUAHandModule   = 'opc.tcp://192.168.192.65:4840/';
-
+}
 
 /*
  * OPCUA Global Server-Configuration ITQ Lan
  */
-//exports.OPCUARecipe       = 'opc.tcp://192.168.192.116:4840/';
-//exports.OPCUAOrder        = 'opc.tcp://192.168.192.116:4840/';
-//exports.OPCUAMessageFeed  = 'opc.tcp://192.168.192.116:4840/';
-//exports.OPCUATask         = 'opc.tcp://192.168.192.116:4840/';
-//exports.OPCUAHandModule   = 'opc.tcp://192.168.192.116:4840/';
-
+if (what == 'Live'){
+exports.OPCUARecipe       = 'opc.tcp://192.168.192.116:4840/';
+exports.OPCUAOrder        = 'opc.tcp://192.168.192.116:4840/';
+exports.OPCUAMessageFeed  = 'opc.tcp://192.168.192.116:4840/';
+exports.OPCUATask         = 'opc.tcp://192.168.192.116:4840/';
+exports.OPCUAHandModule   = 'opc.tcp://192.168.192.116:4840/';
+}
 
 /*
  * Starting TaskID, will be incremented during program
