@@ -13,8 +13,6 @@ block content
         div.col-lg-12
           h1.page-header= manualModule.SkillDescription.value
            
-           - console.log(manualModule)
-           
       div.row
         div.col-lg-12
           div.panel.panel-default 
@@ -85,12 +83,22 @@ block content
                          i.fa.fa-stop.fa-stack-1x.fa-inverse
                         | when you finished the task.
                       script.
+                       var userFullyFinished = 0; // global in DOM space?
                        socket.on("#{manualModule.Done.updateEvent}", function(data){ 
                         if(data.value.value===true){ 
+                         userFullyFinished = 1;
                          $("##{manualModule.Done.containerId}badge").addClass('success');
                          $("##{manualModule.Done.containerId}text").html('Done.');
                         }
                        });
+                       
+              script.
+               socket.on("taskFullyFinished", function(data){
+                console.log('GGGGGGGGGGGGGGGGGGGotit');
+                if(userFullyFinished == 1){
+                 window.location.replace("/manual"); 
+                }
+               });
      
     else
         div.col-xs-12.well       

@@ -103,12 +103,17 @@ function subscribeModuleData() {
   manualModuleRawData.forEach(function(entry) {
     var myNode = opcConnection.mi5Monitor(entry.nodeId);
     myNode.on('changed', function(data) {
+      // Check, that nothing happens, if no real change
+
+      // if (entry.value != data.value.value) {
+
       console.log('changed:', entry.nodeId);
       // Send data to browser
       IO.emit(entry.updateEvent, data);
 
       // Handle Server Events for state machine
       handleServerEvents(entry.nodeId, data);
+      // }
     });
   });
   console.log('OK - All Subscrptions and monitored items for Manual Module created');
@@ -184,7 +189,8 @@ function handleServerEvents(nodeId, eventData) {
       Ready : true
     });
     console.log('HandModule - Task fully finished - Done: false, Ready: true');
-    _emitEvent('taskIsFinished', 1);
+    // _emitEvent('taskIsFinished', 1);
+    IO.emit('taskFullyFinished', 1);
   }
 
   // When we get an Execute from the PT, we are not longer ready
@@ -194,6 +200,7 @@ function handleServerEvents(nodeId, eventData) {
     });
     console.log('HandModule - Ready: false');
   }
+
 }
 
 /**
@@ -252,8 +259,12 @@ function getJadeData() {
 exports.getJadeData = getJadeData;
 
 function disconnect() {
-  opcConnection.disconnect();
-  console.log('simpleManualModule - opcConnection.disconnect()');
+  if (typeof opcConnection !== 'undefined') {
+    opcConnection.disconnect();
+    console.log('simpleManualModule - opcConnection.disconnect()');
+  } else {
+    console.log('Cannot disconnect opcConnection because its not defined');
+  }
 }
 exports.disconnect = disconnect;
 
