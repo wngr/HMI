@@ -23,25 +23,19 @@ var interface = require('./../models/simpleModuleInterface');
 var sMI = interface;
 var opcH = require('./../models/simpleOpcuaHelperModuleInterface');
 
-// // DummyObject
+// DummyObject/////////////////////////////////////////////////////////////
 // var dummyObject = sMI.structInputObjectBlank();
-// console.log(dummyObject);
-//
-// var structInput = sMI.structInput('MI5.Module2501');
-// console.log(structInput);
-//
-// Check new splitNodeId
-var split = opcH
-    .splitNodeId('MI5.Module2501.SkillInput.SkillInput2.ParameterInput.ParameterInput4.Name');
-console.log(split);
-var split = opcH.splitNodeId('MI5.Module2501.SkillInput.SkillInput2.Execute');
-console.log(split);
+// console.log(JSON.stringify(dummyObject, null, 1));
 
-var isArray = opcH.detectIfArray('SkillInput');
-console.log(isArray);
+// Check new splitNodeId /////////////////////////////////////////////////////////////
+// var split = opcH
+// .splitNodeId('MI5.Module2501.Input.SkillInput.SkillInput2.ParameterInput.ParameterInput1.StringValue');
+// console.log(split);
+// var split = opcH.splitNodeId('MI5.Module2501.SkillInput.SkillInput2.Execute');
+// console.log(split);
 
-// Check mapping
-sMI.getInputs([ 0, 1 ], function(err, mi5object) {
+// Check mapping/////////////////////////////////////////////////////////////
+sMI.getInput(function(err, mi5object) {
   console.log(JSON.stringify(mi5object, null, 1));
 })
 

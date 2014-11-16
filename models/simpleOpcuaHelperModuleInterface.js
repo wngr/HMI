@@ -8,13 +8,14 @@ var _ = require('underscore');
  * @returns array (e.g. [ 'MI5', 'Recipe[0]', 'UserParameter[0]', 'Name' ])
  */
 function _splitNodeId(nodeId) {
-  var exp = /\w*[0-9]*/g
+  var exp = /\w*[0-9]?/g
   var result = nodeId.match(exp);
   result = _.compact(result); // [ 'MI5', 'Module2501', 'SkillInput', 'SkillInput2',
   // 'ParameterInput', 'ParameterInput4', 'Name' ]
   var temp = [];
+  console.log(result);
 
-  for (var i = 0; i <= 6;) {
+  for (var i = 0; i <= result.length;) {
     var one = result[i];
     var two = result[(i + 1)];
     if (typeof two !== 'undefined') {
@@ -166,7 +167,6 @@ function mapMi5ArrayToObject(data, dummyObject) {
       .forEach(function(entry) {
         var splitNodeId = _splitNodeId(entry.nodeId); // [0]: MI5; [1]:
         // ProductionList[x]
-        console.log('in for each', splitNodeId);
 
         if (splitNodeId.length == 3) {
           // splitNodeId[2] // Name
@@ -178,6 +178,7 @@ function mapMi5ArrayToObject(data, dummyObject) {
           // splitNodeId[3] // Name
           skillArrayName = _stripArray(splitNodeId[2]);
           skillArrayElement = _detectArrayElement(splitNodeId[2]);
+          console.log(skillArrayName, skillArrayElement, splitNodeId[3]);
           dummyObject[skillArrayName][skillArrayElement][splitNodeId[3]] = entry;
         }
         if (splitNodeId.length == 5) {

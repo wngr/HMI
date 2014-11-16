@@ -17,7 +17,7 @@ var NumberOfParameterInputs = 1;
  * @param inputIdArray
  * @function callback(err, tasksArray)
  */
-function getInputs(inputIdArray, callback) {
+function getInput(callback) {
   var opc = require('./../models/simpleOpcua').server(CONFIG.OPCUAInputModule);
 
   opc.initialize(function(err) {
@@ -27,29 +27,21 @@ function getInputs(inputIdArray, callback) {
       return 0;
     }
 
-    tasksArray = [];
-    // Read Base
-    inputIdArray.forEach(function(id) {
-      var baseNodeTask = structInput('MI5.Module2501.Input.');
+    var baseNodeTask = structInput('MI5.Module2501.Input.');
 
-      opc.mi5ReadArray(baseNodeTask, function(err, data) {
-        // console.log(err, data);
-        // Convert opc.Mi5 object to jadeData
-        var mi5Object = opcH.mapMi5ArrayToObject(data, structInputObjectBlank());
+    opc.mi5ReadArray(baseNodeTask, function(err, data) {
+      // console.log(err, data);
+      // Convert opc.Mi5 object to jadeData
+      var mi5Object = opcH.mapMi5ArrayToObject(data, structInputObjectBlank());
 
-        tasksArray.push(mi5Object);
+      opc.disconnect();
+      callback(err, mi5Object);
 
-        // Callback on very last element
-        if (id == _.last(inputIdArray)) {
-          callback(err, tasksArray); // final callback
-          opc.disconnect();
-        }
-      }); // end opc.mi5ReadArray
-    }); // end for
+    }); // end opc.mi5ReadArray
   }); // end opc.initialize()
 
 }
-exports.getInputs = getInputs;
+exports.getInput = getInput;
 
 /**
  * Get Blank InputStruct
