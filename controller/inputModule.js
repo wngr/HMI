@@ -6,7 +6,7 @@ function index(req, res) {
   var jadeData = new Object;
 
   var interface = require('./../models/simpleModuleInterface');
-  interface.getInputs([ 0, 1 ], function(err, mi5object) {
+  interface.getInput(function(err, mi5object) {
     if (err) {
       console.log('ERR - Error in inputModule', err);
       return 0;

@@ -6,7 +6,7 @@ block content
     div.col-lg-12
       h1.page-header Input Module
       if input
-        for entry in input
+        p= input.SkillInput[0].ParameterInput[0].Value.nodeId
         
       else
         p no input skills
