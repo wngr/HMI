@@ -57,14 +57,16 @@ exports.server = function(endPointUrl) {
        * @async
        */
       disconnect : function(callback) {
-        if (callback) {
-          opcua.client.disconnect(callback);
-        } else {
-          opcua.client.disconnect(function(err) {
-            if (err) {
-              console.log(err);
-            }
-          });
+        if (typeof opcua.client !== 'undefined') {
+          if (callback) {
+            opcua.client.disconnect(callback);
+          } else {
+            opcua.client.disconnect(function(err) {
+              if (err) {
+                console.log(err);
+              }
+            });
+          }
         }
       },
 
