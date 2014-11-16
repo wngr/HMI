@@ -43,7 +43,7 @@ exports.OPCUAHandModule   = 'opc.tcp://192.168.192.65:4840/';
 /*
  * OPCUA Global Server-Configuration ITQ Lan
  */
-if (what == 'Live'){
+if (what == 'live'){
 exports.OPCUARecipe       = 'opc.tcp://192.168.192.116:4840/';
 exports.OPCUAOrder        = 'opc.tcp://192.168.192.116:4840/';
 exports.OPCUAMessageFeed  = 'opc.tcp://192.168.192.116:4840/';

@@ -47,6 +47,10 @@ function start(socket) {
 }
 exports.start = start;
 
+function _initializeManualModule(callback) {
+
+}
+
 /**
  * @async
  * @function callback(err, mi5Object, rawData)
@@ -64,6 +68,8 @@ function getModuleData(handModuleID, callback) {
       return 0;
     }
     console.log('OK? - getModuleData'); // TODO: it seems, as if this is always called, PERFORMANCE?
+
+    _registerEventListeners();
 
     var baseNodeTask = structManualModule('MI5.Module' + handModuleID + 'Manual.');
     opcConnection.mi5ReadArray(baseNodeTask, function(err, data) {
@@ -123,7 +129,6 @@ function registerListeners(socket) {
       handleUserEvents(eventData);
     });
   });
-
   console.log('OK - All Event Listeners for Manual Module registered');
 }
 exports.registerListeners = registerListeners;
@@ -146,13 +151,15 @@ function handleUserEvents(eventData) {
   if (parameter === 'Busy') {
     setValue(baseNode, {
       Busy : true
-    })
+    });
+    console.log('HandModule - User starts - Busy: true');
   }
   if (parameter === 'Done') {
     setValue(baseNode, {
       Busy : false,
       Done : true
     });
+    console.log('HandModule - User is finished - Busy: false, Done: true');
   }
 }
 exports.handleUserEvents = handleUserEvents;
@@ -176,7 +183,8 @@ function handleServerEvents(nodeId, eventData) {
       Done : false,
       Ready : true
     });
-    console.log('HandModule - Done: false, Ready: true');
+    console.log('HandModule - Task fully finished - Done: false, Ready: true');
+    _emitEvent('taskIsFinished', 1);
   }
 
   // When we get an Execute from the PT, we are not longer ready
@@ -203,6 +211,35 @@ function setValue(baseNode, dataObject) {
   });
 }
 exports.setValue = setValue;
+
+/**
+ * inner event Handling for manual Module
+ * 
+ * redirects emitEvents to opcConnection
+ */
+function _emitEvent(eventName, value) {
+  opcConnection.emit(eventName, value);
+}
+
+/**
+ * inner event Handling manual Module
+ * 
+ * listener
+ * 
+ * @async
+ */
+function _listenEvent(eventName, callback) {
+  assert(_.isString(eventName));
+  assert(typeof callback === 'function');
+
+  opcConnection.on(eventName, callback);
+}
+
+function _registerEventListeners() {
+  _listenEvent('taskIsFinished', function(data) {
+    console.log('task is fully finished - listened - data:', data);
+  })
+}
 
 function getRawData() {
   return manualModuleRawData;
