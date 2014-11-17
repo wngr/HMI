@@ -31,18 +31,32 @@ exports.server = function(endPointUrl) {
     opc.prototype = {
       constructor : opc,
 
+      /**
+       * initialize OPC UA connection and create session
+       * 
+       * @param initializeCallback
+       */
       initialize : function(initializeCallback) {
-
-        this.client = new nodeopcua.OPCUAClient();
         async.series([ function(callback) {
-          opcua.client.connect(endPointUrl, function(err) {
-            callback(err);
-          });
+          // only create Client, if there is none
+          if (typeof opcua.client === 'undefined') {
+            opcua.client = new nodeopcua.OPCUAClient();
+            opcua.client.connect(endPointUrl, function(err) {
+              callback(err);
+            });
+          } else {
+            callback();
+          }
         }, function(callback) {
-          opcua.client.createSession(function(err, session) {
-            opcua.session = session;
-            callback(err);
-          });
+          // Only create session, if there is none
+          if (typeof opcua.session === 'undefined') {
+            opcua.client.createSession(function(err, session) {
+              opcua.session = session;
+              callback(err);
+            });
+          } else {
+            callback();
+          }
         } ], function(err) {
           opcua.emit('err', err);
           initializeCallback(err);
@@ -58,6 +72,14 @@ exports.server = function(endPointUrl) {
        */
       disconnect : function(callback) {
         if (typeof opcua.client !== 'undefined') {
+          // // Terminate Subscriptions
+          // if (typeof opcua.subscription !== 'undefined') {
+          // opcua.subscription.terminate();
+          // }
+          // // Terminate Sessions
+          // if (typeof opcua.session !== 'undefined') {
+          // opcua.session.close();
+          // }
           if (callback) {
             opcua.client.disconnect(callback);
           } else {
