@@ -8,10 +8,13 @@ var recipes = require('./recipes');
 var tasks = require('./tasks');
 // Modules
 var manualModule = require('./manualModule');
+<<<<<<< HEAD
+=======
 var maintenanceModule = require('./maintenanceModule');
+var overviewCharts = require('./overviewCharts');
+>>>>>>> DevMaintenanceModule
 var inputModule = require('./inputModule');
 var outputModule = require('./outputModule');
-
 // Dashboard / Overview
 var overviewCharts = require('./overviewCharts');
 
