@@ -7,7 +7,7 @@ function index(req, res) {
 
   var interface = require('./../models/simpleModuleInterface');
   async.series([ function(callback) {
-    interface.getInput(CONFIG.OPCUAInputModule, function(err, mi5object) {
+    interface.getInput(CONFIG.OPCUAOutputModule, function(err, mi5object) {
       if (err) {
         console.log('ERR - Error in getInput', err);
         return 0;
@@ -17,7 +17,7 @@ function index(req, res) {
       callback(err);
     })
   }, function(callback) {
-    interface.getOutput(CONFIG.OPCUAInputModule, function(err, mi5object) {
+    interface.getOutput(CONFIG.OPCUAOutputModule, function(err, mi5object) {
       if (err) {
         console.log('ERR - Error at getOutput', err);
         return 0;

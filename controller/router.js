@@ -2,11 +2,16 @@
  * Router Files
  */
 var testModuleView = require('./testModuleView');
+// Recipes / Order
 var recipes = require('./recipes');
+// Tasklist
 var tasks = require('./tasks');
+// Modules
 var manualModule = require('./manualModule');
-var overviewCharts = require('./overviewCharts');
 var inputModule = require('./inputModule');
+var outputModule = require('./inputModule');
+// Dashboard / Overview
+var overviewCharts = require('./overviewCharts');
 
 /**
  * Routes
@@ -38,6 +43,9 @@ exports.router = function(app) {
   // Manual Input
   app.get('/input', inputModule.index);
 
+  // Manual Output
+  app.get('/output', outputModule.index);
+
   // Test
   app.post('/testRecipeView', recipes.placeOrder);
   app.get('/testRecipeViewMock', recipes.mockup);
@@ -66,7 +74,8 @@ IO.on('connection', function(socket) {
   socket.on('disconnect', function() {
     var oldClients = connectedClients;
     connectedClients--;
-    console.log('Number of users from ' + oldClients + ' to ' + connectedClients);
+    console.log('Number of users from ' + oldClients + ' to '
+        + connectedClients);
 
     if (connectedClients === 0) {
       mManualModule.disconnect();

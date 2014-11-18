@@ -22,8 +22,11 @@ var NumberOfStateValues = 5; // 10 orig
  * @param inputIdArray
  * @function callback(err, tasksArray)
  */
-function getInput(callback) {
-  var opc = require('./../models/simpleOpcua').server(CONFIG.OPCUAInputModule);
+function getInput(endpointUrl, callback) {
+  assert(typeof endpointUrl === 'string');
+  assert(typeof callback === 'function');
+
+  var opc = require('./../models/simpleOpcua').server(endpointUrl);
 
   opc.initialize(function(err) {
     if (err) {
@@ -56,8 +59,11 @@ exports.getInput = getInput;
  *          <function>
  * @function callback(err, tasksArray)
  */
-function getOutput(callback) {
-  var opc = require('./../models/simpleOpcua').server(CONFIG.OPCUAOutputModule);
+function getOutput(endpointUrl, callback) {
+  assert(typeof endpointUrl === 'string');
+  assert(typeof callback === 'function');
+
+  var opc = require('./../models/simpleOpcua').server(endpointUrl);
 
   opc.initialize(function(err) {
     if (err) {
