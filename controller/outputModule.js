@@ -6,8 +6,13 @@ function index(req, res) {
   var jadeData = new Object;
 
   var interface = require('./../models/simpleModuleInterface');
+
   async.series([ function(callback) {
-    interface.getInput(CONFIG.OPCUAOutputModule, function(err, mi5object) {
+    interface.setEndpointUrl(CONFIG.OPCUAOutputModule);
+    interface.setModuleId(CONFIG.OPCUAOutputModuleId);
+    callback();
+  }, function(callback) {
+    interface.getInput(function(err, mi5object) {
       if (err) {
         console.log('ERR - Error in getInput', err);
         return 0;
@@ -17,7 +22,7 @@ function index(req, res) {
       callback(err);
     })
   }, function(callback) {
-    interface.getOutput(CONFIG.OPCUAOutputModule, function(err, mi5object) {
+    interface.getOutput(function(err, mi5object) {
       if (err) {
         console.log('ERR - Error at getOutput', err);
         return 0;
@@ -28,7 +33,7 @@ function index(req, res) {
     });
   }, function(callback) {
     console.log(JSON.stringify(jadeData, null, 1));
-    res.render('sbadmin2/input_module_index', jadeData);
+    res.render('sbadmin2/output_module_index', jadeData);
     res.end();
   } ]);
 

@@ -11,7 +11,7 @@ var manualModule = require('./manualModule');
 var maintenanceModule = require('./maintenanceModule');
 var overviewCharts = require('./overviewCharts');
 var inputModule = require('./inputModule');
-var outputModule = require('./inputModule');
+var outputModule = require('./outputModule');
 // Dashboard / Overview
 var overviewCharts = require('./overviewCharts');
 

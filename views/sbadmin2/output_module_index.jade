@@ -1,0 +1,14 @@
+extends layout
+
+block content
+  br
+  div.row
+    div.col-lg-12
+      h1.page-header Input Module
+      if input
+        p= input.SkillInput[0].ParameterInput[0].Value.nodeId
+        p= output.SkillOutput[2].ParameterOutput[1].Name.nodeId
+        p= output.StateValue[0].Description.value
+        
+      else
+        p no input module
