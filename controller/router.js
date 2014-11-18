@@ -2,12 +2,18 @@
  * Router Files
  */
 var testModuleView = require('./testModuleView');
+// Recipes / Order
 var recipes = require('./recipes');
+// Tasklist
 var tasks = require('./tasks');
+// Modules
 var manualModule = require('./manualModule');
 var maintenanceModule = require('./maintenanceModule');
 var overviewCharts = require('./overviewCharts');
 var inputModule = require('./inputModule');
+var outputModule = require('./inputModule');
+// Dashboard / Overview
+var overviewCharts = require('./overviewCharts');
 
 /**
  * Routes
@@ -41,6 +47,9 @@ exports.router = function(app) {
 
   // Manual Input
   app.get('/input', inputModule.index);
+
+  // Manual Output
+  app.get('/output', outputModule.index);
 
   // Test
   app.post('/testRecipeView', recipes.placeOrder);
