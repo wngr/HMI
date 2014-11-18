@@ -49,8 +49,9 @@ function createMonitoredItems(callback) {
 exports.createMonitoredItems = createMonitoredItems;
 
 function emitMessageFeedInitial() {
-  _emitMessageFeedArray(5);
-  _emitMessageFeedSingle()
+  _emitMessageFeedArray('messageFeedPanel', 15);
+  _emitMessageFeedArray('messageFeedArray', 5);
+  _emitMessageFeedArray('messageFeedSingle', 1);
 }
 exports.emitMessageFeedInitial = emitMessageFeedInitial;
 
@@ -74,8 +75,9 @@ function _readMessageEntry(baseNode) {
       if (jadeData.ID.value != 0) {
         // console.log(jadeData);
         _pushMessage(jadeData);
-        _emitMessageFeedArray(5);
-        _emitMessageFeedSingle()
+        _emitMessageFeedArray('messageFeedPanel', 15);
+        _emitMessageFeedArray('messageFeedArray', 5);
+        _emitMessageFeedArray('messageFeedSingle', 1);
       }
     }
 
@@ -105,24 +107,11 @@ function _pushMessage(message) {
  * @param numbeROfEntries
  *          <mixed> (options: #number, 'complete')
  */
-function _emitMessageFeedArray(numberOfEntries) {
+function _emitMessageFeedArray(eventName, numberOfEntries) {
   numberOfEntries = typeof numberOfEntries !== 'undefined' ? numberOfEntries : 5; // default: 5
 
-  if (_.isNumber(numberOfEntries)) {
-    IO.emit('messageFeedArray', _.first(messageFeedArray, numberOfEntries));
-  } else {
-    IO.emit('messageFeedArray', messageFeedArray);
-  }
-  console.log('OK - MessageFeed - emit messageFeedArray');
+  IO.emit(eventName, _.first(messageFeedArray, numberOfEntries));
 
-}
+  console.log('OK - IO.emit()', eventName);
 
-/**
- * Emit one single Message
- * 
- * @async
- */
-function _emitMessageFeedSingle() {
-
-  IO.emit('messageFeedSingle', _.first(messageFeedArray));
 }

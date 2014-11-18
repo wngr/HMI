@@ -14,7 +14,7 @@ block content
           h1.page-header= manualModule.SkillDescription.value
            
       div.row
-        div.col-lg-12
+        div.col-lg-9
           div.panel.panel-default 
             div.panel-heading
               i.fa.fa-clock-o.fa-fw
@@ -99,7 +99,10 @@ block content
                  window.location.replace("/manual"); 
                 }
                });
-     
+        
+        //- MessageFeed
+        div.col-lg-3
+          +messageFeed-panel()
     else
         div.col-xs-12.well       
             p no handModule data to display
