@@ -9,11 +9,12 @@ var tasks = require('./tasks');
 // Modules
 var manualModule = require('./manualModule');
 var maintenanceModule = require('./maintenanceModule');
-var overviewCharts = require('./overviewCharts');
 var inputModule = require('./inputModule');
 var outputModule = require('./outputModule');
+
 // Dashboard / Overview
 var overviewCharts = require('./overviewCharts');
+var dashboard = require('./dashboard');
 
 /**
  * Routes
@@ -44,6 +45,9 @@ exports.router = function(app) {
 
   // Overview
   app.get('/overview', overviewCharts.charts);
+
+  // Dashboard
+  app.get('/dashboard', dashboard.index);
 
   // Manual Input
   app.get('/input', inputModule.index);

@@ -1,0 +1,48 @@
+extends layout
+
+block content
+  if error
+    div.row
+      div.col-lg-12
+        h1 ERROR
+        p= error.Error
+        p= error.code
+        p= error.errno
+        p= error.syscal
+  
+  div.row
+    h2.page-header Overview of charts
+    div.col-lg-8
+      div.panel.panel-default 
+        div.panel-heading
+          h2 Liquids
+          +feedbackButton("liquidFillingLevel")
+        div.panel-body
+          div#liquidFillingLevel(style="width: 100%")
+          script.
+            Morris.Area({
+                element: 'liquidFillingLevel',
+                data: [
+                    { y: '2006', a: 250, b: 90 },
+                    { y: '2007', a: 230,  b: 65 },
+                    { y: '2008', a: 200,  b: 40 },
+                    { y: '2009', a: 150,  b: 10 },
+                    { y: '2010', a: 100,  b: 100 },
+                    { y: '2011', a: 75,  b: 65 },
+                    { y: '2012', a: 250, b: 30 }
+                ],
+                behaveLikeLine: true,//set this on false to stack the areas
+                xkey: 'y',
+                ykeys: ['a', 'b'],
+                labels: ['Cola', 'Rum']
+            });
+    div.col-lg-4
+      div.panel.panel-default
+        div.panel-heading
+          h2 Message Feed
+          +feedbackButton("messageFeedDashboard")
+        div.panel-body
+          p hi
+          p ho
+          p da
+          
