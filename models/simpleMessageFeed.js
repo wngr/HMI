@@ -52,6 +52,8 @@ function emitMessageFeedInitial() {
   _emitMessageFeedArray('messageFeedPanel', 15);
   _emitMessageFeedArray('messageFeedArray', 5);
   _emitMessageFeedArray('messageFeedSingle', 1);
+
+  console.log('OK - MessageFeed -Initial - IO.emit()');
 }
 exports.emitMessageFeedInitial = emitMessageFeedInitial;
 
@@ -78,6 +80,8 @@ function _readMessageEntry(baseNode) {
         _emitMessageFeedArray('messageFeedPanel', 15);
         _emitMessageFeedArray('messageFeedArray', 5);
         _emitMessageFeedArray('messageFeedSingle', 1);
+
+        console.log('OK - MessageFeed - IO.emit()');
       }
     }
 
@@ -94,10 +98,11 @@ function _readMessageEntry(baseNode) {
 function _pushMessage(message) {
   assert(_.isObject(message));
 
-  messageFeedArray.unshift(message); // unshift adds element at the top of the array
+  messageFeedArray.unshift(message); // unshift adds element at the top of the
+  // array
 
-  console.log('OK - MessageFeed - New Message from ProcessTool:', message.Message.value,
-      message.Timestamp.value);
+  console.log('OK - MessageFeed - New Message from ProcessTool:',
+      message.Message.value, message.Timestamp.value);
 }
 
 /**
@@ -108,10 +113,8 @@ function _pushMessage(message) {
  *          <mixed> (options: #number, 'complete')
  */
 function _emitMessageFeedArray(eventName, numberOfEntries) {
-  numberOfEntries = typeof numberOfEntries !== 'undefined' ? numberOfEntries : 5; // default: 5
+  numberOfEntries = typeof numberOfEntries !== 'undefined' ? numberOfEntries
+      : 5; // default: 5
 
   IO.emit(eventName, _.first(messageFeedArray, numberOfEntries));
-
-  console.log('OK - IO.emit()', eventName);
-
 }

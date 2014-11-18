@@ -1,0 +1,110 @@
+extends layout
+
+block content
+    if error
+        h1 ERROR
+        p= error.Error
+        p= error.code
+        p= error.errno
+        p= error.syscal
+    
+     if manualModule
+      div.row
+        div.col-lg-12
+          h1.page-header= manualModule.SkillDescription.value
+           
+      div.row
+        div.col-lg-9
+          div.panel.panel-default 
+            div.panel-heading
+              i.fa.fa-clock-o.fa-fw
+              | Next Task on this Module
+            div.panel-body
+              ul.timeline
+                //- Wait for Execute
+                li.timeline-inverted
+                  div.timeline-badge(id=manualModule.Execute.containerId+'badge')
+                    i.fa.fa-cog.fa-spin(id=manualModule.Execute.containerId+'icon')
+                  div.timeline-panel
+                    div.timeline-heading
+                      h4.timeline-title
+                       span.text-muted(id=manualModule.Execute.containerId+'text') Waiting to get a task. 
+                      script.
+                       socket.on("#{manualModule.Execute.updateEvent}", function(data){ 
+                        if(data.value.value===true){ 
+                         $("##{manualModule.Execute.containerId}icon").removeClass('fa-cog fa-spin'); 
+                         $("##{manualModule.Execute.containerId}icon").addClass('fa-check');
+                         $("##{manualModule.Execute.containerId}badge").addClass('success');
+                         $("##{manualModule.Execute.containerId}text").html('Task received.');
+                        }
+                       });
+                              
+                //- Start Button
+                li.timeline-inverted
+                  div.timeline-badge(id=manualModule.Busy.containerId+'badge', onclick="socket.emit('#{manualModule.Busy.submitEvent}', {nodeId: '#{manualModule.Busy.nodeId}', value: true});", style="cursor: pointer")
+                    i.fa.fa-play
+                  div.timeline-panel
+                    div.timeline-heading
+                      h4.timeline-title
+                       span.text-muted(id=manualModule.Busy.containerId+'text') Press
+                        span.fa-stack
+                         i.fa.fa-circle.fa-stack-2x
+                         i.fa.fa-play.fa-stack-1x.fa-inverse
+                        | when you are ready to start working.
+                      script.
+                       socket.on("#{manualModule.Busy.updateEvent}", function(data){ 
+                        if(data.value.value===true){ 
+                         $("##{manualModule.Busy.containerId}icon").addClass('fa-check');
+                         $("##{manualModule.Busy.containerId}badge").addClass('success');
+                         $("##{manualModule.Busy.containerId}text").html('Started...');
+                        }
+                       });                
+                for parameter in manualModule.Parameter
+                    if parameter.Name.value != ''
+                     li
+                      div.timeline-badge
+                        | #{parameter.ID.value}
+                      div.timeline-panel
+                        div.timeline-heading
+                          h4.timeline-title= parameter.Name.value
+                        div.timeline-body
+                          p #{parameter.Value.value} #{parameter.Unit.value}
+                          p #{parameter.StringValue.value}
+                
+                li.timeline-inverted
+                  div.timeline-badge(id=manualModule.Done.containerId+'badge', onclick="socket.emit('#{manualModule.Done.submitEvent}', {nodeId: '#{manualModule.Done.nodeId}', value: true});", style="cursor: pointer")
+                    i.fa.fa-stop
+                  div.timeline-panel
+                    div.timeline-heading
+                      h4.timeline-title
+                       span.text-muted(id=manualModule.Done.containerId+'text') Press
+                        span.fa-stack.text-muted
+                         i.fa.fa-circle.fa-stack-2x
+                         i.fa.fa-stop.fa-stack-1x.fa-inverse
+                        | when you finished the task.
+                      script.
+                       var userFullyFinished = 0; // global in DOM space?
+                       socket.on("#{manualModule.Done.updateEvent}", function(data){ 
+                        if(data.value.value===true){ 
+                         userFullyFinished = 1;
+                         $("##{manualModule.Done.containerId}badge").addClass('success');
+                         $("##{manualModule.Done.containerId}text").html('Done.');
+                        }
+                       });
+                       
+              script.
+               socket.on("maintenanceTaskFullyFinished", function(data){
+                console.log('GGGGGGGGGGGGGGGGGGGotit');
+                if(userFullyFinished == 1){
+                 window.location.replace("/maintenance"); 
+                }
+               });
+        
+        //- MessageFeed
+        //- div.col-lg-3
+          //- +messageFeed-panel()
+    else
+        div.col-xs-12.well       
+            p no handModule data to display
+    
+    

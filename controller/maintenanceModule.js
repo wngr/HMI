@@ -3,8 +3,9 @@
  */
 
 function showModule(req, res) {
-  ManualModuleActivated = 1;
+  MaintenanceModuleActivated = 1;
   var jadeData = new Object;
+  jadeData.title = 'Maintenance Module';
 
   mMaintenanceModule.getModuleData(function(err, mi5Data, rawData) {
     if (err) {
@@ -12,12 +13,13 @@ function showModule(req, res) {
       return 0;
     }
 
+    console.log('JadeForMaintenance', mi5Data);
     jadeData.manualModule = mi5Data;
     // console.log(JSON.stringify(mi5Data, null, 1));
 
     mMaintenanceModule.subscribeModuleData(rawData);
 
-    res.render('sbadmin2/manual_module_2401', jadeData);
+    res.render('sbadmin2/maintenance_module', jadeData);
   });
 }
 exports.showModule = showModule;
