@@ -15,6 +15,16 @@ var NumberOfSkillOutputs = 2; // 15 orig, but only 2 implemented!
 var NumberOfParameterOutputs = 1; // 5 orig
 var NumberOfStateValues = 5; // 10 orig
 
+var endpointUrl;
+exports.setEndpointUrl = function(url) {
+  endpointUrl = url;
+}
+
+var moduleId;
+exports.setModuleId = function(id) {
+  moduleId = id;
+}
+
 /**
  * Get Inputs
  * 
@@ -22,8 +32,8 @@ var NumberOfStateValues = 5; // 10 orig
  * @param inputIdArray
  * @function callback(err, tasksArray)
  */
-function getInput(endpointUrl, callback) {
-  assert(typeof endpointUrl === 'string');
+function getInput(callback) {
+  assert(typeof endpointUrl !== 'undefined');
   assert(typeof callback === 'function');
 
   var opc = require('./../models/simpleOpcua').server(endpointUrl);
@@ -35,7 +45,7 @@ function getInput(endpointUrl, callback) {
       return 0;
     }
 
-    var baseNodeTask = structInput('MI5.Module2501.Input.');
+    var baseNodeTask = structInput('MI5.Module' + moduleId + '.Input.');
 
     opc.mi5ReadArray(baseNodeTask, function(err, data) {
       // console.log(err, data);
@@ -59,8 +69,8 @@ exports.getInput = getInput;
  *          <function>
  * @function callback(err, tasksArray)
  */
-function getOutput(endpointUrl, callback) {
-  assert(typeof endpointUrl === 'string');
+function getOutput(callback) {
+  assert(typeof endpointUrl !== 'undefined');
   assert(typeof callback === 'function');
 
   var opc = require('./../models/simpleOpcua').server(endpointUrl);
@@ -73,7 +83,7 @@ function getOutput(endpointUrl, callback) {
     }
 
     // Generate Array to read
-    var baseNodeStruct = structOutput('MI5.Module2501.Output.');
+    var baseNodeStruct = structOutput('MI5.Module' + moduleId + '.Output.');
     // console.log(baseNodeStruct);
 
     opc.mi5ReadArray(baseNodeStruct,

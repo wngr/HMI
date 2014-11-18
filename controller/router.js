@@ -9,7 +9,7 @@ var tasks = require('./tasks');
 // Modules
 var manualModule = require('./manualModule');
 var inputModule = require('./inputModule');
-var outputModule = require('./inputModule');
+var outputModule = require('./outputModule');
 // Dashboard / Overview
 var overviewCharts = require('./overviewCharts');
 

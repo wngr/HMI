@@ -6,8 +6,13 @@ function index(req, res) {
   var jadeData = new Object;
 
   var interface = require('./../models/simpleModuleInterface');
+
   async.series([ function(callback) {
-    interface.getInput(CONFIG.OPCUAInputModule, function(err, mi5object) {
+    interface.setEndpointUrl(CONFIG.OPCUAInputModule);
+    interface.setModuleId(CONFIG.OPCUAInputModuleId);
+    callback();
+  }, function(callback) {
+    interface.getInput(function(err, mi5object) {
       if (err) {
         console.log('ERR - Error in getInput', err);
         return 0;
@@ -17,7 +22,7 @@ function index(req, res) {
       callback(err);
     })
   }, function(callback) {
-    interface.getOutput(CONFIG.OPCUAInputModule, function(err, mi5object) {
+    interface.getOutput(function(err, mi5object) {
       if (err) {
         console.log('ERR - Error at getOutput', err);
         return 0;

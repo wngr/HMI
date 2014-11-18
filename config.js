@@ -8,24 +8,17 @@
  * @date 2014-10-10
  */
 
-/*
- * OPCUA Live Server (XTS-room)
- */
-//exports.OPCUARecipe       = 'opc.tcp://192.168.175.230:4840/';
-//exports.OPCUAOrder        = 'opc.tcp://192.168.175.230:4840/';
-//exports.OPCUAMessageFeed  = 'opc.tcp://192.168.175.230:4840/';
-//exports.OPCUATask         = 'opc.tcp://192.168.175.230:4840/';
-//exports.OPCUAHandModule   = 'opc.tcp://192.168.175.230:4840/';
-//
+// task Id beginning point (random number between 1 and 100
+exports.TaskId = Math.floor((Math.random() * 100) + 1); ;
 
-/*
- * OPCUA Test Server-Configuration (Thomas Frei)
- */
-//exports.OPCUARecipe       = 'opc.tcp://192.168.0.22:4840/';
-//exports.OPCUAOrder        = 'opc.tcp://192.168.0.22:4840/';
-//exports.OPCUAMessageFeed  = 'opc.tcp://192.168.0.22:4840/';
-//exports.OPCUATask         = 'opc.tcp://192.168.0.22:4840/';
-//exports.OPCUAHandModule   = 'opc.tcp://192.168.0.22:4840/';
+// ModuleId - Manual
+exports.MANUALMODULEID = 2403;
+
+// ModuleId - Input
+exports.OPCUAInputModuleId = 2501;
+
+// ModuleId - Output
+exports.OPCUAOutputModuleId = 2601;
 
 
 var what = 'live';
@@ -57,11 +50,3 @@ if (what == 'live'){
   exports.OPCUAOutputModule  = 'opc.tcp://192.168.192.76:4840/';
 }
 
-/*
- * Starting TaskID, will be incremented during program
- */
-exports.TaskId = 1;
-
-//exports.terminateAfterTimeout = 5000;
-
-exports.MANUALMODULEID = 2403;
