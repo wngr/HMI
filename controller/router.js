@@ -5,6 +5,7 @@ var testModuleView = require('./testModuleView');
 var recipes = require('./recipes');
 var tasks = require('./tasks');
 var manualModule = require('./manualModule');
+var maintenanceModule = require('./maintenanceModule');
 var overviewCharts = require('./overviewCharts');
 var inputModule = require('./inputModule');
 
@@ -31,6 +32,9 @@ exports.router = function(app) {
 
   // Manual Module
   app.get('/manual', manualModule.showModule);
+
+  // Maintenance Module
+  app.get('/maintenance', maintenanceModule.showModule);
 
   // Overview
   app.get('/overview', overviewCharts.charts);
@@ -66,7 +70,8 @@ IO.on('connection', function(socket) {
   socket.on('disconnect', function() {
     var oldClients = connectedClients;
     connectedClients--;
-    console.log('Number of users from ' + oldClients + ' to ' + connectedClients);
+    console.log('Number of users from ' + oldClients + ' to '
+        + connectedClients);
 
     if (connectedClients === 0) {
       mManualModule.disconnect();
