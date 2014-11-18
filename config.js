@@ -53,8 +53,8 @@ if (what == 'live'){
   exports.OPCUAMessageFeed  = 'opc.tcp://192.168.192.116:4840/';
   exports.OPCUATask         = 'opc.tcp://192.168.192.116:4840/';
   exports.OPCUAHandModule   = 'opc.tcp://192.168.192.116:4840/';
-  exports.OPCUAInputModule  = 'opc.tcp://192.168.192.116:4840/';
-  exports.OPCUAOutputModule  = 'opc.tcp://192.168.192.116:4840/';
+  exports.OPCUAInputModule  = 'opc.tcp://192.168.192.76:4840/';
+  exports.OPCUAOutputModule  = 'opc.tcp://192.168.192.76:4840/';
 }
 
 /*
