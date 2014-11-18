@@ -10,10 +10,11 @@ var _ = require('underscore');
 function _splitNodeId(nodeId) {
   var exp = /\w*[0-9]?/g
   var result = nodeId.match(exp);
-  result = _.compact(result); // [ 'MI5', 'Module2501', 'SkillInput', 'SkillInput2',
+  result = _.compact(result); // [ 'MI5', 'Module2501', 'SkillInput',
+  // 'SkillInput2',
   // 'ParameterInput', 'ParameterInput4', 'Name' ]
   var temp = [];
-  console.log(result);
+  // console.log(result);
 
   for (var i = 0; i <= result.length;) {
     var one = result[i];
@@ -43,7 +44,8 @@ function _splitNodeId(nodeId) {
   // Flatten, just to be sure
   temp = _.flatten(temp);
 
-  // remove first element, module interface is just one nodeid element too much for mi5arraytoobject
+  // remove first element, module interface is just one nodeid element too much
+  // for mi5arraytoobject
   temp.shift();
 
   return _.flatten(temp);
@@ -149,7 +151,8 @@ exports.stripArrayKey = _stripArrayKey;
  * 
  * We use dummy[node][i] as dummy.node[i]
  * 
- * e.g. {nodeId: ..., value: xx, ...} => {Name: {nodeId, value},... Skills: [{Dummy:...}]}
+ * e.g. {nodeId: ..., value: xx, ...} => {Name: {nodeId, value},... Skills:
+ * [{Dummy:...}]}
  * 
  * @author Thomas Frei
  * @date 2014-11-09
@@ -178,7 +181,7 @@ function mapMi5ArrayToObject(data, dummyObject) {
           // splitNodeId[3] // Name
           skillArrayName = _stripArray(splitNodeId[2]);
           skillArrayElement = _detectArrayElement(splitNodeId[2]);
-          console.log(skillArrayName, skillArrayElement, splitNodeId[3]);
+          // console.log(skillArrayName, skillArrayElement, splitNodeId[3]);
           dummyObject[skillArrayName][skillArrayElement][splitNodeId[3]] = entry;
         }
         if (splitNodeId.length == 5) {
