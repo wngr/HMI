@@ -35,7 +35,7 @@ var opcConnection = require('./../models/simpleOpcua').server(
 function start(socket) {
   assert(typeof socket !== "undefined");
 
-  getModuleData(CONFIG.MAINTENANCEMODULEID, function(err, mi5Data, rawData) {
+  getModuleData(function(err, mi5Data, rawData) {
     if (err) {
       console.log(err);
       return 0;
@@ -118,7 +118,7 @@ function subscribeModuleData() {
     });
   });
   console
-      .log('OK - All Subscrptions and monitored items for Manual Module created');
+      .log('OK - Maintenance Module - subscriptions and monitored items created');
   return 0;
 }
 exports.subscribeModuleData = subscribeModuleData;
@@ -136,7 +136,7 @@ function registerListeners(socket) {
       handleUserEvents(eventData);
     });
   });
-  console.log('OK - All Event Listeners for Manual Module registered');
+  console.log('OK - Maintenance Module - event listeners registered');
 }
 exports.registerListeners = registerListeners;
 
@@ -159,14 +159,15 @@ function handleUserEvents(eventData) {
     setValue(baseNode, {
       Busy : true
     });
-    console.log('HandModule - User starts - Busy: true');
+    console.log('OK - Maintenance Module - User starts - Busy: true');
   }
   if (parameter === 'Done') {
     setValue(baseNode, {
       Busy : false,
       Done : true
     });
-    console.log('HandModule - User is finished - Busy: false, Done: true');
+    console
+        .log('OK - Maintenance Module - User is finished - Busy: false, Done: true');
   }
 }
 exports.handleUserEvents = handleUserEvents;
@@ -190,9 +191,10 @@ function handleServerEvents(nodeId, eventData) {
       Done : false,
       Ready : true
     });
-    console.log('HandModule - Task fully finished - Done: false, Ready: true');
+    console
+        .log('OK - Maintenance Module - Task fully finished - Reload Page  - Done: false, Ready: true');
     // _emitEvent('taskIsFinished', 1);
-    IO.emit('taskFullyFinished', 1);
+    IO.emit('maintenanceTaskFullyFinished', 1);
   }
 
   // When we get an Execute from the PT, we are not longer ready
@@ -200,7 +202,7 @@ function handleServerEvents(nodeId, eventData) {
     setValue(baseNode, {
       Ready : false
     });
-    console.log('HandModule - Ready: false');
+    console.log('OK - Maintenance Module - Ready: false');
   }
 
 }
@@ -215,10 +217,15 @@ function setValue(baseNode, dataObject) {
   assert(_.isObject(dataObject));
 
   var Mi5ManualModule = require('./../models/simpleDataTypeMapping.js').Mi5ManualModule;
-  opcConnection.mi5WriteObject(baseNode, dataObject, Mi5ManualModule, function(
-      err) {
-    console.log('Mi5ManualModule written - no error feedback possible');
-  });
+  opcConnection
+      .mi5WriteObject(
+          baseNode,
+          dataObject,
+          Mi5ManualModule,
+          function(err) {
+            console
+                .log('OK - Maintenance Module - value written - no error feedback possible');
+          });
 }
 exports.setValue = setValue;
 
@@ -247,7 +254,8 @@ function _listenEvent(eventName, callback) {
 
 function _registerEventListeners() {
   _listenEvent('taskIsFinished', function(data) {
-    console.log('task is fully finished - listened - data:', data);
+    console.log('OK - Maintenance Module - fully finished - listened - data:',
+        data);
   })
 }
 

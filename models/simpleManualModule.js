@@ -23,7 +23,8 @@ var NumberOfParameters = 5; // 5
 /*
  * persistent connection for subscriptions
  */
-var opcConnection = require('./../models/simpleOpcua').server(CONFIG.OPCUAHandModule);
+var opcConnection = require('./../models/simpleOpcua').server(
+    CONFIG.OPCUAHandModule);
 
 /**
  * In IO.on('connection')
@@ -34,7 +35,7 @@ var opcConnection = require('./../models/simpleOpcua').server(CONFIG.OPCUAHandMo
 function start(socket) {
   assert(typeof socket !== "undefined");
 
-  getModuleData(CONFIG.MANUALMODULEID, function(err, mi5Data, rawData) {
+  getModuleData(function(err, mi5Data, rawData) {
     if (err) {
       console.log(err);
       return 0;
@@ -55,10 +56,7 @@ function _initializeManualModule(callback) {
  * @async
  * @function callback(err, mi5Object, rawData)
  */
-function getModuleData(handModuleID, callback) {
-  assert(typeof handModuleID === "number");
-  // OVERWRITE TODO
-  handModuleID = CONFIG.MANUALMODULEID;
+function getModuleData(callback) {
   assert(typeof callback === "function");
 
   opcConnection.initialize(function(err) {
@@ -67,13 +65,16 @@ function getModuleData(handModuleID, callback) {
       callback(err);
       return 0;
     }
-    console.log('OK? - getModuleData'); // TODO: it seems, as if this is always called, PERFORMANCE?
+    console.log('OK? - getModuleData'); // TODO: it seems, as if this is always
+    // called, PERFORMANCE?
 
     _registerEventListeners();
 
-    var baseNodeTask = structManualModule('MI5.Module' + handModuleID + 'Manual.');
+    var baseNodeTask = structManualModule('MI5.Module' + CONFIG.MANUALMODULEID
+        + 'Manual.');
     opcConnection.mi5ReadArray(baseNodeTask, function(err, data) {
-      var mi5Object = opcH.mapMi5ArrayToObject(data, structManualModuleObjectBlank());
+      var mi5Object = opcH.mapMi5ArrayToObject(data,
+          structManualModuleObjectBlank());
 
       manualModuleRawData = data;
       manualModuleJadeData = mi5Object;
@@ -116,7 +117,8 @@ function subscribeModuleData() {
       // }
     });
   });
-  console.log('OK - All Subscrptions and monitored items for Manual Module created');
+  console
+      .log('OK - All Subscrptions and monitored items for Manual Module created');
   return 0;
 }
 exports.subscribeModuleData = subscribeModuleData;
@@ -213,7 +215,8 @@ function setValue(baseNode, dataObject) {
   assert(_.isObject(dataObject));
 
   var Mi5ManualModule = require('./../models/simpleDataTypeMapping.js').Mi5ManualModule;
-  opcConnection.mi5WriteObject(baseNode, dataObject, Mi5ManualModule, function(err) {
+  opcConnection.mi5WriteObject(baseNode, dataObject, Mi5ManualModule, function(
+      err) {
     console.log('Mi5ManualModule written - no error feedback possible');
   });
 }
@@ -311,8 +314,8 @@ function structManualModuleObjectBlank() {
  */
 function structManualModule(baseNode) {
   var numberOfParameters = NumberOfParameters; // 5
-  var nodes = [ 'Execute', 'Busy', 'Done', 'Error', 'ErrorID', 'Ready', 'SkillDescription',
-      'SkillID', 'TaskID' ];
+  var nodes = [ 'Execute', 'Busy', 'Done', 'Error', 'ErrorID', 'Ready',
+      'SkillDescription', 'SkillID', 'TaskID' ];
   // Add all 6 Parameters
   for (var i = 0; i <= numberOfParameters; i++) {
     var temp = structManuelModuleParameter('Parameter[' + i + '].');

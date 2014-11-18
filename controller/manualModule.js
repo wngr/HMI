@@ -5,9 +5,10 @@
 function showModule(req, res) {
   ManualModuleActivated = 1;
   var jadeData = new Object;
+  jadeData.title = 'Manual Module';
 
   var manualModuleId = 2403;
-  mManualModule.getModuleData(manualModuleId, function(err, mi5Data, rawData) {
+  mManualModule.getModuleData(function(err, mi5Data, rawData) {
     if (err) {
       console.log(err);
       return 0;
@@ -18,7 +19,7 @@ function showModule(req, res) {
 
     mManualModule.subscribeModuleData(rawData);
 
-    res.render('sbadmin2/manual_module_2401', jadeData);
+    res.render('sbadmin2/manual_module', jadeData);
   });
 }
 exports.showModule = showModule;

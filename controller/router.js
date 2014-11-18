@@ -86,20 +86,27 @@ IO.on('connection', function(socket) {
     console.log('Number of users from ' + oldClients + ' to '
         + connectedClients);
 
-    if (connectedClients === 0) {
-      mManualModule.disconnect();
-    }
+    // TODO Implement it, right now, it might cause errors
+    // Disconnect Manual Module
+    // if (connectedClients === 0) {
+    // mManualModule.disconnect();
+    // }
   });
 
   // Register Listeners for backgroundDebug
   require('./../controller/backgroundDebug').listeners(socket);
 
-  // Manual Module
+  // Register Manual Module
   if (ManualModuleActivated) {
     mManualModule.start(socket);
   }
 
-  // Message Module - Initial emit
+  // Register Maintenance Module
+  if (MaintenanceModuleActivated) {
+    mMaintenanceModule.start(socket);
+  }
+
+  // Message Feed Module - Initial emit
   mMessageFeed.emitMessageFeedInitial();
 
 });

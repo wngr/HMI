@@ -8,6 +8,7 @@ GLOBAL.CONFIG = require('./config.js');
  * Global variable, so that subscriptions dont take place all the time, only when manual Module viewed.
  */
 GLOBAL.ManualModuleActivated = 0;
+GLOBAL.MaintenanceModuleActivated = 0;
 
 // Server Modules
 var path = require('path'),
@@ -22,8 +23,8 @@ GLOBAL._ = require('underscore');
 GLOBAL.md5 = require('MD5');
 GLOBAL.moment = require('moment');
 // Models
-GLOBAL.mManualModule = require('./models/simpleManualModule');
 GLOBAL.mMaintenanceModule = require('./models/simpleMaintenanceModule');
+GLOBAL.mManualModule = require('./models/simpleManualModule');
 GLOBAL.mMessageFeed = require('./models/simpleMessageFeed');
 
 // Background Services
@@ -58,14 +59,3 @@ app = router.router(app);
 server.listen(app.get('port'), function(){
   console.log('Express server listening on port ' + app.get('port'));
 });
-
-/*
- * Bottom
- */
-// Terminate after timeout
-if( CONFIG.terminateAfterTimeout ){
-  setTimeout(function(){
-    console.log('----Terminated');
-    process.exit(0);
-  }, CONFIG.terminateAfterTimeout);  
-}
