@@ -1,4 +1,4 @@
-var _ = require('underscore');
+//var _ = require('underscore');
 
 /**
  * Splint nodeId into single elements
@@ -173,20 +173,21 @@ function mapMi5ArrayToObject(data, dummyObject) {
 
         if (splitNodeId.length == 3) {
           // splitNodeId[2] // Name
-          console.log(splitNodeId[2], entry);
+          // console.log(splitNodeId[2], entry);
           dummyObject[splitNodeId[2]] = entry;
         }
         if (splitNodeId.length == 4) {
           // splitNodeId[2] // Skill[x]
           // splitNodeId[3] // Name
+          console.log('uuuh', splitNodeId);
           skillArrayName = _stripArray(splitNodeId[2]);
           skillArrayElement = _detectArrayElement(splitNodeId[2]);
           // console.log(skillArrayName, skillArrayElement, splitNodeId[3]);
           dummyObject[skillArrayName][skillArrayElement][splitNodeId[3]] = entry;
         }
         if (splitNodeId.length == 5) {
-          // splitNodeId[2] // Skill[x]
-          // splitNodeId[3] // UserParameter[y]
+          // splitNodeId[2] // SkillOutput[x]
+          // splitNodeId[3] // ParameterParameter[y]
           // splitNodeId[4] // Name
           skillArrayName = _stripArray(splitNodeId[2]);
           skillArrayElement = _detectArrayElement(splitNodeId[2]);

@@ -12,6 +12,7 @@ function index(req, res) {
         console.log('ERR - Error in getInput', err);
         return 0;
       }
+      console.log(mi5object);
       jadeData.input = mi5object;
       callback(err);
     })
@@ -21,6 +22,7 @@ function index(req, res) {
         console.log('ERR - Error at getOutput', err);
         return 0;
       }
+      console.log(mi5object);
       jadeData.output = mi5object;
       callback(err);
     });

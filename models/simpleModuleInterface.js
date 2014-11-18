@@ -11,8 +11,9 @@ var _123n = opcH._123n;
 var NumberOfSkillInputs = 2; // 15 max, but only 2 implemented!
 var NumberOfParameterInputs = 1;
 
-var NumberOfSkillOutputs = 2; // 15 max, but only 2 implemented!
-var NumberOfParameterOutputs = 1;
+var NumberOfSkillOutputs = 2; // 15 orig, but only 2 implemented!
+var NumberOfParameterOutputs = 1; // 5 orig
+var NumberOfStateValues = 5; // 10 orig
 
 /**
  * Get Inputs
@@ -66,17 +67,20 @@ function getOutput(callback) {
     }
 
     // Generate Array to read
-    var baseNodeTask = structOutput('MI5.Module2501.Output.');
+    var baseNodeStruct = structOutput('MI5.Module2501.Output.');
+    // console.log(baseNodeStruct);
 
-    opc.mi5ReadArray(baseNodeTask, function(err, data) {
-      // console.log(err, data);
-      // Convert opc.Mi5 object to jadeData
-      var mi5Object = opcH.mapMi5ArrayToObject(data, structOutputObjectBlank());
+    opc.mi5ReadArray(baseNodeStruct,
+        function(err, data) {
+          // console.log(err, data);
+          // Convert opc.Mi5 object to jadeData
+          var mi5Object = opcH.mapMi5ArrayToObject(data,
+              structOutputObjectBlank());
 
-      opc.disconnect();
-      callback(err, mi5Object);
+          opc.disconnect();
+          callback(err, mi5Object);
 
-    }); // end opc.mi5ReadArray
+        }); // end opc.mi5ReadArray
   }); // end opc.initialize()
 
 }
@@ -130,7 +134,8 @@ exports.structInputObjectBlank = structInputObjectBlank;
  * @return array
  */
 function structInput(baseNode) {
-  var nodes = [ 'ConnectionTestInput', 'EmergencyStop', 'Mode', 'PositionInput', 'Watchbit' ];
+  var nodes = [ 'ConnectionTestInput', 'EmergencyStop', 'Mode',
+      'PositionInput', 'Watchbit' ];
   // Add all 50 Skills
   for (var i = 0; i <= NumberOfSkillInputs; i++) {
     var temp = structSkillInput('SkillInput.SkillInput' + i + '.');
@@ -210,8 +215,10 @@ function structOutputObjectBlank() {
     PosisitionOutput : '',
     PositionSensor : '',
     SkillOutput : [],
+    StateValue : [],
   };
-  // Skills
+  // Skills // Dummyobject needs to be insed the loop - pass by reference issue
+  // imho
   _123n(0, NumberOfSkillOutputs).forEach(function(i) {
     var skillOutputDummy = {
       Activated : '',
@@ -225,8 +232,8 @@ function structOutputObjectBlank() {
       Ready : ''
     };
 
-    // UserParameters
     _123n(0, NumberOfParameterOutputs).forEach(function(j) {
+      // UserParameters
       var parameterOutputDummy = {
         Default : '',
         Dummy : '',
@@ -243,6 +250,16 @@ function structOutputObjectBlank() {
     outputDummy.SkillOutput.push(skillOutputDummy);
   }); // end forEach Skills
 
+  _123n(0, NumberOfStateValues).forEach(function(k) {
+    var stateValueDummy = {
+      Description : '',
+      Dummy : '',
+      Name : '',
+      Unit : '',
+      Value : ''
+    };
+    outputDummy.StateValue.push(stateValueDummy);
+  });
   return outputDummy;
 }
 exports.structOutputObjectBlank = structOutputObjectBlank;
@@ -255,15 +272,24 @@ exports.structOutputObjectBlank = structOutputObjectBlank;
  * @return array
  */
 function structOutput(baseNode) {
-  var nodes = [ 'Connected', 'ConnectionTestInput', 'CurrentTaskDescription', 'Dummy', 'Error',
-      'ErrorDescription', 'ErrorID', 'ID', 'IP', 'Idle', 'Name', 'PositionSensor' ];
-  // Add all 50 Skills
-  for (var i = 0; i <= NumberOfSkillInputs; i++) {
+  var nodes = [ 'Connected', 'ConnectionTestInput', 'CurrentTaskDescription',
+      'Dummy', 'Error', 'ErrorDescription', 'ErrorID', 'ID', 'IP', 'Idle',
+      'Name', 'PositionSensor' ];
+  // Add SkillOutputs
+  for (var i = 0; i <= NumberOfSkillOutputs; i++) {
     var temp = structSkillOutput('SkillOutput.SkillOutput' + i + '.');
     temp.forEach(function(item) {
       nodes.push(item);
     });
   }
+  // Add StateValues
+  for (var g = 0; g <= NumberOfStateValues; g++) {
+    var temp2 = structStateValue('StateValue.StateValue' + g + '.');
+    temp2.forEach(function(item) {
+      nodes.push(item);
+    });
+  }
+
   // Prepend baseNode
   nodes = _.map(nodes, function(item) {
     return baseNode + item;
@@ -281,10 +307,12 @@ exports.structOutput = structOutput;
  * @return array
  */
 function structSkillOutput(baseNode) {
-  var nodes = [ 'Activated', 'Busy', 'Done', 'Dummy', 'Error', 'ID', 'Name', 'Ready' ];
+  var nodes = [ 'Activated', 'Busy', 'Done', 'Dummy', 'Error', 'ID', 'Name',
+      'Ready' ];
   // Add all 5 Parameters
   for (var i = 0; i <= NumberOfParameterInputs; i++) {
-    var temp = structParameterOutput('ParameterOutput.ParameterOutput' + i + '.');
+    var temp = structParameterOutput('ParameterOutput.ParameterOutput' + i
+        + '.');
     temp.forEach(function(item) {
       nodes.push(item);
     });
@@ -297,14 +325,31 @@ function structSkillOutput(baseNode) {
 }
 
 /**
- * Adds nodes to ParameterOutput.ParameterOutputX.YYYYYYYYYYY
+ * Adds nodes to ParameterOutput.ParameterOutputX.YYY
  * 
  * @param baseNode
  *          <string>
  * @return <array>
  */
 function structParameterOutput(baseNode) {
-  var nodes = [ 'Default', 'Dummy', 'ID', 'MaxValue', 'MinValue', 'Name', 'Required', 'Unit' ];
+  var nodes = [ 'Default', 'Dummy', 'ID', 'MaxValue', 'MinValue', 'Name',
+      'Required', 'Unit' ];
+  // Prepend baseNode
+  nodes = _.map(nodes, function(item) {
+    return baseNode + item;
+  });
+  return nodes;
+}
+
+/**
+ * Adds nodes to Output.StateValue[X].YYYY
+ * 
+ * @param baseNode
+ *          <string>
+ * @return <array>
+ */
+function structStateValue(baseNode) {
+  var nodes = [ 'Description', 'Dummy', 'Name', 'Unit', 'Value' ];
   // Prepend baseNode
   nodes = _.map(nodes, function(item) {
     return baseNode + item;
