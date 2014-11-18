@@ -35,9 +35,14 @@ var opcH = require('./../models/simpleOpcuaHelperModuleInterface');
 // console.log(split);
 
 // Check mapping/////////////////////////////////////////////////////////////
-sMI.getInput(function(err, mi5object) {
+// sMI.getInput(function(err, mi5object) {
+// console.log(JSON.stringify(mi5object, null, 1));
+// });
+
+// Check Output/////////////////////////////////////////////////////////////
+sMI.getOutput(function(err, mi5object) {
   console.log(JSON.stringify(mi5object, null, 1));
-})
+});
 
 //
 // describe('simpleModuleInterface', function() {
