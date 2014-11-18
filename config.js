@@ -28,7 +28,7 @@
 //exports.OPCUAHandModule   = 'opc.tcp://192.168.0.22:4840/';
 
 
-var what = 'hmitest';
+var what = 'live';
 /*
  * OPCUA Test Server-Configuration ITQ Lan
  */
