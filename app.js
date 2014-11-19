@@ -4,18 +4,12 @@
  */
 GLOBAL.CONFIG = require('./config.js'); 
 
-/**
- * Global variable, so that subscriptions dont take place all the time, only when manual Module viewed.
- */
-GLOBAL.ManualModuleActivated = 0;
-GLOBAL.MaintenanceModuleActivated = 0;
-
 // Server Modules
-var path = require('path'),
-  express = require('express'),
-  app = express(),
-  http = require('http'),
-  server = http.createServer(app);
+var path = require('path');
+var express = require('express');
+var app = express();
+var http = require('http');
+var server = http.createServer(app);
 //Socket
 GLOBAL.IO = require('socket.io').listen(server); 
 // Helper
