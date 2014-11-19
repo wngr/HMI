@@ -11,18 +11,65 @@ nav.navbar.navbar-default.navbar-static-top(role='navigation',style='margin-bott
           span.icon-bar
         a.navbar-brand(href='#') Mi5-Dashboard  
     ul.nav.navbar-top-links.navbar-right
-      +dropdown-alerts()
-      +dropdown-notifications()
-      +dropdown-tasks()
+      //- +dropdown-alerts()
+      +dropdown-messageFeed()
+      //- +dropdown-tasks()
       li
-        a(href='#', style='color:#999999')
-          i.fa.fa-shield.fa-fw
+        a(href='/input', style='color:#999999')
+          i.fa.fa-cube.fa-fw
+          span#inputBadge
+          script.
+            socket.on("inputBadge", function(data){
+              - console.log('JADE: inputBadge received');
+              if(data == 0){
+                $("#inputBadge").removeClass("badge-top alert-danger").html("");
+              } else {
+                $("#inputBadge").addClass("badge-top alert-danger").html('<i class="fa fa-map-marker fa-fw"></i>');
+              }
+            });
+            
       li
-        a(href='#', style='color:#999999')
-          i.fa.fa-signal.fa-fw
+        a(href='/output', style='color:#999999')
+          i.fa.fa-cubes.fa-fw
+          span#outputBadge
+          script.
+            socket.on("outputBadge", function(data){
+              - console.log('JADE: outputBadge received');
+              if(data == 0){
+                $("#outputBadge").removeClass("badge-top alert-danger").html("");
+              } else {
+                $("#outputBadge").addClass("badge-top alert-danger").html('<i class="fa fa-map-marker fa-fw"></i>');
+              }
+            });
+      li
+        a(href='/manual', style='color:#999999')
+          i.fa.fa-gavel.fa-fw
+          span#manualBadge
+          script.
+            socket.on("manualBadge", function(data){
+              - console.log('JADE: manualBadge received');
+              if(data == 0){
+                $("#manualBadge").removeClass("badge-top alert-danger").html("");
+              } else {
+                $("#manualBadge").addClass("badge-top alert-danger").html('<i class="fa fa-map-marker fa-fw"></i>');
+              }
+            });
+      li
+        a(href='/maintenance', style='color:#999999')
+          i.fa.fa-fire-extinguisher.fa-fw
+          span#maintenanceBadge
+          script.
+            socket.on("maintenanceBadge", function(data){
+              - console.log('JADE: maintenanceBadge received');
+              if(data == 0){
+                $("#maintenanceBadge").removeClass("badge-top alert-danger").html("");
+              } else {
+                $("#maintenanceBadge").addClass("badge-top alert-danger").html('<i class="fa fa-map-marker fa-fw"></i>');
+              }
+            });
       +dropdown-time()
       //- Debug options
-      +dropdown-debug()
+      //- +dropdown-debug()
       
       
     div.navbar-default.sidebar(role='navigation')
@@ -47,10 +94,6 @@ nav.navbar.navbar-default.navbar-static-top(role='navigation',style='margin-bott
               i.fa.fa-shopping-cart.fa-fw
               | Tasks
           li 
-            a(href='/manual')
-              i.fa.fa-user.fa-fw
-              | Manual Module
-          li 
             a(href='/input')
               i.fa.fa-cube.fa-fw
               | Manual Input
@@ -58,6 +101,10 @@ nav.navbar.navbar-default.navbar-static-top(role='navigation',style='margin-bott
             a(href='/output')
               i.fa.fa-cubes.fa-fw
               | Manual Output
+          li 
+            a(href='/manual')
+              i.fa.fa-user.fa-fw
+              | Manual Module
           li 
             a(href='/maintenance')
               i.fa.fa-fire-extinguisher.fa-fw

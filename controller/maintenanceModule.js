@@ -13,7 +13,6 @@ function showModule(req, res) {
       return 0;
     }
 
-    console.log('JadeForMaintenance', mi5Data);
     jadeData.manualModule = mi5Data;
     // console.log(JSON.stringify(mi5Data, null, 1));
 

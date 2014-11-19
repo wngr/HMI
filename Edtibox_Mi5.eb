@@ -1,5 +1,5 @@
 #Editbox Eclipse Plugin Settings
-#Tue Nov 18 22:13:22 CET 2014
+#Wed Nov 19 00:33:17 CET 2014
 HighlightOne=true
 FillGradient=false
 FillSelected=true
@@ -21,7 +21,7 @@ Builder=Text
 HighlightDrawLine=true
 FillSelectedColor=0c0c0c
 BorderLineStyle=2
-Colors=202020-25221d-2a241a
+Colors=232323-262626-292929-2c2c2c
 HighlightLineStyle=3
 NoBackground=false
 CirculateLevelColors=true
