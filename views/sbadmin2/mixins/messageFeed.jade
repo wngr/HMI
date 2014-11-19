@@ -1,10 +1,22 @@
 //- Dropdown notification 
 //- With JS Tag to update list
-mixin dropdown-notifications()
+mixin dropdown-messageFeed()
         li.dropdown
-          a.dropdown-toggle(href='#',data-toggle='dropdown')
+          a.dropdown-toggle(href='#',data-toggle='dropdown', style='color:#999999')
             i.fa.fa-envelope.fa.fw
-            i.fa.fa-caret-down
+            //- span.badge.alert-info (blue)
+            span#messageFeedBadge
+            //- i.fa.fa-caret-down //- not necessary cause auf messageFee
+            script.
+              socket.on("messageFeedBadge", function(data){
+                - console.log('JADE: messageFeedBadge received');
+                if(data == 0){
+                  $("#messageFeedBadge").removeClass("badge-top").html("");
+                } else {
+                  $("#messageFeedBadge").addClass("badge-top").html(data);
+                }
+              });
+             
           ul.dropdown-menu.dropdown-messages#messageFeedList
             li     
               a(href='#')
@@ -17,7 +29,7 @@ mixin dropdown-notifications()
              |  var newestMessageFeed = '';
              |  msgs.forEach(function(msg){
              |   newestMessageFeed = newestMessageFeed + '
-             +notification-element-innerJS('msg.Level.value', 'msg.Message.value', 'msg.Timestamp.value')
+             +messageFeed-element-innerJS('msg.Level.value', 'msg.Message.value', 'msg.Timestamp.value')
              |   ';  // newestMessageFeed
              |  });
              |  $("#messageFeedList").html(newestMessageFeed);
@@ -31,7 +43,7 @@ mixin dropdown-notifications()
              | '); //append
              | });
              
-mixin notification-element-innerJS(level, message, time)
+mixin messageFeed-element-innerJS(level, message, time)
             li     
               a(href='#')
                 div
@@ -68,3 +80,13 @@ mixin messageFeed-panel()
             |  });
             |  $("#messageFeedPanel").html(newestMessageFeed);
             | });
+
+
+
+mixin messageFeedSingle()
+        script socket.on('messageFeed', function(msg){
+         | var currText = $('#messageFeed').val();
+         | var newText = 'ID:'+msg.ID.value+' | Level: '+msg.Level.value+' | Msg: '+msg.Message.value+' | Timestamp: '+msg.Timestamp.value;
+         | $('#messageFeed').val(newText+"\n"+currText); 
+         | console.log(msg); 
+         | });

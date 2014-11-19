@@ -271,7 +271,7 @@ exports.getJadeData = getJadeData;
 
 function disconnect() {
   if (typeof opcConnection !== 'undefined') {
-    opcConnection.disconnect();
+    opcConnection.disconnect(); // TODO: check if necessary?
     console.log('simpleManualModule - opcConnection.disconnect()');
   } else {
     console.log('Cannot disconnect opcConnection because its not defined');

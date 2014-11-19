@@ -49,7 +49,7 @@ mixin dropdown-alerts
 mixin dropdown-time
       li.dropdown
           a.dropdown-toggle(href='#',data-toggle='dropdown')
-            span.text-muted#serverTimeHMS 00:00:00
+            span#serverTimeHMS(style='color:#999999') 00:00:00
           ul.dropdown-menu.dropdown-tasks
             li
               a
@@ -72,11 +72,3 @@ mixin dropdown-time
             | $('#serverTimeDate').html(serverTime.serverTimeDate);
             | });
  
-
-mixin messageFeedHtml()
-        script socket.on('messageFeed', function(msg){
-         | var currText = $('#messageFeed').val();
-         | var newText = 'ID:'+msg.ID.value+' | Level: '+msg.Level.value+' | Msg: '+msg.Message.value+' | Timestamp: '+msg.Timestamp.value;
-         | $('#messageFeed').val(newText+"\n"+currText); 
-         | console.log(msg); 
-         | });
