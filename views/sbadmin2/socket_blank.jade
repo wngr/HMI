@@ -1,0 +1,18 @@
+extends layout
+
+block content
+    pre
+     | #{content}
+    if list
+      ul
+        for entry in list
+          li
+            a(href=entry.href) #{entry.title}
+            
+  
+  
+    script.
+      console.log('did this');
+      socket.on('mmroom', function(data){
+        console.log(data);
+      });
