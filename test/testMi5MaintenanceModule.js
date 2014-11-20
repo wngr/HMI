@@ -18,6 +18,7 @@ var lucidJS = require('lucidjs');
 var lucid = new lucidJS.EventEmitter();
 
 GLOBAL.IO = require('socket.io').listen(server);
+GLOBAL.io = IO;
 GLOBAL._ = require('underscore');
 GLOBAL.md5 = require('MD5');
 var async = require('async');
@@ -31,6 +32,12 @@ async.series([function(callback){
 }, function(callback){
   maintenanceModule.subscribe();
   callback();
+}, function(callback){
+  var Mi5ManualModule = require('./../models/simpleDataTypeMapping.js').Mi5ManualModule;
+  maintenanceModule.opc.mi5WriteObject('MI5.Module2402.Manual', {Execute: true}, Mi5ManualModule, function(
+      err) {
+    console.log('Mi5ManualModule written - no error feedback possible');
+  });
 }
 ], function(err, results){
   console.log(maintenanceModule.jadeData);

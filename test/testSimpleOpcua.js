@@ -7,7 +7,7 @@ GLOBAL.CONFIG = require('./../config.js');
 
 var async = require('async');
 // var opc = require('./../models/simpleOpcua').server('opc.tcp://localhost:4334/');
-var opc = require('./../models/simpleOpcua').server(CONFIG.OPCUAOrder);
+var opc = require('./../models/simpleOpcua').server('opc.tcp://192.168.192.132:4840/');
 GLOBAL.opcH = require('./../models/simpleOpcuaHelper');
 var jadeH = require('./../models/simpleJadeHelper');
 
@@ -29,25 +29,41 @@ opc
       async
           .series(
               [
-                  function(callback) {
-                    var mappingMi5DebugPendingFalse = require('./../models/simpleDataTypeMapping.js').Mi5DebugPendingFalse;
+//                  function(callback) {
+//                    var mappingMi5DebugPendingFalse = require('./../models/simpleDataTypeMapping.js').Mi5DebugPendingFalse;
+//
+//                    var writethis = {
+//                      Pending : true
+//                    };
+//
+//                    opc.mi5WriteObject('MI5.Order[0].', writethis, mappingMi5DebugPendingFalse,
+//                        function(err) {
+//                          console.log('written in any case, no error available?');
+//                          opc.disconnect();
+//                        })
+//                  },
 
-                    var writethis = {
-                      Pending : true
-                    };
-
-                    opc.mi5WriteObject('MI5.Order[0].', writethis, mappingMi5DebugPendingFalse,
-                        function(err) {
-                          console.log('written in any case, no error available?');
-                          opc.disconnect();
-                        })
-                  },
-
+//                  function(callback) {
+//                    /*
+//                     * Test single write object
+//                     * 
+//                     */  
+//                    var Mi5ManualModule = require('./../models/simpleDataTypeMapping.js').Mi5ManualModule;
+//                     opc.mi5WriteValue('Mi5.Module2402Manual.Execute', true, Mi5ManualModule, function(err) {
+//                       console.log('OK - Maintenance Module - value written - no error feedback possible');
+//                       callback();
+//                     });
+//                  },
                   function(callback) {
                     /*
                      * Test single write object
                      * 
-                     */
+                     */  
+                    var Mi5ManualModule = require('./../models/simpleDataTypeMapping.js').Mi5ManualModule;
+                     opc.mi5WriteObject('Mi5.Module2402Manual', {Execute: true}, Mi5ManualModule, function(err) {
+                       console.log('OK - Maintenance Modasdf error feedback possible');
+                       callback(err);
+                     });
                   }
 
               // function(callback) {

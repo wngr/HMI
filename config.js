@@ -24,18 +24,18 @@ exports.OPCUAInputModuleId = 2501;
 exports.OPCUAOutputModuleId = 2601;
 
 
-var what = 'clone';
+var what = 'hmitest';
 /*
  * OPCUA Test Server-Configuration ITQ Lan
  */
 if (what == 'hmitest'){
   exports.Port                    = 3000;
-  exports.OPCUARecipe             = 'opc.tcp://192.168.192.79:4840/';
-  exports.OPCUAOrder              = 'opc.tcp://192.168.192.79:4840/';
-  exports.OPCUAMessageFeed        = 'opc.tcp://192.168.192.79:4840/';
-  exports.OPCUATask               = 'opc.tcp://192.168.192.79:4840/';
-  exports.OPCUAHandModule         = 'opc.tcp://192.168.192.79:4840/';
-  exports.OPCUAMaintenanceModule  = 'opc.tcp://192.168.192.79:4840/';
+  exports.OPCUARecipe             = 'opc.tcp://192.168.192.80:4840/';
+  exports.OPCUAOrder              = 'opc.tcp://192.168.192.80:4840/';
+  exports.OPCUAMessageFeed        = 'opc.tcp://192.168.192.80:4840/';
+  exports.OPCUATask               = 'opc.tcp://192.168.192.80:4840/';
+  exports.OPCUAHandModule         = 'opc.tcp://192.168.192.80:4840/';
+  exports.OPCUAMaintenanceModule  = 'opc.tcp://192.168.192.80:4840/';
   exports.OPCUAInputModule        = 'opc.tcp://192.168.192.76:4840/'; // owXp
   exports.OPCUAOutputModule       = 'opc.tcp://192.168.192.76:4840/';
 }
