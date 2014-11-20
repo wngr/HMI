@@ -28,6 +28,10 @@ async.series([function(callback){
   maintenanceModule.initialize(callback);
 }, function(callback){
   maintenanceModule.getModuleData(callback);
-}], function(err, results){
+}, function(callback){
+  maintenanceModule.subscribe();
+  callback();
+}
+], function(err, results){
   console.log(maintenanceModule.jadeData);
 });

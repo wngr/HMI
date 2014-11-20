@@ -16,16 +16,31 @@ GLOBAL.lucid = new lucidJS.EventEmitter();
 
 //Socket
 GLOBAL.IO = require('socket.io').listen(server); 
+GLOBAL.io = IO; 
 
 // Helper
 GLOBAL._ = require('underscore');
 GLOBAL.md5 = require('MD5');
 GLOBAL.moment = require('moment');
 
-//********************************* Mi5 HMI
-// Models
-GLOBAL.mMaintenanceModule = require('./models/simpleMaintenanceModule');
-GLOBAL.mManualModule = require('./models/simpleManualModule');
+//********************************* Mi5 HMI Models
+// Maintenance Module
+GLOBAL.mi5Maintenance = require('./models/mi5MaintenanceModule').maintenanceModule;
+mi5Maintenance.initialize(function(err){
+  if(!err){
+    console.log('Maintenance Module is connected');
+    mi5Maintenance.getModuleData(function(err){
+      if(!err){
+        mi5Maintenance.subscribe();        
+      }
+    })
+  } else {
+    console.log(err);
+  }
+});
+
+// Manual Module
+//GLOBAL.mManualModule = require('./models/simpleManualModule');
 GLOBAL.mMessageFeed = require('./models/simpleMessageFeed');
 
 // Background Services
