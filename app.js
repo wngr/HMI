@@ -1,4 +1,3 @@
-
 /**
  * Configuration
  */
@@ -10,12 +9,20 @@ var express = require('express');
 var app = express();
 var http = require('http');
 var server = http.createServer(app);
+
+//Lucid JS for uber-simple event handling
+var lucidJS = require('lucidjs');
+GLOBAL.lucid = new lucidJS.EventEmitter();
+
 //Socket
 GLOBAL.IO = require('socket.io').listen(server); 
+
 // Helper
 GLOBAL._ = require('underscore');
 GLOBAL.md5 = require('MD5');
 GLOBAL.moment = require('moment');
+
+//********************************* Mi5 HMI
 // Models
 GLOBAL.mMaintenanceModule = require('./models/simpleMaintenanceModule');
 GLOBAL.mManualModule = require('./models/simpleManualModule');
