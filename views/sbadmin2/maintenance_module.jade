@@ -33,8 +33,8 @@ block content
                       h4.timeline-title
                        span.text-muted(id=manualModule.Execute.containerId+'text') Waiting to get a task. 
                       script.
-                       socket.on("#{manualModule.Execute.updateEvent}", function(data){ 
-                        if(data.value.value===true){ 
+                       socket.on("executeIsTrue", function(data){ 
+                        if(data === true){ 
                          $("##{manualModule.Execute.containerId}icon").removeClass('fa-cog fa-spin'); 
                          $("##{manualModule.Execute.containerId}icon").addClass('fa-check');
                          $("##{manualModule.Execute.containerId}badge").addClass('success');
@@ -44,16 +44,12 @@ block content
                               
                 //- Start Button
                 li.timeline-inverted
-                  div.timeline-badge(id=manualModule.Busy.containerId+'badge', onclick="socket.emit('#{manualModule.Busy.submitEvent}', {nodeId: '#{manualModule.Busy.nodeId}', value: true});", style="cursor: pointer")
+                  div.timeline-badge(id=manualModule.Busy.containerId+'badge', onclick="socket.emit('userReady', {nodeId: '#{manualModule.Busy.nodeId}', value: true});", style="cursor: pointer")
                     i.fa.fa-play
                   div.timeline-panel
                     div.timeline-heading
                       h4.timeline-title
-                       span.text-muted(id=manualModule.Busy.containerId+'text') Press
-                        span.fa-stack
-                         i.fa.fa-circle.fa-stack-2x
-                         i.fa.fa-play.fa-stack-1x.fa-inverse
-                        | when you are ready to start working.
+                       span.text-muted(id=manualModule.Busy.containerId+'text') Press when you are ready to start working.
                       script.
                        socket.on("#{manualModule.Busy.updateEvent}", function(data){ 
                         if(data.value.value===true){ 

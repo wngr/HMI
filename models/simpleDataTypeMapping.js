@@ -96,7 +96,7 @@ function Mi5MessageFeed(variableName) {
 
   return type;
 }
-exports.Mi5OrderUserParameter = Mi5OrderUserParameter;
+exports.Mi5MessageFeed = Mi5MessageFeed;
 
 function Mi5ManualModule(variableName) {
   assert(typeof variableName === "string");

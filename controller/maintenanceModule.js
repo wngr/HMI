@@ -3,20 +3,21 @@
  */
 
 function showModule(req, res) {
-  MaintenanceModuleActivated = 1;
   var jadeData = new Object;
   jadeData.title = 'Maintenance Module';
 
-  mMaintenanceModule.getModuleData(function(err, mi5Data, rawData) {
+  mi5Maintenance.getModuleData(function(err) {
     if (err) {
       console.log(err);
-      return 0;
     }
 
-    jadeData.manualModule = mi5Data;
-    // console.log(JSON.stringify(mi5Data, null, 1));
+    var maintenanceSockets = _.once(mi5Maintenance.ioRegister);
+    io.on('connection', function(socket) {
+      socket.join('maintenance-module');
+      maintenanceSockets(socket);
+    });
 
-    mMaintenanceModule.subscribeModuleData(rawData);
+    jadeData.manualModule = mi5Maintenance.jadeData;
 
     res.render('sbadmin2/maintenance_module', jadeData);
   });

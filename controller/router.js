@@ -79,34 +79,16 @@ IO.on('connection', function(socket) {
   connectedClients++;
   console.log('Connected Clients now:', connectedClients);
 
-  // Disconnect
-  socket.on('disconnect', function() {
-    var oldClients = connectedClients;
-    connectedClients--;
-    console.log('Number of users from ' + oldClients + ' to '
-        + connectedClients);
-
-    // TODO Implement it, right now, it might cause errors
-    // Disconnect Manual Module
-    // if (connectedClients === 0) {
-    // mManualModule.disconnect();
-    // }
-  });
-
   // Register Listeners for backgroundDebug
   require('./../controller/backgroundDebug').listeners(socket);
-
-  // Register Manual Module
-  if (ManualModuleActivated) {
-    mManualModule.start(socket);
-  }
-
-  // Register Maintenance Module
-  if (MaintenanceModuleActivated) {
-    mMaintenanceModule.start(socket);
-  }
 
   // Message Feed Module - Initial emit
   mMessageFeed.emitMessageFeedInitial();
 
+  // Disconnect
+  socket.on('disconnect', function() {
+    var oldClients = connectedClients;
+    connectedClients--;
+    console.log('Number of users from ' + oldClients + ' to ' + connectedClients);
+  });
 });
