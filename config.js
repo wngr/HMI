@@ -24,7 +24,7 @@ exports.OPCUAInputModuleId = 2501;
 exports.OPCUAOutputModuleId = 2601;
 
 
-var what = 'hmitest';
+var what = 'clone';
 /*
  * OPCUA Test Server-Configuration ITQ Lan
  */

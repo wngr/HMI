@@ -169,31 +169,31 @@ maintenanceModule.prototype.socketUserIsDone = function() {
  * @param nodeId
  * @param value
  */
-maintenanceModule.prototype.setValues = function(baseNode, dataObject) {
+maintenanceModule.prototype.setObject = function(baseNode, dataObject, callback) {
   var self = this;
 
   assert(typeof baseNode === "string");
   assert(_.isObject(dataObject));
+  assert(typeof callback === 'function');
 
   var Mi5ManualModule = require('./../models/simpleDataTypeMapping.js').Mi5ManualModule;
-  self.opc.mi5WriteObject(baseNode, dataObject, Mi5ManualModule, function(err) {
-    console.log('OK - Maintenance Module - value written - no error feedback possible');
-  });
+  self.opc.mi5WriteObject(baseNode, dataObject, Mi5ManualModule, callback);
 }
 
-maintenanceModule.prototype.setValue = function(nodeId, value) {
+maintenanceModule.prototype.setValue = function(nodeId, value, callback) {
   var self = this;
 
   assert(typeof nodeId === "string");
+  assert(typeof callback === 'function');
 
-  // var baseNode = opcH.nodeIdToBaseNode(nodeId);
-  // var lastElement = opcH.getLastElement(nodeId);
-  console.log('you are here');
+  var baseNode = opcH.cutLastElement(nodeId);
+  var lastElement = opcH.getLastElement(nodeId);
+  console.log('you are here', baseNode, lastElement);
 
-  var Mi5ManualModule = require('./../models/simpleDataTypeMapping.js').Mi5ManualModule;
-  self.opc.mi5WriteValue(nodeId, value, Mi5ManualModule, function(err) {
-    console.log('OK - Maintenance Module - value written - no error feedback possible');
-  });
+  var dataObject = {};
+  dataObject[lastElement] = value;
+
+  self.setObject(baseNode, dataObject, callback);
 }
 
 /**

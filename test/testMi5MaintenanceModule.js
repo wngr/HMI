@@ -32,11 +32,22 @@ async.series([function(callback){
 }, function(callback){
   maintenanceModule.subscribe();
   callback();
-}, function(callback){
-  var Mi5ManualModule = require('./../models/simpleDataTypeMapping.js').Mi5ManualModule;
-  maintenanceModule.opc.mi5WriteObject('MI5.Module2402.Manual', {Execute: true}, Mi5ManualModule, function(
-      err) {
-    console.log('Mi5ManualModule written - no error feedback possible');
+}, 
+//function(callback){
+//  var Mi5ManualModule = require('./../models/simpleDataTypeMapping.js').Mi5ManualModule;
+//  maintenanceModule.opc.mi5WriteObject('MI5.Module2402Manual', {Execute: true}, Mi5ManualModule, function(
+//      err) {
+//    console.log('Mi5ManualModule written - no error feedback possible');
+//  });
+//}, 
+//function(callback){
+//  maintenanceModule.setObject('MI5.Module2402Manual', {Execute: true}, function(err){
+//    console.log('ok');
+//  });
+//}, 
+function(callback){
+  maintenanceModule.setValue('MI5.Module2402Manual.Execute', true, function(err){
+    console.log('ok');
   });
 }
 ], function(err, results){

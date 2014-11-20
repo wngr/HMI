@@ -113,8 +113,7 @@ exports.server = function(endPointUrl) {
           publishingEnabled : true,
           priority : 10
         };
-        opcua.subscription = new nodeopcua.ClientSubscription(opcua.session,
-            subscriptionSettings);
+        opcua.subscription = new nodeopcua.ClientSubscription(opcua.session, subscriptionSettings);
 
         opcua.subscription.on("started", function() {
           console.log("mi5Subscribe: subscription started - subscriptionId=",
@@ -128,8 +127,7 @@ exports.server = function(endPointUrl) {
       },
 
       /**
-       * Add a monitored item. Gives back object for monitored item (with event
-       * listeners)
+       * Add a monitored item. Gives back object for monitored item (with event listeners)
        * 
        * @param nodeIdToMonitor
        *          (e.g. MI5.MessageFeed.MessageFeed[1])
@@ -149,8 +147,8 @@ exports.server = function(endPointUrl) {
         };
         var timestampToReturn = nodeopcua.read_service.TimestampsToReturn.Both;
 
-        var monitoredNode = opcua.subscription.monitor(itemToMonitor,
-            requestedParameters, timestampToReturn);
+        var monitoredNode = opcua.subscription.monitor(itemToMonitor, requestedParameters,
+            timestampToReturn);
 
         return monitoredNode;
       },
@@ -161,8 +159,7 @@ exports.server = function(endPointUrl) {
        * @async
        */
       mi5ReadArray : function(nodeIdArrayToRead, callback) {
-        var max_age = 0, nodes = opcua
-            ._addNamespaceAndAttributeIdToNodeId(nodeIdArrayToRead);
+        var max_age = 0, nodes = opcua._addNamespaceAndAttributeIdToNodeId(nodeIdArrayToRead);
         // console.log('OK - ReadArray Called');
         opcua.session.read(nodes, max_age, function(err, nodes, results) {
           var tempData = opcua._concatNodesAndResults(nodes, results);
@@ -172,13 +169,25 @@ exports.server = function(endPointUrl) {
         });
       },
 
+      /**
+       * write an object (key:value) to opcua; mappingFunction required
+       * 
+       * @async
+       * @param baseNode
+       *          <string> MI5.Module2402Manual
+       * @param object
+       *          <object> {Execute: true}
+       * @param mappingFunction
+       *          <function> func(Execute) = 'Boolean'
+       * @param callback
+       *          <function>
+       */
       mi5WriteObject : function(baseNode, object, mappingFunction, callback) {
         var mapping = require('./simpleDataTypeMapping');
 
         // handle object
         assert(_.isObject(object));
-        var nodeData = opcua._convertMi5ListToNodeData(baseNode, object,
-            mappingFunction);
+        var nodeData = opcua._convertMi5ListToNodeData(baseNode, object, mappingFunction);
 
         // write
         opcua.session.write(nodeData, callback);
@@ -192,8 +201,7 @@ exports.server = function(endPointUrl) {
        * @param baseNode
        *          (e.g. 'MI5.Order[X]')
        * @param order
-       *          <object> (e.g. {Name: 'Schnaps', Description: 'Das ist
-       *          "eetwas"'})
+       *          <object> (e.g. {Name: 'Schnaps', Description: 'Das ist "eetwas"'})
        * @param userParameter
        *          <array> (e.g. [{Value: 16}, {Value: 1}]
        * @param callback
@@ -205,8 +213,7 @@ exports.server = function(endPointUrl) {
 
         // handle Order
         assert(_.isObject(order));
-        nodeDataArray.push(opcua._convertMi5ListToNodeData(baseNode, order,
-            mapping.Mi5Order));
+        nodeDataArray.push(opcua._convertMi5ListToNodeData(baseNode, order, mapping.Mi5Order));
 
         // handle UserParameters
         assert(_.isArray(userParameters));
@@ -215,8 +222,8 @@ exports.server = function(endPointUrl) {
           var userParameter = userParameters[i];
           var tempBaseNode = baseNode + '.UserParameter[' + i + '].';
 
-          var nodeData = opcua._convertMi5ListToNodeData(tempBaseNode,
-              userParameter, mapping.Mi5OrderUserParameter);
+          var nodeData = opcua._convertMi5ListToNodeData(tempBaseNode, userParameter,
+              mapping.Mi5OrderUserParameter);
           nodeDataArray.push(nodeData);
         }
         // .push adds an array to an array => flatten one dimension
@@ -240,9 +247,8 @@ exports.server = function(endPointUrl) {
       /**
        * convert list to an array of NodeData
        * 
-       * If you use this function multiple times in a specific write method, you
-       * need to use upper.push() with the return value of this function, and
-       * then later flatten it again by one! (_.flatten(array,true);)
+       * If you use this function multiple times in a specific write method, you need to use upper.push() with the
+       * return value of this function, and then later flatten it again by one! (_.flatten(array,true);)
        * 
        * <pre>
        * var baseNode = 'ns=4;s=MI5.Order.0.';
@@ -269,11 +275,9 @@ exports.server = function(endPointUrl) {
         var nodeDataArray = new Array;
         baseNode = opcua._checkBaseNode(baseNode);
 
-        _.keys(list).forEach(
-            function(key) {
-              nodeDataArray.push(opcua._structNodeData(baseNode + key,
-                  list[key], mapping(key)));
-            });
+        _.keys(list).forEach(function(key) {
+          nodeDataArray.push(opcua._structNodeData(baseNode + key, list[key], mapping(key)));
+        });
 
         // console.log(JSON.stringify(nodeDataArray, null, 1)); // debug
         return nodeDataArray;
@@ -287,8 +291,7 @@ exports.server = function(endPointUrl) {
        * @param value
        *          <scalar> the value to write (e.g. "hallo", 1, 23, 2.5, true)
        * @param type
-       *          <string> corresponding type (e.g. String, Int16, Int32, Float,
-       *          Boolean)
+       *          <string> corresponding type (e.g. String, Int16, Int32, Float, Boolean)
        * @return <nodeData>
        */
       _structNodeData : function(nodeId, value, type) {
@@ -318,8 +321,7 @@ exports.server = function(endPointUrl) {
        * @param value
        *          <scalar> the value to write (e.g. "hallo", 1, 23, 2.5, true)
        * @param type
-       *          <string> corresponding type (e.g. String, Int16, Int32, Float,
-       *          Boolean)
+       *          <string> corresponding type (e.g. String, Int16, Int32, Float, Boolean)
        * @return <nodeData>
        */
       _convertDataType : function(type) {
@@ -345,8 +347,7 @@ exports.server = function(endPointUrl) {
       },
 
       /**
-       * Adds node-opcua specific nodes values: {nodeId} --> {nodeId:
-       * 'ns=4;s='+node, attributeId: 13}
+       * Adds node-opcua specific nodes values: {nodeId} --> {nodeId: 'ns=4;s='+node, attributeId: 13}
        * 
        * @param nodeIdArrayToRead
        *          array
@@ -404,14 +405,13 @@ exports.server = function(endPointUrl) {
         return baseNode;
       },
 
-      /*************************************************************************
+      /*****************************************************************************************************************
        * Helper methods below
        */
 
       /**
        * Combines nodes and results to one data array with the structure:
-       * [{"nodeId":"MI5.Module1101.Output.SkillOutput.SkillOutput0.Busy",
-       * "value":0}, {...}, {...}]
+       * [{"nodeId":"MI5.Module1101.Output.SkillOutput.SkillOutput0.Busy", "value":0}, {...}, {...}]
        * 
        * @param nodes :
        *          nodeId
@@ -444,9 +444,8 @@ exports.server = function(endPointUrl) {
       },
 
       /**
-       * Add object attributes to results array accodring to nodeId in results
-       * {nodeId, value} --> {nodeId, value, submitEvent, updateEvent,
-       * containerId}
+       * Add object attributes to results array accodring to nodeId in results {nodeId, value} --> {nodeId, value,
+       * submitEvent, updateEvent, containerId}
        * 
        * @param data
        * @returns {Array}
@@ -456,10 +455,8 @@ exports.server = function(endPointUrl) {
         // Add new attributes to the object of every array entry
         output = _.map(data, function(entry) {
           var eventObject = {
-            submitEvent : 'submitEv'
-                + opcua._convertNodeIdToEvent(entry.nodeId),
-            updateEvent : 'updateEv'
-                + opcua._convertNodeIdToEvent(entry.nodeId),
+            submitEvent : 'submitEv' + opcua._convertNodeIdToEvent(entry.nodeId),
+            updateEvent : 'updateEv' + opcua._convertNodeIdToEvent(entry.nodeId),
             containerId : opcua._convertNodeIdToContainerId(entry.nodeId)
           };
           return _.extend(entry, eventObject);
@@ -490,8 +487,7 @@ exports.server = function(endPointUrl) {
        * 
        * @param data
        *          [{nodeId: ..., value: ...},{nodeId: ..., value: ...}]
-       * @return output array {MI5: Recipe{ [Dummy: ..., Name: ...,
-       *         UserParameter: [{Dummy : ..., Default: ...,}]]}
+       * @return output array {MI5: Recipe{ [Dummy: ..., Name: ..., UserParameter: [{Dummy : ..., Default: ...,}]]}
        */
       _formatResultObjectToJade : function(data) {
         var output = new Array;
@@ -515,8 +511,8 @@ exports.server = function(endPointUrl) {
       },
 
       /**
-       * Converts nodeId to MD5 hash, so that it is container-id compatible id
-       * at thebeginning necessary, if md5 should start with a digit
+       * Converts nodeId to MD5 hash, so that it is container-id compatible id at thebeginning necessary, if md5 should
+       * start with a digit
        * 
        * @param nodeId
        * @return (e.g.) idFKDJ48238fhFak1
@@ -537,8 +533,7 @@ exports.server = function(endPointUrl) {
         var nodes = [ 'Description', 'Dummy', 'Name', 'RecipeID' ];
         // Add all 5 UserParameters
         for (var i = 0; i <= 5; i++) {
-          var temp = opcua._structRecipeUserParameter('UserParameter[' + i
-              + '].');
+          var temp = opcua._structRecipeUserParameter('UserParameter[' + i + '].');
           temp.forEach(function(item) {
             nodes.push(item);
           });
@@ -559,8 +554,8 @@ exports.server = function(endPointUrl) {
        * @return array
        */
       _structRecipeUserParameter : function(baseNode) {
-        var nodes = [ 'Default', 'Description', 'Dummy', 'MaxValue',
-            'MinValue', 'Name', 'Step', 'Unit' ];
+        var nodes = [ 'Default', 'Description', 'Dummy', 'MaxValue', 'MinValue', 'Name', 'Step',
+            'Unit' ];
         // Prepend baseNode
         nodes = _.map(nodes, function(item) {
           return baseNode + item;
