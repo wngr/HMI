@@ -23,6 +23,7 @@ maintenanceModule = function() {
   this.jadeData = undefined;
 
   this.opc = require('./../models/simpleOpcua').server(CONFIG.OPCUAMaintenanceModule);
+  console.log('endpoint', CONFIG.OPCUAMaintenanceModule);
 };
 exports.maintenanceModule = new maintenanceModule();
 
@@ -140,13 +141,12 @@ maintenanceModule.prototype.monitorItems = function(itemArray) {
  * @param socket
  */
 maintenanceModule.prototype.ioRegister = function(socket) {
-  var self = this;
+  var self = mi5Maintenance; // this would be socket.io io.on('connection')
+  _.bindAll(self, 'socketUserIsReady', 'socketUserIsDone');
 
   assert(typeof socket !== 'undefined');
 
-  socket.on('userReady', function(data) {
-    console.log('user is Ready');
-  });
+  socket.on('userReady', self.socketUserIsReady);
   socket.on('userDone', function(data) {
     console.log('user is DONE!');
   });
@@ -154,12 +154,22 @@ maintenanceModule.prototype.ioRegister = function(socket) {
   console.log('OK - Maintenance Module - event listeners registered');
 }
 
+maintenanceModule.prototype.socketUserIsReady = function() {
+  var self = this;
+  self.setValue(self.jadeData.Execute.nodeId, true);
+}
+
+maintenanceModule.prototype.socketUserIsDone = function() {
+  var self = this;
+  self.setValue(self.jadeData.Execute.nodeId, true);
+}
+
 /**
  * 
  * @param nodeId
  * @param value
  */
-maintenanceModule.prototype.setValue = function(baseNode, dataObject) {
+maintenanceModule.prototype.setValues = function(baseNode, dataObject) {
   var self = this;
 
   assert(typeof baseNode === "string");
@@ -167,6 +177,21 @@ maintenanceModule.prototype.setValue = function(baseNode, dataObject) {
 
   var Mi5ManualModule = require('./../models/simpleDataTypeMapping.js').Mi5ManualModule;
   self.opc.mi5WriteObject(baseNode, dataObject, Mi5ManualModule, function(err) {
+    console.log('OK - Maintenance Module - value written - no error feedback possible');
+  });
+}
+
+maintenanceModule.prototype.setValue = function(nodeId, value) {
+  var self = this;
+
+  assert(typeof nodeId === "string");
+
+  // var baseNode = opcH.nodeIdToBaseNode(nodeId);
+  // var lastElement = opcH.getLastElement(nodeId);
+  console.log('you are here');
+
+  var Mi5ManualModule = require('./../models/simpleDataTypeMapping.js').Mi5ManualModule;
+  self.opc.mi5WriteValue(nodeId, value, Mi5ManualModule, function(err) {
     console.log('OK - Maintenance Module - value written - no error feedback possible');
   });
 }

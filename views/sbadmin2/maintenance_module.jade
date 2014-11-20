@@ -31,16 +31,14 @@ block content
                   div.timeline-panel
                     div.timeline-heading
                       h4.timeline-title
-                       span.text-muted(id=manualModule.Execute.containerId+'text') Waiting to get a task. 
+                        span.text-muted(id=manualModule.Execute.containerId+'text') Waiting to get a task. 
                       script.
-                       socket.on("executeIsTrue", function(data){ 
-                        if(data === true){ 
-                         $("##{manualModule.Execute.containerId}icon").removeClass('fa-cog fa-spin'); 
-                         $("##{manualModule.Execute.containerId}icon").addClass('fa-check');
-                         $("##{manualModule.Execute.containerId}badge").addClass('success');
-                         $("##{manualModule.Execute.containerId}text").html('Task received.');
-                        }
-                       });
+                        socket.on("executeIsTrue", function(data){ 
+                          $("##{manualModule.Execute.containerId}icon").removeClass('fa-cog fa-spin'); 
+                          $("##{manualModule.Execute.containerId}icon").addClass('fa-check');
+                          $("##{manualModule.Execute.containerId}badge").addClass('success');
+                          $("##{manualModule.Execute.containerId}text").html('Task received.');
+                        });
                               
                 //- Start Button
                 li.timeline-inverted
@@ -49,15 +47,15 @@ block content
                   div.timeline-panel
                     div.timeline-heading
                       h4.timeline-title
-                       span.text-muted(id=manualModule.Busy.containerId+'text') Press when you are ready to start working.
+                        span.text-muted(id=manualModule.Busy.containerId+'text') Press when you are ready to start working.
                       script.
-                       socket.on("#{manualModule.Busy.updateEvent}", function(data){ 
-                        if(data.value.value===true){ 
-                         $("##{manualModule.Busy.containerId}icon").addClass('fa-check');
-                         $("##{manualModule.Busy.containerId}badge").addClass('success');
-                         $("##{manualModule.Busy.containerId}text").html('Started...');
-                        }
-                       });
+                        socket.on("#{manualModule.Busy.updateEvent}", function(data){ 
+                          if(data.value.value===true){ 
+                           $("##{manualModule.Busy.containerId}icon").addClass('fa-check');
+                           $("##{manualModule.Busy.containerId}badge").addClass('success');
+                           $("##{manualModule.Busy.containerId}text").html('Started...');
+                          }
+                        });
                 if manualModule.Parameter[2].StringValue.value
                   li
                     div.timeline-badge
