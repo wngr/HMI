@@ -12,8 +12,57 @@ block content
                         h1= recipe.Name.value
                         p= recipe.Description.value
                 form(role="form", action="/order/order/"+recipe.RecipeID.value, method="POST")
+                 - myindex = 0
                  for userParameter in recipe.UserParameter
-                   div.col-lg-12.col-md-12
+                   <!-- userParameters with odd saving the amount are left out-->
+                   - console.log("userParameter.name.value: "+ userParameter.Name.value)
+                   if (userParameter.Name.value == "Topping")
+                        - myindex++
+                        <!--myindex is odd: 1,3 or 5-->
+                        <!-- userParameter. enthält userParameter mit toppings-->
+                        <!-- recipe.UserParameter[myindex]. enthält userParameter mit amounts-->
+                        <!-- Fehler, falls keine Amount angabe zu topping userparameter angegeben ist, stürzt app.js ab.-->
+                        div.col-lg-6.col-md-12
+                            div.row(style="padding: 5px")
+                                - var toppings = userParameter.Unit.value;
+                                - var toppings = toppings.split(", ");//userParameter.Description.value);
+                                
+                                  div.panel.panel-default
+                                     div.panel-heading.text-center
+                                         p
+                                            b= userParameter.Description.value
+                                     div.panel-body
+                                        div.col-lg-12.col-md-12.col-sm-12.col-xs-12
+                                          div.btn-group(data-toggle="buttons",id="btn-group#{userParameter.Name.containerId}" style="width: 100%")
+                                               - var toppingIndex = 1;
+                                               for topping in toppings
+                                                   label.btn.btn-primary(style="width:50%; border-radius: 3px")
+                                                       - var userparameterNumber = myindex-1
+                                                       - console.log("userparameterNumber: "+userparameterNumber);
+                                                       input(type="radio", name="userparameter[#{userparameterNumber}]", value=toppingIndex, autocomplete="off")
+                                                       | #{topping}
+                                                   - toppingIndex++
+                                        div.row(style="padding-top: 40px")
+                                          div.col-lg-2.col-md-2.col-sm-2.col-xs-2
+                                            label
+                                                p Amount:
+                                          div.col-lg-10.col-md-10.col-sm-10.col-xs-10.text-center
+                                                <!-- slider -->
+                                                - var myStep=Math.round(recipe.UserParameter[myindex].Step.value);
+                                                - if(myStep == 0){ myStep = 1; }
+                                                - console.log("new mystep:" + myStep);
+                                                input.span2(name='userparameter[#{myindex}]', id=recipe.UserParameter[myindex].Name.containerId, type="text", data-slider-value=recipe.UserParameter[myindex].Default.value, data-slider-min=recipe.UserParameter[myindex].MinValue.value, data-slider-max=recipe.UserParameter[myindex].MaxValue.value, data-slider-step=myStep, style="background: #BABABA; width: 80%")
+                                        script.
+                                              $(function(){
+                                                  $('##{recipe.UserParameter[myindex].Name.containerId}').slider({
+                                                      formater: function(value) {
+                                                          return value;
+                                                      }
+                                                  });
+                                              });
+                        - myindex++<!-- myindex is round again: 2,4-->
+                   else if(userParameter.Name.value!="Amount")
+                     div.col-lg-12.col-md-12
                         div.col-lg-3.col-md-3
                             p.lead= userParameter.Name.value
                         div.col-lg-9

@@ -11,7 +11,7 @@ block content
      if manualModule
       div.row
         div.col-lg-12
-          h1.page-header= manualModule.SkillDescription.value
+          h1.page-header= title
            
       div.row
         div.col-lg-9
@@ -28,76 +28,78 @@ block content
                   div.timeline-panel
                     div.timeline-heading
                       h4.timeline-title
-                       span.text-muted(id=manualModule.Execute.containerId+'text') Waiting to get a task. 
+                        span.text-muted(id=manualModule.Execute.containerId+'text') Waiting to get a task. 
                       script.
-                       socket.on("#{manualModule.Execute.updateEvent}", function(data){ 
-                        if(data.value.value===true){ 
-                         $("##{manualModule.Execute.containerId}icon").removeClass('fa-cog fa-spin'); 
-                         $("##{manualModule.Execute.containerId}icon").addClass('fa-check');
-                         $("##{manualModule.Execute.containerId}badge").addClass('success');
-                         $("##{manualModule.Execute.containerId}text").html('Task received.');
+                        function executeIsTrue(){
+                            $("##{manualModule.Execute.containerId}icon").removeClass('fa-cog fa-spin'); 
+                            $("##{manualModule.Execute.containerId}icon").addClass('fa-check');
+                            $("##{manualModule.Execute.containerId}badge").addClass('success');
+                            $("##{manualModule.Execute.containerId}text").html('Task received.');
+                          }
+                        socket.on("executeIsTrue", function(data){ 
+                            executeIsTrue();
+                        });
+                        if(#{manualModule.Execute.value} === true){
+                          console.log('mmExecute.value true');
+                          executeIsTrue();
                         }
-                       });
                               
                 //- Start Button
                 li.timeline-inverted
-                  div.timeline-badge(id=manualModule.Busy.containerId+'badge', onclick="socket.emit('#{manualModule.Busy.submitEvent}', {nodeId: '#{manualModule.Busy.nodeId}', value: true});", style="cursor: pointer")
+                  div.timeline-badge(id=manualModule.Busy.containerId+'badge', onclick="socket.emit('userIsBusy', {nodeId: '#{manualModule.Busy.nodeId}', value: true});", style="cursor: pointer")
                     i.fa.fa-play
                   div.timeline-panel
                     div.timeline-heading
                       h4.timeline-title
-                       span.text-muted(id=manualModule.Busy.containerId+'text') Press
-                        span.fa-stack
-                         i.fa.fa-circle.fa-stack-2x
-                         i.fa.fa-play.fa-stack-1x.fa-inverse
-                        | when you are ready to start working.
+                        span.text-muted(id=manualModule.Busy.containerId+'text') Press when you are ready to start working.
                       script.
-                       socket.on("#{manualModule.Busy.updateEvent}", function(data){ 
-                        if(data.value.value===true){ 
-                         $("##{manualModule.Busy.containerId}icon").addClass('fa-check');
-                         $("##{manualModule.Busy.containerId}badge").addClass('success');
-                         $("##{manualModule.Busy.containerId}text").html('Started...');
+                        function busyIsTrue(){
+                          $("##{manualModule.Busy.containerId}icon").addClass('fa-check');
+                          $("##{manualModule.Busy.containerId}badge").addClass('success');
+                          $("##{manualModule.Busy.containerId}text").html('Started...');
                         }
-                       });                
-                for parameter in manualModule.Parameter
-                    if parameter.Name.value != ''
-                     li
-                      div.timeline-badge
-                        | #{parameter.ID.value}
-                      div.timeline-panel
-                        div.timeline-heading
-                          h4.timeline-title= parameter.Name.value
-                        div.timeline-body
-                          p #{parameter.Value.value} #{parameter.Unit.value}
-                          p #{parameter.StringValue.value}
-                
+                        socket.on("busyIsTrue", function(data){ 
+                            busyIsTrue();
+                        });
+                        if(#{manualModule.Busy.value}===true){ 
+                          console.log('mmBusy.value true');
+                          busyIsTrue();
+                        }
+                if manualModule.Parameter[2].StringValue.value
+                  li
+                    div.timeline-badge
+                      i.fa.fa-fire-extinguisher
+                    div.timeline-panel
+                      div.timeline-heading
+                        h4.timeline-title= manualModule.Parameter[0].StringValue.value
+                      div.timeline-body
+                        p= manualModule.Parameter[2].StringValue.value
+            
                 li.timeline-inverted
-                  div.timeline-badge(id=manualModule.Done.containerId+'badge', onclick="socket.emit('#{manualModule.Done.submitEvent}', {nodeId: '#{manualModule.Done.nodeId}', value: true});", style="cursor: pointer")
+                  div.timeline-badge(id=manualModule.Done.containerId+'badge', onclick="socket.emit('userIsDone', {value: true});", style="cursor: pointer")
                     i.fa.fa-stop
                   div.timeline-panel
                     div.timeline-heading
                       h4.timeline-title
-                       span.text-muted(id=manualModule.Done.containerId+'text') Press
-                        span.fa-stack.text-muted
-                         i.fa.fa-circle.fa-stack-2x
-                         i.fa.fa-stop.fa-stack-1x.fa-inverse
-                        | when you finished the task.
+                       span.text-muted(id=manualModule.Done.containerId+'text') Press when you finished the task.
                       script.
-                       var userFullyFinished = 0; // global in DOM space?
-                       socket.on("#{manualModule.Done.updateEvent}", function(data){ 
-                        if(data.value.value===true){ 
-                         userFullyFinished = 1;
+                       var userFullyFinished = 0; // global in DOM space? yes.
+                       function doneIsTrue(){
                          $("##{manualModule.Done.containerId}badge").addClass('success');
-                         $("##{manualModule.Done.containerId}text").html('Done.');
-                        }
+                         $("##{manualModule.Done.containerId}text").html('Done.');                         
+                       }
+                       socket.on("doneIsTrue", function(data){ 
+                         doneIsTrue();
                        });
+                       if(#{manualModule.Done.value}===true){ 
+                         console.log('mmDone.value true');
+                         doneIsTrue();
+                       }
                        
               script.
-               socket.on("taskFullyFinished", function(data){
-                console.log('GGGGGGGGGGGGGGGGGGGotit');
-                if(userFullyFinished == 1){
-                 window.location.replace("/manual"); 
-                }
+               socket.on("reloadPage", function(data){
+                console.log('Page Reload...');
+                window.location.replace("/maintenance"); 
                });
         
         //- MessageFeed

@@ -11,10 +11,7 @@ block content
      if manualModule
       div.row
         div.col-lg-12
-          if manualModule.Parameter[0].StringValu
-            h1.page-header Maintenance for #{manualModule.Parameter[0].StringValue.value}
-          else
-            h1.page-header Waiting for Maintenance
+          h1.page-header= title
            
       div.row
         div.col-lg-9
@@ -102,7 +99,7 @@ block content
               script.
                socket.on("reloadPage", function(data){
                 console.log('Page Reload...');
-                window.location.replace("/maintenance"); 
+                window.location.replace("/manual"); 
                });
         
         //- MessageFeed

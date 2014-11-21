@@ -1,5 +1,5 @@
 /**
- * Maintenance Module in Class-Architecture
+ * Manual Module in Class-Architecture // other Name
  * 
  * We need GLOBAL.CONFIG = require('./config.js');
  * 
@@ -22,8 +22,8 @@ maintenanceModule = function() {
   this.rawData = undefined;
   this.jadeData = undefined;
 
-  this.opc = require('./../models/simpleOpcua').server(CONFIG.OPCUAMaintenanceModule);
-  console.log('endpoint', CONFIG.OPCUAMaintenanceModule);
+  this.opc = require('./../models/simpleOpcua').server(CONFIG.OPCUAHandModule);
+  console.log('endpoint', CONFIG.OPCUAHandModule);
 };
 exports.maintenanceModule = new maintenanceModule();
 
@@ -63,7 +63,7 @@ maintenanceModule.prototype.getModuleData = function(callback) {
   assert(self.isInitialized, 'opc is not initialized call self.initialize() *async* first');
   assert(typeof callback === "function");
 
-  var baseNodeTask = self.structManualModule('MI5.Module' + CONFIG.MAINTENANCEMODULEID + 'Manual.');
+  var baseNodeTask = self.structManualModule('MI5.Module' + CONFIG.MANUALMODULEID + 'Manual.');
 
   self.opc.mi5ReadArray(baseNodeTask, function(err, data) {
     var mi5Object = opcH.mapMi5ArrayToObject(data, self.structManualModuleObjectBlank());
@@ -109,31 +109,28 @@ maintenanceModule.prototype.subscribe = function() {
 
 maintenanceModule.prototype.onBusyChange = function(data) {
   if (data.value.value === true) {
-    io.to('maintenance-module').emit('busyIsTrue', true);
+    io.to('manual-module').emit('busyIsTrue', true);
   }
   console.log('onBusyChange', data.value.value);
 };
 maintenanceModule.prototype.onDoneChange = function(data) {
   if (data.value.value === true) {
-    io.to('maintenance-module').emit('doneIsTrue', true);
+    io.to('manual-module').emit('doneIsTrue', true);
   }
   console.log('onDoneChange', data.value.value);
 };
 maintenanceModule.prototype.onExecuteChange = function(data) {
-  var self = mi5Maintenance; // since it is called before getModuleData
+  var self = mi5Manual; // since it is called before getModuleData
 
   if (data.value.value === true) {
-    io.to('maintenance-module').emit('executeIsTrue', true);
-    io.to('maintenance-module').emit('reloadPage', 0);
-    // Navbar
-    io.emit('maintenanceRequired', true);
+    io.to('manual-module').emit('executeIsTrue', true);
+    io.to('manual-module').emit('reloadPage', 0);
   }
   if (data.value.value === false) {
     // task fully finished
     self.setValue(self.jadeData.Done.nodeId, false, function() {
     });
-    io.emit('maintenanceRequired', true);
-    io.to('maintenance-module').emit('reloadPage', 0);
+    io.to('manual-module').emit('reloadPage', 0);
   }
   console.log('onExecuteChange', data.value.value);
 };
@@ -147,7 +144,7 @@ maintenanceModule.prototype.onReadyChange = function(data) {
 // Soket
 
 maintenanceModule.prototype.ioRegister = function(socket) {
-  var self = mi5Maintenance; // this would be socket.io io.on('connection')
+  var self = mi5Manual; // this would be socket.io io.on('connection')
 
   _.bindAll(self, 'socketUserIsBusy', 'socketUserIsDone'); // reset scope
 
@@ -156,12 +153,13 @@ maintenanceModule.prototype.ioRegister = function(socket) {
   socket.on('userIsBusy', self.socketUserIsBusy);
   socket.on('userIsDone', self.socketUserIsDone);
 
-  console.log('OK - Maintenance Module - event listeners registered');
+  console.log('OK - Manual Module - event listeners registered');
 }
 
 maintenanceModule.prototype.socketUserIsBusy = function() {
   var self = this;
   console.log('OK - User is busy');
+  console.log(self.jadeData.Busy.nodeId);
   self.setValue(self.jadeData.Busy.nodeId, true, function() {
   });
   self.setValue(self.jadeData.Ready.nodeId, false, function() {

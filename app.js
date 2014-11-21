@@ -39,6 +39,22 @@ mi5Maintenance.initialize(function(err){
   }
 });
 
+//Manual Module
+GLOBAL.mi5Manual = require('./models/mi5ManualModule').maintenanceModule;
+mi5Manual.initialize(function(err){
+if(!err){
+ console.log('Manual Module is connected');
+ mi5Manual.getModuleData(function(err){
+   if(!err){
+     mi5Manual.subscribe();
+   }
+ })
+} else {
+ console.log(err);
+}
+});
+
+
 // Manual Module
 //GLOBAL.mManualModule = require('./models/simpleManualModule');
 GLOBAL.mMessageFeed = require('./models/simpleMessageFeed');
