@@ -15,8 +15,10 @@ block content
     div.col-lg-8
       div.panel.panel-default 
         div.panel-heading
-          h2 Liquids
-          +feedbackButton("liquidFillingLevel")
+          h2 
+            | Liquids
+            span.pull-right
+                +feedbackButton("liquidFillingLevel")
         div.panel-body
           div#liquidFillingLevel(style="width: 100%")
           script.
@@ -39,8 +41,10 @@ block content
     div.col-lg-4
       div.panel.panel-default
         div.panel-heading
-          h2 Message Feed
-          +feedbackButton("messageFeedDashboard")
+          h2 
+            | Message Feed
+            span.pull-right
+                +feedbackButton("messageFeedDashboard")
         div.panel-body
           p hi
           p ho

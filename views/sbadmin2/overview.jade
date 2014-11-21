@@ -15,8 +15,10 @@ block content
     div.col-lg-12
       div.panel.panel-default 
         div.panel-heading
-          h2 Liquids
-          +feedbackButton("liquidFillingLevel")
+          h2 
+            | Liquids
+            span.pull-right
+                +feedbackButton("liquidFillingLevel")
         div.panel-body
           div#liquidFillingLevel(style="width: 100%")
           script.
@@ -39,8 +41,10 @@ block content
     div.col-lg-12
       div.panel.panel-default 
         div.panel-heading
-          h2 Produced Cookies
-          +feedbackButton("Produced Cookies")
+          h2 
+            | Produced Cookies
+            span.pull-right
+                +feedbackButton("Produced Cookies")
         div.panel-body
           div#producedCookies(style="width: 100%")
           script.
@@ -62,8 +66,10 @@ block content
     div.col-lg-12
       div.panel.panel-default 
         div.panel-heading
-          h2 Ordered Recipes
-          +feedbackButton("orderedRecipesDonut")
+          h2 
+            | Ordered Recipes
+            span.pull-right
+                +feedbackButton("orderedRecipesDonut")
         div.panel-body
           div#orderedRecipesDonut(style="width: 100%")
           script.

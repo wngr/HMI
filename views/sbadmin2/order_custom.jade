@@ -2,15 +2,20 @@ extends layout
 
 block content
   br
-  div.row
+  div.row<!--(style="padding-top:50px")-->
         if recipes
             for recipe in recipes
-                div.col-lg-6.col-md-6
-                    img(id="pictureRecipe"+recipe.RecipeID.value src="/assets/images/recipes/recipe"+recipe.RecipeID.value+"/cocktail.jpg" style="border-radius: 100%; horizontal-align: middle; vertical-align: middle; width:50%")
-                div.col-lg-6.col-md-6
+              div.panel.panel-default
+               div.panel-heading
+                 div.row
+                  <!--div.jumbotron-->
+                  div.col-lg-6.col-md-6.text-center
+                      img(id="pictureRecipe"+recipe.RecipeID.value src="/assets/images/recipes/recipe"+recipe.RecipeID.value+"/cocktail.jpg" style="border-radius: 100%; horizontal-align: middle; vertical-align: middle; width:70%")
+                  div.col-lg-6.col-md-6
                     div.jumbotron
                         h1= recipe.Name.value
                         p= recipe.Description.value
+               div.panel-body
                 form(role="form", action="/order/order/"+recipe.RecipeID.value, method="POST")
                  - myindex = 0
                  for userParameter in recipe.UserParameter
@@ -26,7 +31,6 @@ block content
                             div.row(style="padding: 5px")
                                 - var toppings = userParameter.Unit.value;
                                 - var toppings = toppings.split(", ");//userParameter.Description.value);
-                                
                                   div.panel.panel-default
                                      div.panel-heading.text-center
                                          p
@@ -36,12 +40,20 @@ block content
                                           div.btn-group(data-toggle="buttons",id="btn-group#{userParameter.Name.containerId}" style="width: 100%")
                                                - var toppingIndex = 1;
                                                for topping in toppings
+                                                 - //respect the default value:
+                                                 if (userParameter.Default.value == toppingIndex)
+                                                   label.btn.btn-primary.active(style="width:50%; border-radius: 3px")
+                                                       - var userparameterNumber = myindex-1
+                                                       - console.log("userparameterNumber: "+userparameterNumber);
+                                                       input(type="radio", name="userparameter[#{userparameterNumber}]", value=toppingIndex, autocomplete="off", style="margin: 5px 5px", checked)
+                                                       | #{topping}
+                                                 else
                                                    label.btn.btn-primary(style="width:50%; border-radius: 3px")
                                                        - var userparameterNumber = myindex-1
                                                        - console.log("userparameterNumber: "+userparameterNumber);
-                                                       input(type="radio", name="userparameter[#{userparameterNumber}]", value=toppingIndex, autocomplete="off")
+                                                       input(type="radio", name="userparameter[#{userparameterNumber}]", value=toppingIndex, autocomplete="off", style="margin: 5px 5px")
                                                        | #{topping}
-                                                   - toppingIndex++
+                                                 - toppingIndex++
                                         div.row(style="padding-top: 40px")
                                           div.col-lg-2.col-md-2.col-sm-2.col-xs-2
                                             label
@@ -63,13 +75,13 @@ block content
                         - myindex++<!-- myindex is round again: 2,4-->
                    else if(userParameter.Name.value!="Amount")
                      div.col-lg-12.col-md-12
-                        div.col-lg-3.col-md-3
+                        div.col-lg-3.col-md-3.col-sm-12.col-xs-12
                             p.lead= userParameter.Name.value
-                        div.col-lg-9
-                            div.row
+                        div.col-lg-9.col-md-9.col-sm-12.col-xs-12
+                            div.row.text-center
                                 div.col-lg-1.col-md-1.col-sm-1.col-xs-1
                                     p.lead= userParameter.MinValue.value
-                                div.col-lg-6.col-md-6.col-sm-10.col-xs-10
+                                div.col-lg-10.col-md-10.col-sm-9.col-xs-8
                                     -//set Step on one when its zero and round it on one
                                     - var myStep=Math.round(userParameter.Step.value);
                                     - console.log("mystep: "+myStep);
@@ -86,8 +98,12 @@ block content
                                     });
                                 });
                  br
-                 span.pull-left
-                    a.btn.btn-primary.btn-lg(href="/order" role="button") Back
-                 span.pull-right
-                    button.btn.btn-primary.btn-lg(type="submit") Place Order!
+                 div.row
+                   div.col-lg-12
+                    div.col-xs-6
+                     span.pull-left
+                        a.btn.btn-primary.btn-lg(href="/order" role="button") Back
+                    div.col-xs-6
+                     span.pull-right
+                        button.btn.btn-primary.btn-lg(type="submit") Place Order!
 
