@@ -124,7 +124,7 @@ function setOrder(order, userParameters, callback) {
     queue.on('changed', function(data) {
       if (data.value.value === false) {
         // Queue is ready
-        console.log('monitor .Pending:', data.value.value, 'order!');
+        console.log('monitor Pending changed: ', data.value.value, ' -- order!');
 
         // Write Order in MI5.Order
         async.series([ function(callback) {

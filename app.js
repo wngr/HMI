@@ -32,6 +32,7 @@ mi5Maintenance.initialize(function(err){
     mi5Maintenance.getModuleData(function(err){
       if(!err){
         mi5Maintenance.subscribe();
+        mi5Maintenance.makeItReady();
       }
     })
   } else {

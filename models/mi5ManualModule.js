@@ -107,6 +107,18 @@ maintenanceModule.prototype.subscribe = function() {
   return 0;
 };
 
+/**
+ * mark initial state as ready
+ * 
+ * @param rawData
+ * @param callback
+ */
+maintenanceModule.prototype.makeItReady = function() {
+  self.setValue(self.jadeData.Ready.nodeId, true, function() {
+    console.log('OK - Manual Module is ready');
+  });
+}
+
 maintenanceModule.prototype.onBusyChange = function(data) {
   if (data.value.value === true) {
     io.to('manual-module').emit('busyIsTrue', true);
