@@ -23,7 +23,7 @@ function showModule(req, res) {
 
     jadeData.manualModule = mi5Manual.jadeData;
 
-    res.render('sbadmin2/maintenance_module', jadeData);
+    res.render('sbadmin2/manual_module', jadeData);
   });
 }
 exports.showModule = showModule;

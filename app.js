@@ -29,7 +29,7 @@ GLOBAL.mi5Logger = require('./models/mi5Logger').logger;
 mi5Logger.startUp();
 
 // Maintenance Module
-GLOBAL.mi5Maintenance = require('./models/mi5MaintenanceModule').maintenanceModule;
+GLOBAL.mi5Maintenance = require('./models/mi5MaintenanceModule').newMaintenanceModule;
 mi5Maintenance.initialize(function(err){
   if(!err){
     console.log('Maintenance Module is connected');
@@ -45,7 +45,7 @@ mi5Maintenance.initialize(function(err){
 });
 
 //Manual Module
-GLOBAL.mi5Manual = require('./models/mi5ManualModule').manualModule;
+GLOBAL.mi5Manual = require('./models/mi5ManualModule').newManualModule;
 mi5Manual.initialize(function(err){
 if(!err){
  console.log('Manual Module is connected');

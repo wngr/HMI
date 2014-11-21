@@ -28,8 +28,7 @@ maintenanceModule = function() {
   this.opc = require('./../models/simpleOpcua').server(CONFIG.OPCUAMaintenanceModule);
   console.log('endpoint', CONFIG.OPCUAMaintenanceModule);
 };
-exports.maintenanceModule = new maintenanceModule();
-exports.maintenanceModuleParent = maintenanceModule;
+exports.newMaintenanceModule = new maintenanceModule();
 
 /**
  * initialize maintenance module opcua connection
