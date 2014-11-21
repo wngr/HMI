@@ -151,8 +151,7 @@ exports.stripArrayKey = _stripArrayKey;
  * 
  * We use dummy[node][i] as dummy.node[i]
  * 
- * e.g. {nodeId: ..., value: xx, ...} => {Name: {nodeId, value},... Skills:
- * [{Dummy:...}]}
+ * e.g. {nodeId: ..., value: xx, ...} => {Name: {nodeId, value},... Skills: [{Dummy:...}]}
  * 
  * @author Thomas Frei
  * @date 2014-11-09
@@ -179,7 +178,7 @@ function mapMi5ArrayToObject(data, dummyObject) {
         if (splitNodeId.length == 4) {
           // splitNodeId[2] // Skill[x]
           // splitNodeId[3] // Name
-          console.log('uuuh', splitNodeId);
+          // console.log('uuuh', splitNodeId); // Here complex for Skilloutput
           skillArrayName = _stripArray(splitNodeId[2]);
           skillArrayElement = _detectArrayElement(splitNodeId[2]);
           // console.log(skillArrayName, skillArrayElement, splitNodeId[3]);

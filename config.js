@@ -11,9 +11,6 @@
 // task Id beginning point (random number between 1 and 10000
 exports.TaskId = Math.floor((Math.random() * 1000) + 1); ;
 
-// ModuleId - Input
-exports.OPCUAInputModuleId = 2501;
-
 // ModuleId - Output
 exports.OPCUAOutputModuleId = 2601;
 

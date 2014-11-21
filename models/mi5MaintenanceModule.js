@@ -8,14 +8,15 @@
  */
 var jadeH = require('./simpleJadeHelper');
 var opcH = require('./simpleOpcuaHelper');
+var _123n = opcH._123n;
 var assert = require('assert');
 
 /**
- * maintenanceModule Class
+ * module Class
  * 
  * @returns
  */
-maintenanceModule = function() {
+module = function() {
   this.NumberOfParameters = 5;
 
   this.isInitialized = false;
@@ -28,14 +29,14 @@ maintenanceModule = function() {
   this.opc = require('./../models/simpleOpcua').server(CONFIG.OPCUAMaintenanceModule);
   console.log('endpoint', CONFIG.OPCUAMaintenanceModule);
 };
-exports.newMaintenanceModule = new maintenanceModule();
+exports.newMaintenanceModule = new module();
 
 /**
  * initialize maintenance module opcua connection
  * 
  * @param callback
  */
-maintenanceModule.prototype.initialize = function(callback) {
+module.prototype.initialize = function(callback) {
   var self = this;
 
   assert(typeof callback === "function");
@@ -60,7 +61,7 @@ maintenanceModule.prototype.initialize = function(callback) {
  * 
  * @param callback
  */
-maintenanceModule.prototype.getModuleData = function(callback) {
+module.prototype.getModuleData = function(callback) {
   var self = this;
 
   assert(self.isInitialized, 'opc is not initialized call self.initialize() *async* first');
@@ -86,7 +87,7 @@ maintenanceModule.prototype.getModuleData = function(callback) {
  * @param rawData
  * @param callback
  */
-maintenanceModule.prototype.subscribe = function() {
+module.prototype.subscribe = function() {
   var self = this;
 
   assert(self.isInitialized, 'opc is not initialized call self.initialize() *async* first');
@@ -116,7 +117,7 @@ maintenanceModule.prototype.subscribe = function() {
  * @param rawData
  * @param callback
  */
-maintenanceModule.prototype.makeItReady = function() {
+module.prototype.makeItReady = function() {
   var self = this;
 
   self.setValue(self.jadeData.Ready.nodeId, true, function() {
@@ -124,7 +125,7 @@ maintenanceModule.prototype.makeItReady = function() {
   });
 }
 
-maintenanceModule.prototype.onBusyChange = function(data) {
+module.prototype.onBusyChange = function(data) {
   var self = mi5Maintenance; // since it is called before getModuleData
 
   if (data.value.value === true) {
@@ -132,7 +133,7 @@ maintenanceModule.prototype.onBusyChange = function(data) {
   }
   console.log('onBusyChange', data.value.value);
 };
-maintenanceModule.prototype.onDoneChange = function(data) {
+module.prototype.onDoneChange = function(data) {
   var self = mi5Maintenance; // since it is called before getModuleData
 
   if (data.value.value === true) {
@@ -140,7 +141,7 @@ maintenanceModule.prototype.onDoneChange = function(data) {
   }
   console.log('onDoneChange', data.value.value);
 };
-maintenanceModule.prototype.onExecuteChange = function(data) {
+module.prototype.onExecuteChange = function(data) {
   var self = mi5Maintenance; // since it is called before getModuleData
 
   if (data.value.value === true) {
@@ -158,7 +159,7 @@ maintenanceModule.prototype.onExecuteChange = function(data) {
   }
   console.log('onExecuteChange', data.value.value);
 };
-maintenanceModule.prototype.onReadyChange = function(data) {
+module.prototype.onReadyChange = function(data) {
   if (data.value.value === true) {
     console.log('onReadyChange', data.value.value);
   }
@@ -167,7 +168,7 @@ maintenanceModule.prototype.onReadyChange = function(data) {
 // /////////////////////////////////////////////////////////////////
 // Soket
 
-maintenanceModule.prototype.ioRegister = function(socket) {
+module.prototype.ioRegister = function(socket) {
   var self = mi5Maintenance; // this would be socket.io io.on('connection')
 
   _.bindAll(self, 'socketUserIsBusy', 'socketUserIsDone'); // reset scope
@@ -180,7 +181,7 @@ maintenanceModule.prototype.ioRegister = function(socket) {
   console.log('OK - Maintenance Module - event listeners registered');
 }
 
-maintenanceModule.prototype.socketUserIsBusy = function() {
+module.prototype.socketUserIsBusy = function() {
   var self = this;
   console.log('OK - User is busy');
   self.setValue(self.jadeData.Busy.nodeId, true, function() {
@@ -190,7 +191,7 @@ maintenanceModule.prototype.socketUserIsBusy = function() {
 
 }
 
-maintenanceModule.prototype.socketUserIsDone = function() {
+module.prototype.socketUserIsDone = function() {
   var self = this;
   self.setValue(self.jadeData.Done.nodeId, true, function(err) {
     console.log('OK - User is done');
@@ -210,7 +211,7 @@ maintenanceModule.prototype.socketUserIsDone = function() {
  *          <array> [{nodeId: '', callback: cbFunction}]
  * @returns <boolean>
  */
-maintenanceModule.prototype.monitorItems = function(itemArray) {
+module.prototype.monitorItems = function(itemArray) {
   var self = this;
 
   assert(_.isArray(itemArray));
@@ -233,7 +234,7 @@ maintenanceModule.prototype.monitorItems = function(itemArray) {
  * @param callback
  *          <function>
  */
-maintenanceModule.prototype.setObject = function(baseNode, dataObject, callback) {
+module.prototype.setObject = function(baseNode, dataObject, callback) {
   var self = this;
 
   assert(typeof baseNode === "string");
@@ -254,7 +255,7 @@ maintenanceModule.prototype.setObject = function(baseNode, dataObject, callback)
  * @param callback
  *          <function>
  */
-maintenanceModule.prototype.setValue = function(nodeId, value, callback) {
+module.prototype.setValue = function(nodeId, value, callback) {
   var self = this;
 
   assert(typeof nodeId === "string");
@@ -274,7 +275,7 @@ maintenanceModule.prototype.setValue = function(nodeId, value, callback) {
  * 
  * @return <object>
  */
-maintenanceModule.prototype.structManualModuleObjectBlank = function() {
+module.prototype.structManualModuleObjectBlank = function() {
   var self = this;
 
   // Base
@@ -314,7 +315,7 @@ maintenanceModule.prototype.structManualModuleObjectBlank = function() {
  *          <string>
  * @return array
  */
-maintenanceModule.prototype.structManualModule = function(baseNode) {
+module.prototype.structManualModule = function(baseNode) {
   var self = this;
 
   var numberOfParameters = self.NumberOfParameters; // 5
@@ -340,7 +341,7 @@ maintenanceModule.prototype.structManualModule = function(baseNode) {
  *          <string>
  * @return <array>
  */
-maintenanceModule.prototype.structManuelModuleParameter = function(baseNode) {
+module.prototype.structManuelModuleParameter = function(baseNode) {
   var nodes = [ 'ID', 'Name', 'StringValue', 'Unit', 'Value' ];
   // Prepend baseNode
   nodes = _.map(nodes, function(item) {
@@ -352,24 +353,6 @@ maintenanceModule.prototype.structManuelModuleParameter = function(baseNode) {
 /**
  * Dummy function, for no callback;
  */
-maintenanceModule.prototype.dummyCallback = function(err) {
+module.prototype.dummyCallback = function(err) {
   console.log(err);
-}
-
-/**
- * Creates an array [startpoint,1,2,3,4,..., endpoint]
- * 
- * @param startpoint
- * @param endpoint
- * @returns {Array}
- */
-function _123n(startpoint, endpoint) {
-  var output = [];
-  for (var i = startpoint; i <= endpoint; i++) {
-    output.push(i);
-
-    if (i == endpoint) {
-      return output;
-    }
-  }
 }
