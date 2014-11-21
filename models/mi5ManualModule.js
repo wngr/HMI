@@ -128,7 +128,7 @@ maintenanceModule.prototype.onBusyChange = function(data) {
   var self = mi5Manual; // since it is called before getModuleData
 
   if (data.value.value === true) {
-    io.to(self.socketRoom).emit('busyIsTrue', true);
+    io.to(self.socketRoom).emit(self.jadeData.Busy.updateEvent, true);
   }
   console.log('onBusyChange', data.value.value);
 };
@@ -136,7 +136,7 @@ maintenanceModule.prototype.onDoneChange = function(data) {
   var self = mi5Manual; // since it is called before getModuleData
 
   if (data.value.value === true) {
-    io.to(self.socketRoom).emit('doneIsTrue', true);
+    io.to(self.socketRoom).emit(self.jadeData.Done.updateEvent, true);
   }
   console.log('onDoneChange', data.value.value);
 };
@@ -144,8 +144,8 @@ maintenanceModule.prototype.onExecuteChange = function(data) {
   var self = mi5Manual; // since it is called before getModuleData
 
   if (data.value.value === true) {
-    io.to(self.socketRoom).emit('executeIsTrue', true);
-    io.to(self.socketRoom).emit('reloadPage', 0);
+    io.to(self.socketRoom).emit(self.jadeData.Execute.updateEvent, true);
+    io.to(self.socketRoom).emit('reloadPageManual', 0);
     // Navbar
     io.emit('manualRequired', true);
   }
@@ -154,7 +154,7 @@ maintenanceModule.prototype.onExecuteChange = function(data) {
     self.setValue(self.jadeData.Done.nodeId, false, function() {
     });
     io.emit('manualRequired', true);
-    io.to(self.socketRoom).emit('reloadPage', 0);
+    io.to(self.socketRoom).emit('reloadPageManual', 0);
   }
   console.log('onExecuteChange', data.value.value);
 };

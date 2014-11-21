@@ -13,7 +13,7 @@ function showModule(req, res) {
       console.log(err);
     }
 
-    console.log(mi5Manual.jadeData);
+    // console.log(mi5Manual.jadeData);
 
     var manualSockets = _.once(mi5Manual.ioRegister);
     io.on('connection', function(socket) {
