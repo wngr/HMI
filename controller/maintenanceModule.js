@@ -1,5 +1,5 @@
 /**
- * Hand Module Controller
+ * Maintenance Module Controller
  */
 
 function showModule(req, res) {
@@ -13,10 +13,10 @@ function showModule(req, res) {
       console.log(err);
     }
 
-    // var maintenanceSockets = _.once(mi5Maintenance.ioRegister);
+    var maintenanceSockets = _.once(mi5Maintenance.ioRegister);
     io.on('connection', function(socket) {
       socket.join('maintenance-module');
-      mi5Maintenance.ioRegister(socket);
+      maintenanceSockets(socket);
     });
 
     jadeData.manualModule = mi5Maintenance.jadeData;

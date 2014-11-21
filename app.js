@@ -31,7 +31,7 @@ mi5Maintenance.initialize(function(err){
     console.log('Maintenance Module is connected');
     mi5Maintenance.getModuleData(function(err){
       if(!err){
-        mi5Maintenance.subscribe();        
+        mi5Maintenance.subscribe();
       }
     })
   } else {

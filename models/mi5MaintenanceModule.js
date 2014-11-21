@@ -22,6 +22,8 @@ maintenanceModule = function() {
   this.rawData = undefined;
   this.jadeData = undefined;
 
+  this.ModuleState = undefined; // 'ready', 'busy', 'done', 'completed'
+
   this.opc = require('./../models/simpleOpcua').server(CONFIG.OPCUAMaintenanceModule);
   console.log('endpoint', CONFIG.OPCUAMaintenanceModule);
 };
@@ -74,7 +76,11 @@ maintenanceModule.prototype.getModuleData = function(callback) {
   }); // end opc.mi5ReadArray
 };
 
+// /////////////////////////////////////////////////////////////////
+// OPC UA Subscriptions
+
 /**
+ * subscribe all module-specific variables
  * 
  * @param rawData
  * @param callback
@@ -104,18 +110,76 @@ maintenanceModule.prototype.subscribe = function() {
 };
 
 maintenanceModule.prototype.onBusyChange = function(data) {
+  if (data.value.value === true) {
+    io.to('maintenance-module').emit('busyIsTrue', true);
+  }
   console.log('onBusyChange', data.value.value);
 };
 maintenanceModule.prototype.onDoneChange = function(data) {
+  if (data.value.value === true) {
+    io.to('maintenance-module').emit('doneIsTrue', true);
+  }
   console.log('onDoneChange', data.value.value);
 };
 maintenanceModule.prototype.onExecuteChange = function(data) {
-  io.to('maintenance-module').emit('executeIsTrue', true);
+  var self = mi5Maintenance; // since it is called before getModuleData
+
+  if (data.value.value === true) {
+    io.to('maintenance-module').emit('executeIsTrue', true);
+    io.to('maintenance-module').emit('reloadPage', 0);
+  }
+  if (data.value.value === false) {
+    // task fully finished
+    self.setValue(self.jadeData.Done.nodeId, false, function() {
+    });
+    io.to('maintenance-module').emit('reloadPage', 0);
+  }
   console.log('onExecuteChange', data.value.value);
 };
 maintenanceModule.prototype.onReadyChange = function(data) {
-  console.log('onReadyChange', data.value.value);
+  if (data.value.value === true) {
+    console.log('onReadyChange', data.value.value);
+  }
 };
+
+// /////////////////////////////////////////////////////////////////
+// Soket
+
+maintenanceModule.prototype.ioRegister = function(socket) {
+  var self = mi5Maintenance; // this would be socket.io io.on('connection')
+
+  _.bindAll(self, 'socketUserIsBusy', 'socketUserIsDone'); // reset scope
+
+  assert(typeof socket !== 'undefined');
+
+  socket.on('userIsBusy', self.socketUserIsBusy);
+  socket.on('userIsDone', self.socketUserIsDone);
+
+  console.log('OK - Maintenance Module - event listeners registered');
+}
+
+maintenanceModule.prototype.socketUserIsBusy = function() {
+  var self = this;
+  console.log('OK - User is busy');
+  self.setValue(self.jadeData.Busy.nodeId, true, function() {
+  });
+  self.setValue(self.jadeData.Ready.nodeId, false, function() {
+  });
+
+}
+
+maintenanceModule.prototype.socketUserIsDone = function() {
+  var self = this;
+  self.setValue(self.jadeData.Done.nodeId, true, function(err) {
+    console.log('OK - User is done');
+  });
+  self.setValue(self.jadeData.Busy.nodeId, false, function(err) {
+    console.log('OK - waiting for PT to set execute = false');
+  });
+}
+
+// /////////////////////////////////////////////////////////////////
+// Backend
 
 /**
  * monitor a list of items and assign a callback event
@@ -137,49 +201,37 @@ maintenanceModule.prototype.monitorItems = function(itemArray) {
 }
 
 /**
+ * set a key:value object based on a basenode
  * 
- * @param socket
- */
-maintenanceModule.prototype.ioRegister = function(socket) {
-  var self = mi5Maintenance; // this would be socket.io io.on('connection')
-  _.bindAll(self, 'socketUserIsReady', 'socketUserIsDone');
-
-  assert(typeof socket !== 'undefined');
-
-  socket.on('userReady', self.socketUserIsReady);
-  socket.on('userDone', function(data) {
-    console.log('user is DONE!');
-  });
-
-  console.log('OK - Maintenance Module - event listeners registered');
-}
-
-maintenanceModule.prototype.socketUserIsReady = function() {
-  var self = this;
-  self.setValue(self.jadeData.Execute.nodeId, true);
-}
-
-maintenanceModule.prototype.socketUserIsDone = function() {
-  var self = this;
-  self.setValue(self.jadeData.Execute.nodeId, true);
-}
-
-/**
- * 
- * @param nodeId
- * @param value
+ * @async
+ * @param baseNode
+ *          <string> 'MI5.Module2402Manual'
+ * @param dataObject
+ *          <object> {Execute: true}
+ * @param callback
+ *          <function>
  */
 maintenanceModule.prototype.setObject = function(baseNode, dataObject, callback) {
   var self = this;
 
   assert(typeof baseNode === "string");
   assert(_.isObject(dataObject));
-  assert(typeof callback === 'function');
 
   var Mi5ManualModule = require('./../models/simpleDataTypeMapping.js').Mi5ManualModule;
   self.opc.mi5WriteObject(baseNode, dataObject, Mi5ManualModule, callback);
 }
 
+/**
+ * set a nodeid value pair (using jadeDate this is useful)
+ * 
+ * @uses this.setObject()
+ * @param nodeId
+ *          <string> 'MI5.Module2402Manual.Execute'
+ * @param value
+ *          <mixed>
+ * @param callback
+ *          <function>
+ */
 maintenanceModule.prototype.setValue = function(nodeId, value, callback) {
   var self = this;
 
@@ -188,7 +240,6 @@ maintenanceModule.prototype.setValue = function(nodeId, value, callback) {
 
   var baseNode = opcH.cutLastElement(nodeId);
   var lastElement = opcH.getLastElement(nodeId);
-  console.log('you are here', baseNode, lastElement);
 
   var dataObject = {};
   dataObject[lastElement] = value;
@@ -274,6 +325,13 @@ maintenanceModule.prototype.structManuelModuleParameter = function(baseNode) {
     return baseNode + item;
   });
   return nodes;
+}
+
+/**
+ * Dummy function, for no callback;
+ */
+maintenanceModule.prototype.dummyCallback = function(err) {
+  console.log(err);
 }
 
 /**
