@@ -23,7 +23,11 @@ GLOBAL._ = require('underscore');
 GLOBAL.md5 = require('MD5');
 GLOBAL.moment = require('moment');
 
-//********************************* Mi5 HMI Models
+//********************************* Mi5 HMI Models *****************************************
+// Logger
+GLOBAL.mi5Logger = require('./models/mi5Logger').logger;
+mi5Logger.startUp();
+
 // Maintenance Module
 GLOBAL.mi5Maintenance = require('./models/mi5MaintenanceModule').maintenanceModule;
 mi5Maintenance.initialize(function(err){

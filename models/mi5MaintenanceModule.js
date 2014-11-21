@@ -114,6 +114,8 @@ maintenanceModule.prototype.subscribe = function() {
  * @param callback
  */
 maintenanceModule.prototype.makeItReady = function() {
+  var self = this;
+
   self.setValue(self.jadeData.Ready.nodeId, true, function() {
     console.log('OK - Maintenance Module is ready');
   });
