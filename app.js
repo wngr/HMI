@@ -38,7 +38,7 @@ mi5Maintenance.initialize(function(err){
         mi5Maintenance.subscribe();
         mi5Maintenance.makeItReady();
       }
-    })
+    });
   } else {
     console.log(err);
   }
@@ -54,15 +54,31 @@ if(!err){
      mi5Manual.subscribe();
      mi5Manual.makeItReady();
    }
- })
+ });
 } else {
  console.log(err);
 }
 });
 
+// Input Module
+GLOBAL.mi5Input = new require('./models/mi5InputModule').newInputModule;
+mi5Input.initialize(function(err){
+  if(!err){
+   console.log('Manual Module is connected');
+   mi5Input.getModuleData(function(err){
+     if(!err){
+       mi5Input.subscribe();
+       mi5Input.makeItReady(function(){});
+     }
+   });
+  } else {
+   console.log(err);
+  }
+  });
 
-// Manual Module
-//GLOBAL.mManualModule = require('./models/simpleManualModule');
+
+
+// Message Feed
 GLOBAL.mMessageFeed = require('./models/simpleMessageFeed');
 
 // Background Services

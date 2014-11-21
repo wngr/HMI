@@ -90,7 +90,9 @@ exports.detectIfArray = _detectIfArray;
  * @returns {String} Mi5.Recipe[0].
  */
 function _cutLastElement(nodeId) {
-  var split = _splitNodeId(nodeId);
+  var exp = /\w*[0-9]?/g
+    var result = nodeId.match(exp);
+    result = _.compact(result); // [ 'MI5', 'Module2501', 'SkillInput',
   split.pop(); // removes first element because of too long datastructure in mapping function! TODO: more elegant,
   // document this
   var result = '';
