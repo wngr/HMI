@@ -130,6 +130,15 @@ module.prototype.subscribe = function() {
   var monitor = [ {
     nodeId : self.jadeData.SkillInput[0].Execute.nodeId,
     callback : self.onExecuteChange
+  }, {
+    nodeId : self.jadeData.SkillOutput[0].Busy.nodeId,
+    callback : self.onBusyChange
+  }, {
+    nodeId : self.jadeData.SkillOutput[0].Done.nodeId,
+    callback : self.onDoneChange
+  }, {
+    nodeId : self.jadeData.SkillOutput[0].Ready.nodeId,
+    callback : self.onReadyChange
   } ];
 
   self.monitorItems(monitor);
@@ -138,36 +147,38 @@ module.prototype.subscribe = function() {
 };
 
 module.prototype.onBusyChange = function(data) {
-  var self = mi5Manual; // since it is called before getModuleData
+  var self = mi5Input; // since it is called before getModuleData
 
   if (data.value.value === true) {
-    io.to(self.socketRoom).emit(self.jadeData.Busy.updateEvent, true);
+    io.to(self.socketRoom).emit(self.jadeData.SkillOutput[0].Busy.updateEvent, true);
   }
   console.log('onBusyChange', data.value.value);
 };
 module.prototype.onDoneChange = function(data) {
-  var self = mi5Manual; // since it is called before getModuleData
+  var self = mi5Input; // since it is called before getModuleData
 
   if (data.value.value === true) {
-    io.to(self.socketRoom).emit(self.jadeData.Done.updateEvent, true);
+    io.to(self.socketRoom).emit(self.jadeData.SkillOutput[0].Done.updateEvent, true);
   }
   console.log('onDoneChange', data.value.value);
 };
 module.prototype.onExecuteChange = function(data) {
-  var self = mi5Manual; // since it is called before getModuleData
+  var self = mi5Input; // since it is called before getModuleData
 
   if (data.value.value === true) {
-    io.to(self.socketRoom).emit(self.jadeData.Execute.updateEvent, true);
-    io.to(self.socketRoom).emit('reloadPageManual', 0);
+    io.to(self.socketRoom).emit(self.jadeData.SkillInput[0].Execute.updateEvent, true);
+    // io.to(self.socketRoom).emit('reloadPageInput', 0);
     // Navbar
-    io.emit('manualRequired', true);
+    io.emit('inputRequired', true);
   }
   if (data.value.value === false) {
     // task fully finished
-    self.setValue(self.jadeData.Done.nodeId, false, function() {
+    self.setValue(self.jadeData.SkillOutput[0].Done.nodeId, false, function() {
     });
-    io.emit('manualRequired', true);
-    io.to(self.socketRoom).emit('reloadPageManual', 0);
+    self.setValue(self.jadeData.SkillOutput[0].Ready.nodeId, true, function() {
+    });
+    io.emit('inputRequired', false);
+    io.to(self.socketRoom).emit('reloadPageInput', 0);
   }
   console.log('onExecuteChange', data.value.value);
 };
@@ -181,14 +192,14 @@ module.prototype.onReadyChange = function(data) {
 // Soket
 
 module.prototype.ioRegister = function(socket) {
-  var self = mi5Manual; // this would be socket.io io.on('connection')
+  var self = mi5Input; // this would be socket.io io.on('connection')
 
   _.bindAll(self, 'socketUserIsBusy', 'socketUserIsDone'); // reset scope
 
   assert(typeof socket !== 'undefined');
 
-  socket.on('userIsBusy', self.socketUserIsBusy);
-  socket.on('userIsDone', self.socketUserIsDone);
+  socket.on(self.jadeData.SkillOutput[0].Busy.submitEvent, self.socketUserIsBusy);
+  socket.on(self.jadeData.SkillOutput[0].Done.submitEvent, self.socketUserIsDone);
 
   console.log('OK - Maintenance Module - event listeners registered');
 }
@@ -196,19 +207,19 @@ module.prototype.ioRegister = function(socket) {
 module.prototype.socketUserIsBusy = function() {
   var self = this;
   console.log('OK - User is busy');
-  self.setValue(self.jadeData.Busy.nodeId, true, function() {
+  self.setValue(self.jadeData.SkillOutput[0].Busy.nodeId, true, function() {
   });
-  self.setValue(self.jadeData.Ready.nodeId, false, function() {
+  self.setValue(self.jadeData.SkillOutput[0].Ready.nodeId, false, function() {
   });
 
 }
 
 module.prototype.socketUserIsDone = function() {
   var self = this;
-  self.setValue(self.jadeData.Done.nodeId, true, function(err) {
+  self.setValue(self.jadeData.SkillOutput[0].Done.nodeId, true, function(err) {
     console.log('OK - User is done');
   });
-  self.setValue(self.jadeData.Busy.nodeId, false, function(err) {
+  self.setValue(self.jadeData.SkillOutput[0].Busy.nodeId, false, function(err) {
     console.log('OK - waiting for PT to set execute = false');
   });
 }
@@ -272,9 +283,7 @@ module.prototype.setValue = function(nodeId, value, callback) {
   assert(typeof nodeId === "string");
   assert(typeof callback === 'function');
 
-  var baseNode = 'MI5.' + opcH.cutLastElement(nodeId); // simpleOcpuaHelpterModuleInterface cuts first element too,
-  // because of the adjusted mapping function, therefore we ned
-  // another MI5. at the beginning
+  var baseNode = self.cutLastElement(nodeId);
   var lastElement = opcH.getLastElement(nodeId);
 
   var dataObject = {};
@@ -287,6 +296,23 @@ module.prototype.setValue = function(nodeId, value, callback) {
 
 // ///////////////////////////////////////////////////////////////////////////////////////////
 // Module Interface Stuff
+
+/**
+ * cuts las telement in a node id, to generate a basenode for insertion
+ * 
+ * @param nodeId
+ *          <string> MI5.Module2501.Output.SkillOutput.SkillOutput0.Busy
+ * @return <string> MI5.Module2501.Output.SkillOutput.SkillOutput0.
+ */
+module.prototype.cutLastElement = function(nodeId) {
+  var exp = /\w*[0-9]?/g
+  var result = nodeId.match(exp);
+  result = _.compact(result); // [ 'MI5', 'Module2501', 'SkillInput', 'SkillInput0',...]
+  result.pop();
+  result = result.join('.') + '.';
+  return result;
+}
+
 /**
  * Get Inputs
  * 

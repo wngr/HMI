@@ -30,12 +30,16 @@ async.series([function(callback){
 }, function(callback){
   mi5Input.getModuleData(callback);
 }, function(callback){
-  mi5Input.makeItReady(callback);
-},
-//function(callback){
 //  mi5Input.subscribe();
-//  callback();
-//}, 
+  callback();
+}, function(callback){
+//  mi5Input.makeItReady(callback);
+  var ret = mi5Input.cutLastElement('MI5.Module2501.Output.SkillOutput.SkillOutput0.Busy');
+  console.log(ret);
+},
+function(callback){
+ callback();
+}, 
 //function(callback){
 //  var Mi5ManualModule = require('./../models/simpleDataTypeMapping.js').Mi5ManualModule;
 //  mi5Input.opc.mi5WriteObject('MI5.Module2402Manual', {Execute: true}, Mi5ManualModule, function(
