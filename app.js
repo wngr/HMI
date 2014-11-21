@@ -52,6 +52,7 @@ if(!err){
  mi5Manual.getModuleData(function(err){
    if(!err){
      mi5Manual.subscribe();
+     mi5Manual.makeItReady();
    }
  })
 } else {

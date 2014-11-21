@@ -36,11 +36,14 @@ block content
                             $("##{manualModule.Execute.containerId}badge").addClass('success');
                             $("##{manualModule.Execute.containerId}text").html('Task received.');
                           }
-                        socket.on("executeIsTrue", function(data){ 
-                            executeIsTrue();
+                        socket.on("#{manualModule.Execute.updateEvent}", function(data){
+                          if(data === true){
+                            executeIsTrue();                            
+                          }
                         });
+                        // Static information
                         if(#{manualModule.Execute.value} === true){
-                          console.log('mmExecute.value true');
+                          console.log('mmExecute.value true beforehand');
                           executeIsTrue();
                         }
                               
@@ -58,8 +61,10 @@ block content
                           $("##{manualModule.Busy.containerId}badge").addClass('success');
                           $("##{manualModule.Busy.containerId}text").html('Started...');
                         }
-                        socket.on("busyIsTrue", function(data){ 
-                            busyIsTrue();
+                        socket.on("#{manualModule.Busy.updateEvent}", function(data){ 
+                          if(data === true){
+                            busyIsTrue();                            
+                          }
                         });
                         if(#{manualModule.Busy.value}===true){ 
                           console.log('mmBusy.value true');
@@ -88,8 +93,10 @@ block content
                          $("##{manualModule.Done.containerId}badge").addClass('success');
                          $("##{manualModule.Done.containerId}text").html('Done.');                         
                        }
-                       socket.on("doneIsTrue", function(data){ 
-                         doneIsTrue();
+                       socket.on("#{manualModule.Done.updateEvent}", function(data){ 
+                         if(data === true){
+                           doneIsTrue();                           
+                         }
                        });
                        if(#{manualModule.Done.value}===true){ 
                          console.log('mmDone.value true');
@@ -97,7 +104,7 @@ block content
                        }
                        
               script.
-               socket.on("reloadPage", function(data){
+               socket.on("reloadPageMaintenance", function(data){
                 console.log('Page Reload...');
                 window.location.replace("/maintenance"); 
                });
