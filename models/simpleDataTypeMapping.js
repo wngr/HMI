@@ -122,7 +122,7 @@ function Mi5ManualModule(variableName) {
     type = 'Double';
     break;
   default:
-    console.log('According to the Orderlist, the given variableName does not exist');
+    console.log('According to the ManualModule List, the given variableName does not exist');
     // assert(false);
     break;
   }
@@ -130,3 +130,48 @@ function Mi5ManualModule(variableName) {
   return type;
 }
 exports.Mi5ManualModule = Mi5ManualModule;
+
+/**
+ * Module Interface list Input/Output Module in Mi5 scope
+ * 
+ * TODO: update list to all variables, now only needed ones are filled
+ * 
+ * @param variableName
+ * @returns {String}
+ */
+function Mi5ModuleInterface(variableName) {
+  assert(typeof variableName === "string");
+  var type;
+
+  switch (variableName) {
+  case "Dummy":
+  case "Connected":
+  case "Activated":
+  case "Execute":
+  case "Ready":
+  case "Busy":
+  case "Done":
+  case "Error":
+    type = 'Boolean';
+    break;
+  case "ErrorID":
+  case "SkillID":
+  case "ID":
+    type = 'Int16';
+    break;
+  case "SkillDescription":
+    type = 'String';
+    break;
+  case "Position":
+    type = 'Double';
+    break;
+  default:
+    console
+        .log('According to the Input Output ModuleInterface list, the given variableName does not exist');
+    // assert(false);
+    break;
+  }
+
+  return type;
+}
+exports.Mi5ModuleInterface = Mi5ModuleInterface;

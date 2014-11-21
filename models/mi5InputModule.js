@@ -19,25 +19,24 @@ var assert = require('assert');
  * @returns
  */
 module = function() {
-  this.NumberOfSkillInputs = 2; // 15 max, but only 2 implemented!
-  this.NumberOfParameterInputs = 1;
+  this.NumberOfSkillInputs = 2; // 15 max, but only 2 needed!
+  this.NumberOfParameterInputs = 1; // 5 max
 
-  this.NumberOfSkillOutputs = 2; // 15 orig, but only 2 implemented!
-  this.NumberOfParameterOutputs = 1; // 5 orig
-  this.NumberOfStateValues = 5; // 10 orig
+  this.NumberOfSkillOutputs = 2; // 15 max, but only 2 needed!
+  this.NumberOfParameterOutputs = 1; // 5 max
+  this.NumberOfStateValues = 2; // 10 max
 
   this.isInitialized = false;
   this.rawData = undefined;
-  this.jadeData = {
-    input : {},
-    output : {}
-  };
+  this.jadeData = {};
 
   this.socketRoom = 'input-module';
   this.ModuleId = 2501;
 
   this.opc = require('./../models/simpleOpcua').server(CONFIG.OPCUAInputModule);
   console.log('endpoint', CONFIG.OPCUAInputModule);
+
+  this.Mi5ModuleInterface = require('./../models/simpleDataTypeMapping.js').Mi5ModuleInterface;
 };
 exports.newInputModule = new module();
 
@@ -71,22 +70,48 @@ module.prototype.initialize = function(callback) {
  * 
  * @param callback
  */
-module.prototype.getModuleData = function(callback) {
+module.prototype.getModuleData = function(callbackMain) {
   var self = this;
 
   assert(self.isInitialized, 'opc is not initialized call self.initialize() *async* first');
-  assert(typeof callback === "function");
+  assert(typeof callbackMain === "function");
 
-  var baseNodeTask = self.structManualModule('MI5.Module' + self.ModuleId + 'Manual.');
-
-  self.opc.mi5ReadArray(baseNodeTask, function(err, data) {
-    var mi5Object = opcH.mapMi5ArrayToObject(data, self.structManualModuleObjectBlank());
-
-    self.rawData = data;
-    self.jadeData = mi5Object;
-    callback(err); // final callback
-  }); // end opc.mi5ReadArray
+  async.series([ function(callback) {
+    mi5Input.getInput(callback);
+  }, function(callback) {
+    mi5Input.getOutput(callback);
+  }, ], function(err, results) {
+    callbackMain();
+  });
 };
+
+/**
+ * mark initial state as ready
+ * 
+ * @param rawData
+ * @param callback
+ */
+module.prototype.makeItReady = function(callbackMain) {
+  var self = this;
+
+  async.series([ function(callback) {
+    self.setValue(self.jadeData.Dummy.nodeId, false, callback);
+  }, function(callback) {
+    self.setValue(self.jadeData.SkillOutput[0].Dummy.nodeId, false, callback);
+  }, function(callback) {
+    self.setValue(self.jadeData.SkillOutput[0].Ready.nodeId, true, callback);
+  }, function(callback) { // Set Defaults now
+    self.setValue(self.jadeData.SkillOutput[0].Busy.nodeId, false, callback);
+  }, function(callback) {
+    self.setValue(self.jadeData.SkillOutput[0].Done.nodeId, false, callback);
+  }, function(callback) {
+    self.setValue(self.jadeData.SkillInput[0].Execute.nodeId, false, callback);
+  }, function(callback) {
+    console.log('OK - Input Module is set to Ready-State');
+    callbackMain();
+  } ]);
+
+}
 
 // /////////////////////////////////////////////////////////////////
 // OPC UA Subscriptions
@@ -103,37 +128,14 @@ module.prototype.subscribe = function() {
   assert(self.isInitialized, 'opc is not initialized call self.initialize() *async* first');
 
   var monitor = [ {
-    nodeId : self.jadeData.Busy.nodeId,
-    callback : self.onBusyChange
-  }, {
-    nodeId : self.jadeData.Done.nodeId,
-    callback : self.onDoneChange
-  }, {
-    nodeId : self.jadeData.Execute.nodeId,
+    nodeId : self.jadeData.SkillInput[0].Execute.nodeId,
     callback : self.onExecuteChange
-  }, {
-    nodeId : self.jadeData.Ready.nodeId,
-    callback : self.onReadyChange
   } ];
 
   self.monitorItems(monitor);
 
   return 0;
 };
-
-/**
- * mark initial state as ready
- * 
- * @param rawData
- * @param callback
- */
-module.prototype.makeItReady = function() {
-  var self = this;
-
-  self.setValue(self.jadeData.Ready.nodeId, true, function() {
-    console.log('OK - Maintenance Module is ready');
-  });
-}
 
 module.prototype.onBusyChange = function(data) {
   var self = mi5Manual; // since it is called before getModuleData
@@ -250,8 +252,7 @@ module.prototype.setObject = function(baseNode, dataObject, callback) {
   assert(typeof baseNode === "string");
   assert(_.isObject(dataObject));
 
-  var Mi5ManualModule = require('./../models/simpleDataTypeMapping.js').Mi5ManualModule;
-  self.opc.mi5WriteObject(baseNode, dataObject, Mi5ManualModule, callback);
+  self.opc.mi5WriteObject(baseNode, dataObject, self.Mi5ModuleInterface, callback);
 };
 
 /**
@@ -271,11 +272,15 @@ module.prototype.setValue = function(nodeId, value, callback) {
   assert(typeof nodeId === "string");
   assert(typeof callback === 'function');
 
-  var baseNode = opcH.cutLastElement(nodeId);
+  var baseNode = 'MI5.' + opcH.cutLastElement(nodeId); // simpleOcpuaHelpterModuleInterface cuts first element too,
+  // because of the adjusted mapping function, therefore we ned
+  // another MI5. at the beginning
   var lastElement = opcH.getLastElement(nodeId);
 
   var dataObject = {};
   dataObject[lastElement] = value;
+
+  console.log(baseNode, dataObject);
 
   self.setObject(baseNode, dataObject, callback);
 };
@@ -302,7 +307,7 @@ module.prototype.getInput = function(callback) {
     // Convert opc.Mi5 object to jadeData
     var mi5Object = opcH.mapMi5ArrayToObject(data, self.structInputObjectBlank());
 
-    self.jadeData.input = mi5Object;
+    _.extend(self.jadeData, mi5Object);
     callback(err, mi5Object);
   }); // end opc.mi5ReadArray
 
@@ -331,7 +336,7 @@ module.prototype.getOutput = function(callback) {
     // Convert opc.Mi5 object to jadeData
     var mi5Object = opcH.mapMi5ArrayToObject(data, self.structOutputObjectBlank());
 
-    self.jadeData.output = mi5Object;
+    _.extend(self.jadeData, mi5Object);
     callback(err, mi5Object);
   }); // end opc.mi5ReadArray
 };
