@@ -22,10 +22,14 @@ maintenanceModule = function() {
   this.rawData = undefined;
   this.jadeData = undefined;
 
+  this.socketRoom = 'maintenance-module';
+  this.ModuleId = 2402;
+
   this.opc = require('./../models/simpleOpcua').server(CONFIG.OPCUAMaintenanceModule);
   console.log('endpoint', CONFIG.OPCUAMaintenanceModule);
 };
 exports.maintenanceModule = new maintenanceModule();
+exports.maintenanceModuleParent = maintenanceModule;
 
 /**
  * initialize maintenance module opcua connection
@@ -63,7 +67,7 @@ maintenanceModule.prototype.getModuleData = function(callback) {
   assert(self.isInitialized, 'opc is not initialized call self.initialize() *async* first');
   assert(typeof callback === "function");
 
-  var baseNodeTask = self.structManualModule('MI5.Module' + CONFIG.MAINTENANCEMODULEID + 'Manual.');
+  var baseNodeTask = self.structManualModule('MI5.Module' + self.ModuleId + 'Manual.');
 
   self.opc.mi5ReadArray(baseNodeTask, function(err, data) {
     var mi5Object = opcH.mapMi5ArrayToObject(data, self.structManualModuleObjectBlank());
@@ -122,14 +126,18 @@ maintenanceModule.prototype.makeItReady = function() {
 }
 
 maintenanceModule.prototype.onBusyChange = function(data) {
+  var self = mi5Maintenance; // since it is called before getModuleData
+
   if (data.value.value === true) {
-    io.to('maintenance-module').emit('busyIsTrue', true);
+    io.to(self.socketRoom).emit('busyIsTrue', true);
   }
   console.log('onBusyChange', data.value.value);
 };
 maintenanceModule.prototype.onDoneChange = function(data) {
+  var self = mi5Maintenance; // since it is called before getModuleData
+
   if (data.value.value === true) {
-    io.to('maintenance-module').emit('doneIsTrue', true);
+    io.to(self.socketRoom).emit('doneIsTrue', true);
   }
   console.log('onDoneChange', data.value.value);
 };
@@ -137,8 +145,8 @@ maintenanceModule.prototype.onExecuteChange = function(data) {
   var self = mi5Maintenance; // since it is called before getModuleData
 
   if (data.value.value === true) {
-    io.to('maintenance-module').emit('executeIsTrue', true);
-    io.to('maintenance-module').emit('reloadPage', 0);
+    io.to(self.socketRoom).emit('executeIsTrue', true);
+    io.to(self.socketRoom).emit('reloadPage', 0);
     // Navbar
     io.emit('maintenanceRequired', true);
   }
@@ -147,7 +155,7 @@ maintenanceModule.prototype.onExecuteChange = function(data) {
     self.setValue(self.jadeData.Done.nodeId, false, function() {
     });
     io.emit('maintenanceRequired', true);
-    io.to('maintenance-module').emit('reloadPage', 0);
+    io.to(self.socketRoom).emit('reloadPage', 0);
   }
   console.log('onExecuteChange', data.value.value);
 };
