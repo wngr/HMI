@@ -3,23 +3,27 @@
  */
 
 function showModule(req, res) {
-  ManualModuleActivated = 1;
   var jadeData = new Object;
   jadeData.title = 'Manual Module';
 
-  var manualModuleId = 2403;
-  mManualModule.getModuleData(function(err, mi5Data, rawData) {
+  // console.log(jadeData);
+
+  mi5Manual.getModuleData(function(err) {
     if (err) {
       console.log(err);
-      return 0;
     }
 
-    jadeData.manualModule = mi5Data;
-    // console.log(JSON.stringify(mi5Data, null, 1));
+    console.log(mi5Manual.jadeData);
 
-    mManualModule.subscribeModuleData(rawData);
+    var manualSockets = _.once(mi5Manual.ioRegister);
+    io.on('connection', function(socket) {
+      socket.join('manual-module');
+      manualSockets(socket);
+    });
 
-    res.render('sbadmin2/manual_module', jadeData);
+    jadeData.manualModule = mi5Manual.jadeData;
+
+    res.render('sbadmin2/maintenance_module', jadeData);
   });
 }
 exports.showModule = showModule;

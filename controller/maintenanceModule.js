@@ -6,12 +6,14 @@ function showModule(req, res) {
   var jadeData = new Object;
   jadeData.title = 'Maintenance Module';
 
-  console.log(jadeData);
+  // console.log(jadeData);
 
   mi5Maintenance.getModuleData(function(err) {
     if (err) {
       console.log(err);
     }
+
+    console.log(mi5Maintenance.jadeData);
 
     var maintenanceSockets = _.once(mi5Maintenance.ioRegister);
     io.on('connection', function(socket) {
