@@ -7,8 +7,8 @@ mixin feedbackButton(topic)
   <!-- modal-->
   div.modal.fade(id="feedbackModal#{topicId}" tabindex ="-1" role="dialog" aria-labelledby="feedbackModalLabel#{topicId}" aria-hidden="true")
     <!-- form element to post the feedback -->
-    <!-- form(role="form", action="/order/order/"+recipe.RecipeID.value, method="POST")-->
     div.modal-dialog
+      form(role="form", action="/feedback/"+topicId, method="POST")
         div.modal-content
             div.modal-header
                 btn.close(data-dismiss="modal")
@@ -23,7 +23,7 @@ mixin feedbackButton(topic)
                 div.col-xs-1
                     i.fa.fa-frown-o.fa-2x
                 div.col-xs-10
-                    input.span2(id="feedbackSlider#{topicId}", type="text", data-slider-value="5", data-slider-min="0", data-slider-max="10", data-slider-step="1", style="width: 100%")
+                    input.span2(id="feedbackSlider#{topicId}",name="userparameter", type="text", data-slider-value="5", data-slider-min="0", data-slider-max="10", data-slider-step="1", style="width: 100%")
                 div.col-xs-1
                     i.fa.fa-smile-o.fa-2x
                 script.
@@ -37,7 +37,11 @@ mixin feedbackButton(topic)
                 div.col-xs-12(role="form")
                     div.form-group
                         h4 Please tell us why:
-                        textarea.form-control#feedbackText
+                        textarea.form-control#feedbackText(name="userparameter")
+                        input#inputFeedbackText.hidden(name="userparameter" value=0)
+                        - 
             div.modal-footer
+              span.pull-left
                 button.btn.btn-default(data-dismiss="modal") Close
-                button.btn.btn-primary(type="button" data-dismiss="modal") Save
+              span.pull-right
+                button.btn.btn-primary(data-dismiss="modal", type="submit") Save
