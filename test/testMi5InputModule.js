@@ -28,10 +28,10 @@ GLOBAL.mi5Input = new require('./../models/mi5InputModule').newInputModule;
 async.series([function(callback){
   mi5Input.initialize(callback);
 }, function(callback){
-  mi5Input.getInput(callback);
-},  function(callback){
-  mi5Input.getOutput(callback);
-}, 
+  mi5Input.getModuleData(callback);
+}, function(callback){
+  mi5Input.makeItReady(callback);
+},
 //function(callback){
 //  mi5Input.subscribe();
 //  callback();
@@ -53,6 +53,13 @@ async.series([function(callback){
 //    console.log('ok');
 //  });
 //}
+function(callback){
+//  setTimeout(callback, 1000);
+  callback();
+}
 ], function(err, results){
-  console.log(mi5Input.jadeData);
+//  console.log(JSON.stringify(mi5Input.jadeData, null, 1));
+  console.log('=-=-=-=-=-=-=-=-=-=-=-=-=');
+  
+  mi5Input.opc.disconnect();
 });

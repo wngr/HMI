@@ -91,7 +91,8 @@ exports.detectIfArray = _detectIfArray;
  */
 function _cutLastElement(nodeId) {
   var split = _splitNodeId(nodeId);
-  split.pop();
+  split.pop(); // removes first element because of too long datastructure in mapping function! TODO: more elegant,
+  // document this
   var result = '';
   split.forEach(function(item) {
     result = result + item + '.';
