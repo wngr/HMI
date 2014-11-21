@@ -45,7 +45,7 @@ mi5Maintenance.initialize(function(err){
 });
 
 //Manual Module
-GLOBAL.mi5Manual = require('./models/mi5ManualModule').maintenanceModule;
+GLOBAL.mi5Manual = require('./models/mi5ManualModule').manualModule;
 mi5Manual.initialize(function(err){
 if(!err){
  console.log('Manual Module is connected');
