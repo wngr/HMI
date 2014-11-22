@@ -48,6 +48,30 @@ function preLog() {
 }
 
 /**
+ * Start the module
+ * 
+ * @param callback
+ */
+module.prototype.start = function(callback) {
+  var self = mi5Input;
+
+  self.initialize(function(err) {
+    if (!err) {
+      console.log('Input Module is connected');
+      self.getModuleData(function(err) {
+        if (!err) {
+          self.subscribe();
+          self.makeItReady(callback);
+        }
+      });
+    } else {
+      console.log(err);
+      callback(err);
+    }
+  });
+}
+
+/**
  * initialize maintenance module opcua connection
  * 
  * @param callback

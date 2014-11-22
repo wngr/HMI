@@ -21,8 +21,8 @@ function showModule(req, res) {
       maintenanceSockets(socket);
 
       socket.on('disconnect', function() {
-        console.log('disconnect in maintenance'.inverse, socket);
-        console.log('connected sockets:'.inverse, io.sockets.connected);
+        // console.log('disconnect in maintenance'.inverse, socket);
+        // console.log('connected sockets:'.inverse, io.sockets.connected);
       })
     });
 

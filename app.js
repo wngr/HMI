@@ -1,11 +1,6 @@
 /**
- * Configuration
+ * HMI MI5
  */
-GLOBAL.CONFIG = require('./config.js'); 
-
-// Node Modules
-var colors = require('colors');
-
 // Server Modules
 var path = require('path');
 var express = require('express');
@@ -21,97 +16,40 @@ GLOBAL.lucid = new lucidJS.EventEmitter();
 GLOBAL.IO = require('socket.io').listen(server); 
 GLOBAL.io = IO; 
 
+// Node Modules
+var colors = require('colors');
 // Helper
 GLOBAL._ = require('underscore');
 GLOBAL.md5 = require('MD5');
 GLOBAL.moment = require('moment');
 
+// Configuration
+GLOBAL.CONFIG = require('./config.js');
+
 //********************************* Mi5 HMI Models *****************************************
 // Logger
 GLOBAL.mi5Logger = require('./models/mi5Logger').logger;
-mi5Logger.startUp();
-
+mi5Logger.start();
 
 // Maintenance Module
 GLOBAL.mi5Maintenance = require('./models/mi5MaintenanceModule').newMaintenanceModule;
-mi5Maintenance.initialize(function(err){
-  if(!err){
-    console.log('Maintenance Module is connected');
-    mi5Maintenance.getModuleData(function(err){
-      if(!err){
-        mi5Maintenance.subscribe();
-        mi5Maintenance.makeItReady();
-      }
-    });
-  } else {
-    console.log(err);
-  }
-});
+mi5Maintenance.start(function(){});
 
 //Manual Module
 GLOBAL.mi5Manual = require('./models/mi5ManualModule').newManualModule;
-mi5Manual.initialize(function(err){
-  if(!err){
-   console.log('Manual Module is connected');
-   mi5Manual.getModuleData(function(err){
-     if(!err){
-       mi5Manual.subscribe();
-       mi5Manual.makeItReady();
-     }
-   });
-  } else {
-    console.log(err);
-  }
-});
+mi5Manual.start(function(){});
 
 // Input Module
 GLOBAL.mi5Input = new require('./models/mi5InputModule').newInputModule;
-mi5Input.initialize(function(err){
-  if(!err){
-   console.log('Input Module is connected');
-   mi5Input.getModuleData(function(err){
-     if(!err){
-       mi5Input.subscribe();
-       mi5Input.makeItReady(function(){});
-     }
-   });
-  } else {
-   console.log(err);
-  }
-});
+mi5Input.start(function(){});
 
 // Output Module
 GLOBAL.mi5Output = new require('./models/mi5OutputModule').newOutputModule;
-mi5Output.initialize(function(err){
-  if(!err){
-    console.log('Output Module is connected');
-    mi5Output.getModuleData(function(err){
-      if(!err){
-        mi5Output.subscribe();
-        mi5Output.makeItReady(function(){});
-      }
-    });
-  } else {
-    console.log(err);
-  }
-});
+mi5Output.start(function(){});
 
 // Task Interface
 GLOBAL.mi5TaskInterface = new require('./models/mi5TaskInterface').newTaskInterface;
-mi5TaskInterface.initialize(function(err){
-  if(!err){
-    console.log('TaskInterface is connected');
-    mi5TaskInterface.getTaskListReduced(function(err){
-      if(!err){
-        mi5TaskInterface.subscribe();
-      }
-    });
-  } else {
-    console.log(err);
-  }
-});
-
-
+mi5TaskInterface.start(function(){});
 
 // Message Feed
 GLOBAL.mMessageFeed = require('./models/simpleMessageFeed');
@@ -146,5 +84,5 @@ if ('development' == app.get('env')) {
 app = router.router(app);
 
 server.listen(app.get('port'), function(){
-  console.log('Express server listening on port '.green + app.get('port') );
+  console.log('Express server listening on port'.bgGreen +' '+ app.get('port') );
 });

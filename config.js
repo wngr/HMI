@@ -26,10 +26,12 @@ process.argv.forEach(function(val, index, array) {
 
 // Default Commandline
 if(!server){
-  server = 'clone';
+  server = 'hmi';
 }
+console.log('Using Server Setup'.bgGreen, server);
+
 if(!port){
-  port = 3000;
+  port = 80;
 }
 exports.Port = port;
 

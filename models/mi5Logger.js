@@ -18,7 +18,7 @@ exports.logger = new logger();
  * 
  * @param callback
  */
-logger.prototype.startUp = function() {
+logger.prototype.start = function() {
   var self = this;
 
   self.append('STARTUP - app.js launched ===========================');

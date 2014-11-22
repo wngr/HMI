@@ -38,6 +38,26 @@ function preLog() {
 
 // ///////////////////////////////////////////////////////////////////////////////////////////////////
 // Start up and initialize
+
+module.prototype.start = function(callback) {
+  var self = mi5TaskInterface;
+
+  self.initialize(function(err) {
+    if (!err) {
+      console.log('TaskInterface is connected');
+      self.getTaskListReduced(function(err) {
+        if (!err) {
+          self.subscribe();
+          callback();
+        }
+      });
+    } else {
+      console.log(err);
+      callback(err);
+    }
+  });
+}
+
 /**
  * initialize maintenance module opcua connection
  * 
@@ -120,7 +140,7 @@ module.prototype.getTaskListReduced = function(callback) {
       // Convert opc.Mi5 object to jadeData
       var mi5Object = opcH.mapMi5ArrayToObject(data, self.structTaskObjectBlank());
 
-      taskList.push(mi5Object);
+      taskList[id] = mi5Object;
 
       if (id == self.NumberOfTasks) {
         self.taskList = taskList;
@@ -152,7 +172,7 @@ module.prototype.getTaskListActive = function(callback) {
       }
     });
   });
-}
+};
 
 // ///////////////////////////////////////////////////////////////////////////////////////////////////
 // OPC UA Subscriptions
@@ -206,11 +226,12 @@ module.prototype.monitorItems = function(itemArray) {
 module.prototype.onDummyChange = function(data, item, index) {
   var self = mi5TaskInterface; // since it is called before getModuleData
 
+  // console.log(preLog(), data.value.value, self.taskList[index]);
+
   // Task disappears - look in the updated taskList by index number
   if (data.value.value === true && self.taskList[index].Dummy.value === false) {
-    console.log(preLog(), 'task disappears'.bgYellow, 'TaskID'.bgYellow,
-        self.taskList[index].TaskID.value);
-    io.emit('taskDisappears', self.taskList[index]);
+    console.log(preLog(), 'task disappears TaskID'.bgYellow, self.taskList[index].TaskID.value);
+    io.to(self.socketRoom).emit('taskDisappears', self.taskList[index]);
 
     self.updateTaskListReduced(function() {
     }); // TODO: be aware, if tasks come too quickly, task list will not be updated!
@@ -219,9 +240,8 @@ module.prototype.onDummyChange = function(data, item, index) {
   // New Task
   if (data.value.value === false && self.taskList[index].Dummy.value === true) {
     self.updateTaskListReduced(function() {
-      console.log(preLog(), 'task registered'.bgGreen, 'TaskID'.bgGreen,
-          self.taskList[index].TaskID.value);
-      io.emit('taskNew', self.taskList[index]);
+      console.log(preLog(), 'task registered TaskID'.bgGreen, self.taskList[index].TaskID.value);
+      io.to(self.socketRoom).emit('taskNew', self.taskList[index]);
     }); // TODO: be aware, if tasks come too quickly, task list will not be updated!
   }
 };

@@ -12,10 +12,11 @@ function taskList(req, res) {
 
     taskSockets = _.once(mi5TaskInterface.ioRegister)
     io.on('connection', function(socket) {
+      socket.join(mi5TaskInterface.socketRoom);
       taskSockets(socket);
     })
 
-    res.render('sbadmin2/task_list', jadeData);
+    res.render('sbadmin2/tasks', jadeData);
     res.end();
   });
 }

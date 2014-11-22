@@ -34,7 +34,7 @@ exports.router = function(app) {
   app.post('/order/order/:recipeId', recipes.placeOrder);
 
   // Tasks
-  app.get('/task_list', tasks.taskList);
+  app.get('/tasks', tasks.taskList);
   app.get('/testManualModuleView', manualModule.showModule);
 
   // Manual Module

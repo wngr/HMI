@@ -47,6 +47,25 @@ function preLog() {
   return 'Output-Module:'.cyan;
 }
 
+module.prototype.start = function(callback) {
+  var self = mi5Output;
+
+  self.initialize(function(err) {
+    if (!err) {
+      console.log('Output Module is connected');
+      self.getModuleData(function(err) {
+        if (!err) {
+          self.subscribe();
+          self.makeItReady(callback);
+        }
+      });
+    } else {
+      console.log(err);
+      callback(err);
+    }
+  });
+}
+
 /**
  * initialize maintenance module opcua connection
  * 

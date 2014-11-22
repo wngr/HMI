@@ -35,6 +35,26 @@ function preLog() {
   return 'Maintenance-Module:'.yellow;
 }
 
+module.prototype.start = function(callback) {
+  var self = mi5Maintenance;
+
+  self.initialize(function(err) {
+    if (!err) {
+      console.log(preLog(), 'Maintenance Module is connected');
+      self.getModuleData(function(err) {
+        if (!err) {
+          self.subscribe();
+          self.makeItReady();
+          callback();
+        }
+      });
+    } else {
+      console.log(preLog(), err);
+      callback(err);
+    }
+  });
+}
+
 /**
  * initialize maintenance module opcua connection
  * 
