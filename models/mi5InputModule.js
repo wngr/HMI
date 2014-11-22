@@ -33,7 +33,8 @@ module = function() {
   this.socketRoom = 'input-module';
   this.ModuleId = 2501;
   this.SkillID = 1402;
-  this.PositionOutput = 200;
+  this.PositionOutput = 1300;
+  this.ModuleName = 'Input Module'
 
   this.opc = require('./../models/simpleOpcua').server(CONFIG.OPCUAInputModule);
   console.log(preLog() + 'endpoint', CONFIG.OPCUAInputModule);
@@ -117,6 +118,8 @@ module.prototype.makeItReady = function(callbackMain) {
     self.setValue(self.jadeData.SkillInput[0].Execute.nodeId, false, callback);
   }, function(callback) {
     self.setValue(self.jadeData.PositionOutput.nodeId, self.PositionOutput, callback); // Default Position
+  }, function(callback) {
+    self.setValue(self.jadeData.Name.nodeId, self.ModuleName, callback); // Default Position
   }, function(callback) {
     console.log(preLog() + 'OK - Input Module is set to Ready-State');
     callbackMain();

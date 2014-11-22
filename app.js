@@ -79,7 +79,7 @@ mi5Input.initialize(function(err){
   }
 });
 
-//Output Module
+// Output Module
 GLOBAL.mi5Output = new require('./models/mi5OutputModule').newOutputModule;
 mi5Output.initialize(function(err){
   if(!err){
@@ -94,6 +94,22 @@ mi5Output.initialize(function(err){
     console.log(err);
   }
 });
+
+// Task Interface
+GLOBAL.mi5TaskInterface = new require('./models/mi5TaskInterface').newTaskInterface;
+mi5TaskInterface.initialize(function(err){
+  if(!err){
+    console.log('TaskInterface is connected');
+    mi5TaskInterface.getTaskListReduced(function(err){
+      if(!err){
+        mi5TaskInterface.subscribe();
+      }
+    });
+  } else {
+    console.log(err);
+  }
+});
+
 
 
 // Message Feed

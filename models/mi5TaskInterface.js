@@ -22,8 +22,7 @@ module = function() {
   this.NumberOfTasks = 30; // 30 (Production List Size)
 
   this.isInitialized = false;
-  this.rawData = undefined;
-  this.jadeData = undefined;
+  this.singleTask = undefined;
   this.taskList = [];
 
   this.socketRoom = 'task-module';
@@ -89,13 +88,15 @@ module.prototype.getSingleTask = function(id, callback) {
     // Convert opc.Mi5 object to jadeData
     var mi5Object = opcH.mapMi5ArrayToObject(data, self.structTaskObjectBlank());
 
-    self.rawData = data;
-    self.jadeData = mi5Object;
+    self.singleTask = mi5Object;
     callback();
   }); // end self.opc.mi5ReadArray
 };
+
 /**
- * Get all tasks (reduced)
+ * Get all tasks (reduced) (no skills)
+ * 
+ * dummy true and false
  * 
  * @param callback
  */
@@ -104,6 +105,8 @@ module.prototype.getTaskListReduced = function(callback) {
 
   assert(self.isInitialized, 'opc is not initialized call self.initialize() *async* first');
   assert(typeof callback === "function", 'callback must be a function');
+
+  var taskList = []
 
   _123n(0, self.NumberOfTasks).forEach(function(id) {
     var baseNode = self.structTaskReduced('MI5.ProductionList[' + id + '].');
@@ -117,17 +120,39 @@ module.prototype.getTaskListReduced = function(callback) {
       // Convert opc.Mi5 object to jadeData
       var mi5Object = opcH.mapMi5ArrayToObject(data, self.structTaskObjectBlank());
 
-      // only push real tasks
-      if (mi5Object.Dummy.value === false) {
-        self.taskList.push(mi5Object);
-      }
+      taskList.push(mi5Object);
 
       if (id == self.NumberOfTasks) {
+        self.taskList = taskList;
+        console.log(preLog(), 'new Task list pulled');
         callback(err); // final callback
       }
     });
   }); // end self.opc.mi5ReadArray
 };
+
+module.prototype.updateTaskListReduced = function(callback) {
+  var self = this;
+
+  self.getTaskListReduced(callback);
+};
+
+module.prototype.getTaskListActive = function(callback) {
+  var self = this;
+
+  var taskListActive = [];
+  self.updateTaskListReduced(function() {
+    self.taskList.forEach(function(item, index) {
+      if (item.Dummy.value === false) {
+        taskListActive.push(item);
+      }
+
+      if (index == self.taskList.length - 1) {
+        callback(taskListActive); // final callback
+      }
+    });
+  });
+}
 
 // ///////////////////////////////////////////////////////////////////////////////////////////////////
 // OPC UA Subscriptions
@@ -143,23 +168,62 @@ module.prototype.subscribe = function() {
 
   assert(self.isInitialized, 'opc is not initialized call self.initialize() *async* first');
 
-  var monitor = [ {
-    nodeId : self.jadeData.Busy.nodeId,
-    callback : self.onBusyChange
-  } ];
+  var monitor = [];
+
+  self.taskList.forEach(function(item, index) {
+    monitor.push({
+      nodeId : item.Dummy.nodeId,
+      callback : self.onDummyChange,
+      entry : item
+    });
+  });
 
   self.monitorItems(monitor);
-
   return 0;
 };
 
-module.prototype.onTaskMonitor = function(data) {
+/**
+ * monitor a list of items and assign a callback event
+ * 
+ * @param itemArray
+ *          <array> [{nodeId: '', callback: cbFunction}]
+ * @returns <boolean>
+ */
+module.prototype.monitorItems = function(itemArray) {
+  var self = this;
+
+  assert(_.isArray(itemArray));
+
+  itemArray.forEach(function(item, index) {
+    mI = self.opc.mi5Monitor(item.nodeId);
+    mI.on('changed', function(data) {
+      item.callback(data, item.entry, index);
+    });
+  });
+  return true;
+}
+
+module.prototype.onDummyChange = function(data, item, index) {
   var self = mi5TaskInterface; // since it is called before getModuleData
 
-  if (data.value.value === true) {
-    io.to(self.socketRoom).emit(self.jadeData.Busy.updateEvent, true);
+  // Task disappears - look in the updated taskList by index number
+  if (data.value.value === true && self.taskList[index].Dummy.value === false) {
+    console.log(preLog(), 'task disappears'.bgYellow, 'TaskID'.bgYellow,
+        self.taskList[index].TaskID.value);
+    io.emit('taskDisappears', self.taskList[index]);
+
+    self.updateTaskListReduced(function() {
+    }); // TODO: be aware, if tasks come too quickly, task list will not be updated!
   }
-  console.log(preLog(), 'onBusyChange', data.value.value);
+
+  // New Task
+  if (data.value.value === false && self.taskList[index].Dummy.value === true) {
+    self.updateTaskListReduced(function() {
+      console.log(preLog(), 'task registered'.bgGreen, 'TaskID'.bgGreen,
+          self.taskList[index].TaskID.value);
+      io.emit('taskNew', self.taskList[index]);
+    }); // TODO: be aware, if tasks come too quickly, task list will not be updated!
+  }
 };
 
 // ///////////////////////////////////////////////////////////////////////////////////////////////////
@@ -174,46 +238,34 @@ module.prototype.onTaskMonitor = function(data) {
 module.prototype.ioRegister = function(socket) {
   var self = mi5TaskInterface; // this would be socket.io io.on('connection')
 
-  _.bindAll(self, 'socketUserIsBusy', 'socketUserIsDone'); // reset scope
+  _.bindAll(self, 'socketAbortTask'); // reset scope in the new function to the one specified
 
   assert(typeof socket !== 'undefined');
 
-  socket.on('userIsBusy', self.socketUserIsBusy);
+  socket.on('abortTask', self.socketAbortTask);
 
   console.log(preLog(), 'OK - Task Interface - event listeners registered');
 };
 
-module.prototype.socketUserIsBusy = function() {
+module.prototype.socketAbortTask = function(taskID) {
   var self = this;
-  console.log(preLog(), 'OK - User is busy');
-  self.setValue(self.jadeData.Busy.nodeId, true, function() {
-  });
-  self.setValue(self.jadeData.Ready.nodeId, false, function() {
-  });
 
+  // Look for the task in the task list
+  // console.log(preLog(), 'abort Task', taskID);
+  if (taskID !== 0) {
+    self.taskList.forEach(function(item, index) {
+      if (item.TaskID.value == taskID) {
+        // Abort it
+        self.setValue(item.AbortTask.nodeId, true, function() {
+          console.log(preLog(), 'Task aborted!'.bgRed, taskID);
+        });
+      }
+    });
+  }
 }
 
 // ///////////////////////////////////////////////////////////////////////////////////////////////////
 // Backend
-
-/**
- * monitor a list of items and assign a callback event
- * 
- * @param itemArray
- *          <array> [{nodeId: '', callback: cbFunction}]
- * @returns <boolean>
- */
-module.prototype.monitorItems = function(itemArray) {
-  var self = this;
-
-  assert(_.isArray(itemArray));
-
-  itemArray.forEach(function(item) {
-    mI = self.opc.mi5Monitor(item.nodeId);
-    mI.on('changed', item.callback);
-  });
-  return true;
-}
 
 /**
  * set a key:value object based on a basenode
@@ -232,8 +284,8 @@ module.prototype.setObject = function(baseNode, dataObject, callback) {
   assert(typeof baseNode === "string");
   assert(_.isObject(dataObject));
 
-  var Mi5ManualModule = require('./../models/simpleDataTypeMapping.js').Mi5ManualModule;
-  self.opc.mi5WriteObject(baseNode, dataObject, Mi5ManualModule, callback);
+  var Mi5TaskListMapping = require('./../models/simpleDataTypeMapping.js').Mi5TaskList;
+  self.opc.mi5WriteObject(baseNode, dataObject, Mi5TaskListMapping, callback);
 }
 
 /**
@@ -250,14 +302,16 @@ module.prototype.setObject = function(baseNode, dataObject, callback) {
 module.prototype.setValue = function(nodeId, value, callback) {
   var self = this;
 
-  assert(typeof nodeId === "string");
-  assert(typeof callback === 'function');
+  assert(typeof nodeId === "string", 'nodeid must be a string');
+  assert(typeof callback === 'function', 'callback must be a function');
 
   var baseNode = opcH.cutLastElement(nodeId);
   var lastElement = opcH.getLastElement(nodeId);
 
   var dataObject = {};
   dataObject[lastElement] = value;
+
+  // console.log('setValue'.bgRed, baseNode, dataObject);
 
   self.setObject(baseNode, dataObject, callback);
 }
@@ -334,6 +388,7 @@ module.prototype.structTaskObjectBlank = function() {
 
   // Base
   var taskDummy = {
+    AbortTask : '',
     Dummy : '',
     Name : '',
     RecipeID : '',
@@ -386,7 +441,7 @@ module.prototype.structTaskObjectBlank = function() {
 module.prototype.structTask = function(baseNode) {
   var self = this;
 
-  var nodes = [ 'Dummy', 'Name', 'RecipeID', 'State', 'TaskID', 'Timestamp' ];
+  var nodes = [ 'AbortTask', 'Dummy', 'Name', 'RecipeID', 'State', 'TaskID', 'Timestamp' ];
   // Add all 50 Skills
   for (var i = 0; i <= self.NumberOfSkills; i++) {
     var temp = self.structTaskSkill('Skill[' + i + '].');
@@ -412,7 +467,7 @@ module.prototype.structTask = function(baseNode) {
 module.prototype.structTaskReduced = function(baseNode) {
   var self = this;
 
-  var nodes = [ 'Dummy', 'Name', 'RecipeID', 'State', 'TaskID', 'Timestamp' ];
+  var nodes = [ 'AbortTask', 'Dummy', 'Name', 'RecipeID', 'State', 'TaskID', 'Timestamp' ];
   // Prepend baseNode
   nodes = _.map(nodes, function(item) {
     return baseNode + item;

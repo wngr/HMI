@@ -23,37 +23,37 @@ GLOBAL._ = require('underscore');
 GLOBAL.md5 = require('MD5');
 var async = require('async');
 
-var module = new require('./../models/mi5TaskInterface').newTaskInterface;
+GLOBAL.mi5TaskInterface = new require('./../models/mi5TaskInterface').newTaskInterface;
 
 async.series([function(callback){
-  module.initialize(callback);
+  mi5TaskInterface.initialize(callback);
 }, function(callback){
-//  module.getSingleTask(1,callback);
-  module.getTaskListReduced(callback);
+//  mi5TaskInterface.getSingleTask(1,callback);
+  mi5TaskInterface.getTaskListReduced(callback);
 }, function(callback){
-  console.log(module.taskList);
+  console.log(mi5TaskInterface.taskList);
+  callback();
+}, function(callback){
+  mi5TaskInterface.subscribe();
+  callback();
 }, 
 //function(callback){
 //  var Mi5ManualModule = require('./../models/simpleDataTypeMapping.js').Mi5ManualModule;
-//  module.opc.mi5WriteObject('MI5.Module2402Manual', {Execute: true}, Mi5ManualModule, function(
+//  mi5TaskInterface.opc.mi5WriteObject('MI5.Module2402Manual', {Execute: true}, Mi5ManualModule, function(
 //      err) {
 //    console.log('Mi5ManualModule written - no error feedback possible');
 //  });
 //}, 
 //function(callback){
-//  module.setObject('MI5.Module2402Manual', {Execute: true}, function(err){
+//  mi5TaskInterface.setObject('MI5.Module2402Manual', {Execute: true}, function(err){
 //    console.log('ok');
 //  });
 //}, 
 //function(callback){
-//  module.setValue('MI5.Module2402Manual.Execute', true, function(err){
+//  mi5TaskInterface.setValue('MI5.Module2402Manual.Execute', true, function(err){
 //    console.log('ok');
 //  });
 //}
 ], function(err, results){
-  console.log(module.jadeData);
+  console.log(mi5TaskInterface.jadeData);
 });
-
-setTimeout(function(){
-  process.exit(1);
-}, 1000);

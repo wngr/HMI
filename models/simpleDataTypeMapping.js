@@ -161,6 +161,7 @@ function Mi5ModuleInterface(variableName) {
     type = 'UInt16';
     break;
   case "SkillDescription":
+  case "Name":
     type = 'String';
     break;
   case "PositionOutput":
@@ -176,3 +177,40 @@ function Mi5ModuleInterface(variableName) {
   return type;
 }
 exports.Mi5ModuleInterface = Mi5ModuleInterface;
+
+function Mi5TaskList(variableName) {
+  assert(typeof variableName === "string", 'variableName must be a string:'
+      + JSON.stringify(variableName, null, 1));
+
+  var type;
+
+  switch (variableName) {
+  case "Execute":
+  case "Ready":
+  case "Busy":
+  case "Done":
+  case "Error":
+  case "AbortTask":
+    type = 'Boolean';
+    break;
+  case "ErrorID":
+  case "SkillID":
+  case "TaskID":
+    type = 'Int16';
+    break;
+  case "SkillDescription":
+    type = 'String';
+    break;
+  case "Position":
+  case "PositionOutput":
+    type = 'Double';
+    break;
+  default:
+    console.log('According to the ManualModule List, the given variableName does not exist');
+    // assert(false);
+    break;
+  }
+
+  return type;
+}
+exports.Mi5TaskList = Mi5TaskList;
