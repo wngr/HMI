@@ -31,6 +31,7 @@ GLOBAL.moment = require('moment');
 GLOBAL.mi5Logger = require('./models/mi5Logger').logger;
 mi5Logger.startUp();
 
+
 // Maintenance Module
 GLOBAL.mi5Maintenance = require('./models/mi5MaintenanceModule').newMaintenanceModule;
 mi5Maintenance.initialize(function(err){

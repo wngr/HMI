@@ -6,13 +6,10 @@
  */
 
 // Message Feed
-var messageFeed = require('./backgroundMessageFeed');
-messageFeed.work();
+var messageFeed = require('./backgroundMessageFeed').service();
 
 // Time
-var serverTime = require('./backgroundTime.js');
-serverTime.work();
+var serverTime = require('./backgroundTime.js').service();
 
 // Debug
-var debug = require('./backgroundDebug.js');
-debug.work();
+var debug = require('./backgroundDebug.js').service();

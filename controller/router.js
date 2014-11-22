@@ -75,12 +75,12 @@ function index(req, res) {
 }
 
 var connectedClients = 0;
-IO.on('connection', function(socket) {
+io.on('connection', function(socket) {
   connectedClients++;
   console.log('Connected Clients now:', connectedClients);
 
   // Register Listeners for backgroundDebug
-  require('./../controller/backgroundDebug').listeners(socket);
+  require('./../controller/backgroundDebug').sockets(socket);
 
   // Message Feed Module - Initial emit
   mMessageFeed.emitMessageFeedInitial();

@@ -40,22 +40,24 @@ exports.Mi5Order = Mi5Order;
  * @param variableName
  * @returns {String}
  */
-function Mi5DebugPendingFalse(variableName) {
+function Mi5Debug(variableName) {
   assert(typeof variableName === "string");
   var type;
 
   switch (variableName) {
   case "Pending":
+  case "ResetProcessTool":
+  case "ClearTaskList":
     type = 'Boolean';
     break;
   default:
-    console.log('According to the Orderlist, the given variableName does not exist');
+    console.log('According to Mi5Debug, the given variableName has no type');
     break;
   }
 
   return type;
 }
-exports.Mi5DebugPendingFalse = Mi5DebugPendingFalse;
+exports.Mi5Debug = Mi5Debug;
 
 function Mi5OrderUserParameter(variableName) {
   assert(typeof variableName === "string");

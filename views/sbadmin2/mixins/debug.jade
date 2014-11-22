@@ -10,11 +10,21 @@ mixin dropdown-debug()
                 div
                   strong Debugging Helper - use with care!
             li.divider
-            li
-              a(href='#', onclick="$('#id86ef3c086c7c1169b4eb089d18ecb052icon').val('bounce');")                
+            li     
+              a(href='#',onclick="socket.emit('bgDebugClearTaskList', true);")
                 div
                   i.fa.fa-pencil.fa-fw
-                  strong Highlight Debug-Button
+                  strong MI5.ClearTaskList (.116)
+                  span.pull-right.text-muted
+                    em = true
+            li.divider
+            li     
+              a(href='#',onclick="socket.emit('bgDebugResetProcessTool', true);")
+                div
+                  i.fa.fa-pencil.fa-fw
+                  strong MI5.ResetProcessTool (.117)
+                  span.pull-right.text-muted
+                    em = true
             li.divider
             li     
               a(href='#',onclick="socket.emit('bgDebugOrderPendingFalse',1);")
