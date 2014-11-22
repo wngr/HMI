@@ -1,0 +1,68 @@
+extends layout
+
+block content
+  if error
+    div.row
+      div.col-lg-12
+        h1 ERROR
+        p= error.Error
+        p= error.code
+        p= error.errno
+        p= error.syscal
+  
+  div.row
+    div.col-lg-8
+      h1.page-header Tasks
+      div.panel.panel-default 
+        div.panel-heading
+          i.fa.fa-clock-o.fa-fw
+          | All Tasks in a Timeline
+          +feedbackButton("tasks")
+
+        div.panel-body
+          script console.log(#{task});
+          ul.timeline#taskListTimeline
+            if tasks
+              for task in tasks
+                +timelineTaskElement(task)        
+            else
+                li
+                  div.timeline-badge
+                    i.fa.fa-circle-o
+                  div.timeline-panel
+                    div.timeline-heading
+                      h4.timeline-title No Task
+                    div.timeline-body
+                      p There are no tasks in the Production List
+        script.
+          socket.on('taskNew', function(data){
+            console.log(data);
+            // - we should append instead of reload
+            window.location.replace("/tasks"); 
+          });
+          socket.on('taskDisappears', function(data){
+            console.log(data);
+            $("#"+data.TaskID.containerId).remove();
+          });
+         
+    
+
+mixin timelineTaskElement(task)
+  li(id=task.TaskID.containerId)
+    div.timeline-badge
+      | #{task.TaskID.value}
+    div.timeline-panel
+      div.row
+        div.col-lg-6
+          div.timeline-heading
+            h4.timeline-title= task.Name.value
+            p
+              small.text-muted
+                i.fa.fa-clock-o
+                |&nbsp;#{task.Timestamp.value}
+          div.timeline-body
+                      p RecipeID: #{task.RecipeID.value}
+        div.col-lg-6
+            img(src="/assets/images/recipes/recipe"+task.RecipeID.value+"/cocktail.jpg" style="border-radius: 100%; height:100%; width:100%")
+        div.col-lg-12
+          a(href="#", onClick="socket.emit(\"abortTask\","+task.TaskID.value+");") Abort

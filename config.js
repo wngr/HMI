@@ -28,6 +28,8 @@ process.argv.forEach(function(val, index, array) {
 if(!server){
   server = 'live';
 }
+console.log('Using Server Setup'.bgGreen, server);
+
 if(!port){
   port = 80;
 }
