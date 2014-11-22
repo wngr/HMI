@@ -1,0 +1,110 @@
+extends layout
+
+block content
+    if error
+        h1 ERROR
+        p= error.Error
+        p= error.code
+        p= error.errno
+        p= error.syscal
+    
+     if module
+      div.row
+        div.col-lg-12
+          h1.page-header= title
+           
+      div.row
+        div.col-lg-9
+          div.panel.panel-default 
+            div.panel-heading
+              i.fa.fa-clock-o.fa-fw
+              | Next Task on this Module
+            div.panel-body
+              ul.timeline
+                //- Wait for Execute
+                li.timeline-inverted
+                  div.timeline-badge(id=module.SkillInput[0].Execute.containerId+'badge')
+                    i.fa.fa-cog.fa-spin(id=module.SkillInput[0].Execute.containerId+'icon')
+                  div.timeline-panel
+                    div.timeline-heading
+                      h4.timeline-title
+                        span.text-muted(id=module.SkillInput[0].Execute.containerId+'text') Waiting to get a task. 
+                      script.
+                        function executeIsTrue(){
+                            $("##{module.SkillInput[0].Execute.containerId}icon").removeClass('fa-cog fa-spin'); 
+                            $("##{module.SkillInput[0].Execute.containerId}icon").addClass('fa-check');
+                            $("##{module.SkillInput[0].Execute.containerId}badge").addClass('success');
+                            $("##{module.SkillInput[0].Execute.containerId}text").html('Task received.');
+                          }
+                        socket.on("#{module.SkillInput[0].Execute.updateEvent}", function(data){
+                          if(data === true){
+                            executeIsTrue();                            
+                          }
+                        });
+                        // Static information
+                        if(#{module.SkillInput[0].Execute.value} === true){
+                          console.log('mmExecute.value true beforehand');
+                          executeIsTrue();
+                        }
+                              
+                //- Start Button
+                li.timeline-inverted
+                  div.timeline-badge(id=module.SkillOutput[0].Busy.containerId+'badge', onclick="socket.emit('#{module.SkillOutput[0].Busy.submitEvent}', true);", style="cursor: pointer")
+                    i.fa.fa-play
+                  div.timeline-panel
+                    div.timeline-heading
+                      h4.timeline-title
+                        span.text-muted(id=module.SkillOutput[0].Busy.containerId+'text') Press when you are ready to start working.
+                      script.
+                        function busyIsTrue(){
+                          $("##{module.SkillOutput[0].Busy.containerId}icon").addClass('fa-check');
+                          $("##{module.SkillOutput[0].Busy.containerId}badge").addClass('success');
+                          $("##{module.SkillOutput[0].Busy.containerId}text").html('Started...');
+                        }
+                        socket.on("#{module.SkillOutput[0].Busy.updateEvent}", function(data){ 
+                          if(data === true){
+                            busyIsTrue();                            
+                          }
+                        });
+                        if(#{module.SkillOutput[0].Busy.value}===true){ 
+                          console.log('mmBusy.value true');
+                          busyIsTrue();
+                        }
+            
+                li.timeline-inverted
+                  div.timeline-badge(id=module.SkillOutput[0].Done.containerId+'badge', onclick="socket.emit('#{module.SkillOutput[0].Done.submitEvent}', {value: true});", style="cursor: pointer")
+                    i.fa.fa-stop
+                  div.timeline-panel
+                    div.timeline-heading
+                      h4.timeline-title
+                       span.text-muted(id=module.SkillOutput[0].Done.containerId+'text') Press when you finished the task.
+                      script.
+                       var userFullyFinished = 0; // global in DOM space? yes.
+                       function doneIsTrue(){
+                         $("##{module.SkillOutput[0].Done.containerId}badge").addClass('success');
+                         $("##{module.SkillOutput[0].Done.containerId}text").html('Done.');                         
+                       }
+                       socket.on("#{module.SkillOutput[0].Done.updateEvent}", function(data){ 
+                         if(data === true){
+                           doneIsTrue();                           
+                         }
+                       });
+                       if(#{module.SkillOutput[0].Done.value}===true){ 
+                         console.log('mmDone.value true');
+                         doneIsTrue();
+                       }
+                       
+              script.
+               socket.on("reloadPageOutput", function(data){
+                console.log('Page Reload...');
+                window.location.replace("/output"); 
+               });
+        
+        //- MessageFeed
+        //- div.col-lg-3
+          //- +messageFeed-panel()
+    else
+        div.col-xs-12.well       
+            p no handModule data to display
+    
+    

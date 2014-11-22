@@ -30,18 +30,18 @@ module = function() {
   this.rawData = undefined;
   this.jadeData = {};
 
-  this.socketRoom = 'input-module';
-  this.ModuleId = 2501;
+  this.socketRoom = 'output-module';
+  this.ModuleId = 2601;
 
-  this.opc = require('./../models/simpleOpcua').server(CONFIG.OPCUAInputModule);
-  console.log(preLog() + 'endpoint', CONFIG.OPCUAInputModule);
+  this.opc = require('./../models/simpleOpcua').server(CONFIG.OPCUAOutputModule);
+  console.log(preLog() + 'endpoint', CONFIG.OPCUAOutputModule);
 
   this.Mi5ModuleInterface = require('./../models/simpleDataTypeMapping.js').Mi5ModuleInterface;
 };
-exports.newInputModule = new module();
+exports.newOutputModule = new module();
 
 function preLog() {
-  return 'Input-Module: ';
+  return 'Output-Module: ';
 }
 
 /**
@@ -81,9 +81,9 @@ module.prototype.getModuleData = function(callbackMain) {
   assert(typeof callbackMain === "function");
 
   async.series([ function(callback) {
-    mi5Input.getInput(callback);
+    mi5Output.getInput(callback);
   }, function(callback) {
-    mi5Input.getOutput(callback);
+    mi5Output.getOutput(callback);
   }, ], function(err, results) {
     callbackMain();
   });
@@ -111,7 +111,7 @@ module.prototype.makeItReady = function(callbackMain) {
   }, function(callback) {
     self.setValue(self.jadeData.SkillInput[0].Execute.nodeId, false, callback);
   }, function(callback) {
-    console.log(preLog() + 'OK - Input Module is set to Ready-State');
+    console.log(preLog() + 'OK - Output Module is set to Ready-State');
     callbackMain();
   } ]);
 
@@ -151,7 +151,7 @@ module.prototype.subscribe = function() {
 };
 
 module.prototype.onBusyChange = function(data) {
-  var self = mi5Input; // since it is called before getModuleData
+  var self = mi5Output; // since it is called before getModuleData
 
   if (data.value.value === true) {
     io.to(self.socketRoom).emit(self.jadeData.SkillOutput[0].Busy.updateEvent, true);
@@ -159,7 +159,7 @@ module.prototype.onBusyChange = function(data) {
   console.log(preLog() + 'onBusyChange', data.value.value);
 };
 module.prototype.onDoneChange = function(data) {
-  var self = mi5Input; // since it is called before getModuleData
+  var self = mi5Output; // since it is called before getModuleData
 
   if (data.value.value === true) {
     io.to(self.socketRoom).emit(self.jadeData.SkillOutput[0].Done.updateEvent, true);
@@ -167,11 +167,11 @@ module.prototype.onDoneChange = function(data) {
   console.log(preLog() + 'onDoneChange', data.value.value);
 };
 module.prototype.onExecuteChange = function(data) {
-  var self = mi5Input; // since it is called before getModuleData
+  var self = mi5Output; // since it is called before getModuleData
 
   if (data.value.value === true) {
     io.to(self.socketRoom).emit(self.jadeData.SkillInput[0].Execute.updateEvent, true);
-    // io.to(self.socketRoom).emit('reloadPageInput', 0);
+    // io.to(self.socketRoom).emit('reloadPageOutput', 0);
     // Navbar
     io.emit('inputRequired', true);
   }
@@ -182,7 +182,7 @@ module.prototype.onExecuteChange = function(data) {
     self.setValue(self.jadeData.SkillOutput[0].Ready.nodeId, true, function() {
     });
     io.emit('inputRequired', false);
-    io.to(self.socketRoom).emit('reloadPageInput', 0);
+    io.to(self.socketRoom).emit('reloadPageOutput', 0);
   }
   console.log(preLog() + 'onExecuteChange', data.value.value);
 };
@@ -196,7 +196,7 @@ module.prototype.onReadyChange = function(data) {
 // Soket
 
 module.prototype.ioRegister = function(socket) {
-  var self = mi5Input; // this would be socket.io io.on('connection')
+  var self = mi5Output; // this would be socket.io io.on('connection')
 
   _.bindAll(self, 'socketUserIsBusy', 'socketUserIsDone'); // reset scope
 
@@ -205,7 +205,7 @@ module.prototype.ioRegister = function(socket) {
   socket.on(self.jadeData.SkillOutput[0].Busy.submitEvent, self.socketUserIsBusy);
   socket.on(self.jadeData.SkillOutput[0].Done.submitEvent, self.socketUserIsDone);
 
-  console.log(preLog() + 'OK - Input Module - event listeners registered');
+  console.log(preLog() + 'OK - Output Module - event listeners registered');
 }
 
 module.prototype.socketUserIsBusy = function() {
