@@ -1,0 +1,20 @@
+
+mixin timelineTaskElement(task)
+  li(id=task.TaskID.containerId)
+    div.timeline-badge
+      | #{task.TaskID.value}
+    div.timeline-panel
+      div.row
+        div.col-lg-6
+          div.timeline-heading
+            h4.timeline-title= task.Name.value
+            p
+              small.text-muted
+                i.fa.fa-clock-o
+                |&nbsp;#{task.Timestamp.value}
+          div.timeline-body
+                      p RecipeID: #{task.RecipeID.value}
+        div.col-lg-6
+            img(src="/assets/images/recipes/recipe"+task.RecipeID.value+"/cocktail.jpg" style="border-radius: 100%; height:100%; width:100%")
+        div.col-lg-12
+          a(href="#", onClick="socket.emit(\"abortTask\","+task.TaskID.value+");") Abort

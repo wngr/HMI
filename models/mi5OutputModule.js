@@ -201,7 +201,7 @@ module.prototype.onExecuteChange = function(data) {
     io.to(self.socketRoom).emit(self.jadeData.SkillInput[0].Execute.updateEvent, true);
     // io.to(self.socketRoom).emit('reloadPageOutput', 0);
     // Navbar
-    io.emit('inputRequired', true);
+    io.emit('outputRequired', true);
   }
   if (data.value.value === false) {
     // task fully finished
@@ -209,7 +209,7 @@ module.prototype.onExecuteChange = function(data) {
     });
     self.setValue(self.jadeData.SkillOutput[0].Ready.nodeId, true, function() {
     });
-    io.emit('inputRequired', false);
+    io.emit('outputRequired', false);
     io.to(self.socketRoom).emit('reloadPageOutput', 0);
   }
   console.log(preLog() + 'onExecuteChange', data.value.value);

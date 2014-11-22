@@ -19,11 +19,11 @@ nav.navbar.navbar-default.navbar-static-top(role='navigation',style='margin-bott
           i.fa.fa-cube.fa-fw
           span#inputBadge
           script.
-            socket.on("inputBadge", function(data){
+            socket.on("inputRequired", function(data){
               - console.log('JADE: inputBadge received');
-              if(data == 0){
+              if(data === false){
                 $("#inputBadge").removeClass("badge-top alert-danger").html("");
-              } else {
+              } else if (data === true){
                 $("#inputBadge").addClass("badge-top alert-danger").html('<i class="fa fa-map-marker fa-fw"></i>');
               }
             });
@@ -32,11 +32,11 @@ nav.navbar.navbar-default.navbar-static-top(role='navigation',style='margin-bott
           i.fa.fa-cubes.fa-fw
           span#outputBadge
           script.
-            socket.on("outputBadge", function(data){
+            socket.on("outputRequired", function(data){
               - console.log('JADE: outputBadge received');
-              if(data == 0){
+              if(data === true){
                 $("#outputBadge").removeClass("badge-top alert-danger").html("");
-              } else {
+              } else if(data === false){
                 $("#outputBadge").addClass("badge-top alert-danger").html('<i class="fa fa-map-marker fa-fw"></i>');
               }
             });
@@ -45,11 +45,11 @@ nav.navbar.navbar-default.navbar-static-top(role='navigation',style='margin-bott
           i.fa.fa-gavel.fa-fw
           span#manualBadge
           script.
-            socket.on("manualBadge", function(data){
+            socket.on("manualRequired", function(data){
               - console.log('JADE: manualBadge received');
-              if(data == 0){
+              if(data === false){
                 $("#manualBadge").removeClass("badge-top alert-danger").html("");
-              } else {
+              } else if(data === true) {
                 $("#manualBadge").addClass("badge-top alert-danger").html('<i class="fa fa-map-marker fa-fw"></i>');
               }
             });
@@ -58,11 +58,11 @@ nav.navbar.navbar-default.navbar-static-top(role='navigation',style='margin-bott
           i.fa.fa-fire-extinguisher.fa-fw
           span#maintenanceBadge
           script.
-            socket.on("maintenanceBadge", function(data){
+            socket.on("maintenanceRequired", function(data){
               - console.log('JADE: maintenanceBadge received');
-              if(data == 0){
+              if(data === false){
                 $("#maintenanceBadge").removeClass("badge-top alert-danger").html("");
-              } else {
+              } else if(data === true){
                 $("#maintenanceBadge").addClass("badge-top alert-danger").html('<i class="fa fa-map-marker fa-fw"></i>');
               }
             });
