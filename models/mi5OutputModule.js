@@ -42,7 +42,7 @@ module = function() {
 exports.newOutputModule = new module();
 
 function preLog() {
-  return 'Output-Module: ';
+  return 'Output-Module:'.cyan;
 }
 
 /**

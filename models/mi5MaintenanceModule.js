@@ -32,7 +32,7 @@ module = function() {
 exports.newMaintenanceModule = new module();
 
 function preLog() {
-  return 'Maintenance-Module: ';
+  return 'Maintenance-Module:'.yellow;
 }
 
 /**

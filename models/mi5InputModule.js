@@ -42,7 +42,7 @@ module = function() {
 exports.newInputModule = new module();
 
 function preLog() {
-  return 'Input-Module: ';
+  return 'Input-Module:'.magenta;
 }
 
 /**
@@ -270,8 +270,6 @@ module.prototype.setObject = function(baseNode, dataObject, callback) {
 
   assert(typeof baseNode === "string");
   assert(_.isObject(dataObject));
-
-  console.log(baseNode, dataObject);
 
   self.opc.mi5WriteObject(baseNode, dataObject, self.Mi5ModuleInterface, callback);
 };
