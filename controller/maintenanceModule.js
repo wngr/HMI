@@ -13,13 +13,22 @@ function showModule(req, res) {
       console.log(err);
     }
 
-    console.log(mi5Maintenance.jadeData);
+    // console.log(mi5Maintenance.jadeData);
 
     var maintenanceSockets = _.once(mi5Maintenance.ioRegister);
     io.on('connection', function(socket) {
       socket.join('maintenance-module');
       maintenanceSockets(socket);
+
+      socket.on('disconnect', function() {
+        console.log('disconnect in maintenance', io, socket);
+      })
     });
+
+    io.on('disconnection', function(socket) {
+      console.log('disconnect', io, socket);
+      console.log('connected sockets:', io.sockets.connected);
+    })
 
     jadeData.manualModule = mi5Maintenance.jadeData;
 

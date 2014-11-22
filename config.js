@@ -11,16 +11,34 @@
 // task Id beginning point (random number between 1 and 10000
 exports.TaskId = Math.floor((Math.random() * 1000) + 1); ;
 
-// ModuleId - Output
-exports.OPCUAOutputModuleId = 2601;
+//////////////////////////////////////////////////////////////////////////////
+// Commandline
+var port = undefined;
+var server = undefined;
+process.argv.forEach(function(val, index, array) {
+  if(val.slice(0,6)=='-port='){
+    port = val.slice(6);
+  }
+  if(val.slice(0,8)=='-server='){
+    server = val.slice(8);
+  }
+});
 
+// Default Commandline
+if(!server){
+  server = 'live';
+}
+if(!port){
+  port = 80;
+}
+exports.Port = port;
 
-var what = 'live';
+//////////////////////////////////////////////////////////////////////////////
+// Preconfigured Server
 /*
  * OPCUA Test Server-Configuration ITQ Lan
  */
-if (what == 'hmitest'){
-  exports.Port                    = 3000;
+if (server == 'hmitest'){
   exports.OPCUARecipe             = 'opc.tcp://192.168.192.80:4840/';
   exports.OPCUAOrder              = 'opc.tcp://192.168.192.80:4840/';
   exports.OPCUAMessageFeed        = 'opc.tcp://192.168.192.80:4840/';
@@ -35,8 +53,7 @@ if (what == 'hmitest'){
 /*
  * OPCUA Global Server-Configuration ITQ Lan
  */
-if (what == 'live'){
-  exports.Port                  = 3000;
+if (server == 'live'){
   exports.OPCUARecipe           = 'opc.tcp://192.168.192.116:4840/';
   exports.OPCUAOrder            = 'opc.tcp://192.168.192.116:4840/';
   exports.OPCUAMessageFeed      = 'opc.tcp://192.168.192.116:4840/';
@@ -51,8 +68,7 @@ if (what == 'live'){
 /*
  * OPCUA Test Server-Configuration ITQ Lan
  */
-if (what == 'clone'){
-  exports.Port                    = 3000;
+if (server == 'clone'){
   exports.OPCUARecipe             = 'opc.tcp://192.168.192.132:4840/';
   exports.OPCUAOrder              = 'opc.tcp://192.168.192.132:4840/';
   exports.OPCUAMessageFeed        = 'opc.tcp://192.168.192.132:4840/';
