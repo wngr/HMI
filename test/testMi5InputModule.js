@@ -36,9 +36,12 @@ async.series([function(callback){
 //  mi5Input.makeItReady(callback);
   var ret = mi5Input.cutLastElement('MI5.Module2501.Output.SkillOutput.SkillOutput0.Busy');
   console.log(ret);
+  callback();
 },
 function(callback){
- callback();
+  mi5Input.setValue('MI5.Module2501.Output.SkillOutput.SkillOutput0.ID', 1402, function(err, results){
+    console.log(err, results, 'set?');
+  });
 }, 
 //function(callback){
 //  var Mi5ManualModule = require('./../models/simpleDataTypeMapping.js').Mi5ManualModule;

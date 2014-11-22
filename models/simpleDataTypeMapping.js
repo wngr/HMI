@@ -157,7 +157,7 @@ function Mi5ModuleInterface(variableName) {
   case "ErrorID":
   case "SkillID":
   case "ID":
-    type = 'Int16';
+    type = 'UInt16';
     break;
   case "SkillDescription":
     type = 'String';

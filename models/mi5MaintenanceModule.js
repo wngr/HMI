@@ -27,9 +27,13 @@ module = function() {
   this.ModuleId = 2402;
 
   this.opc = require('./../models/simpleOpcua').server(CONFIG.OPCUAMaintenanceModule);
-  console.log('endpoint', CONFIG.OPCUAMaintenanceModule);
+  console.log(preLog(), 'endpoint', CONFIG.OPCUAMaintenanceModule);
 };
 exports.newMaintenanceModule = new module();
+
+function preLog() {
+  return 'Maintenance-Module: ';
+}
 
 /**
  * initialize maintenance module opcua connection
@@ -121,7 +125,7 @@ module.prototype.makeItReady = function() {
   var self = this;
 
   self.setValue(self.jadeData.Ready.nodeId, true, function() {
-    console.log('OK - Maintenance Module is ready');
+    console.log(preLog(), 'OK - Maintenance Module is ready');
   });
 }
 
@@ -131,7 +135,7 @@ module.prototype.onBusyChange = function(data) {
   if (data.value.value === true) {
     io.to(self.socketRoom).emit(self.jadeData.Busy.updateEvent, true);
   }
-  console.log('onBusyChange', data.value.value);
+  console.log(preLog(), 'onBusyChange', data.value.value);
 };
 module.prototype.onDoneChange = function(data) {
   var self = mi5Maintenance; // since it is called before getModuleData
@@ -139,7 +143,7 @@ module.prototype.onDoneChange = function(data) {
   if (data.value.value === true) {
     io.to(self.socketRoom).emit(self.jadeData.Done.updateEvent, true);
   }
-  console.log('onDoneChange', data.value.value);
+  console.log(preLog(), 'onDoneChange', data.value.value);
 };
 module.prototype.onExecuteChange = function(data) {
   var self = mi5Maintenance; // since it is called before getModuleData
@@ -157,11 +161,11 @@ module.prototype.onExecuteChange = function(data) {
     io.emit('maintenanceRequired', true);
     io.to(self.socketRoom).emit('reloadPageMaintenance', 0);
   }
-  console.log('onExecuteChange', data.value.value);
+  console.log(preLog(), 'onExecuteChange', data.value.value);
 };
 module.prototype.onReadyChange = function(data) {
   if (data.value.value === true) {
-    console.log('onReadyChange', data.value.value);
+    console.log(preLog(), 'onReadyChange', data.value.value);
   }
 };
 
@@ -178,12 +182,12 @@ module.prototype.ioRegister = function(socket) {
   socket.on('userIsBusy', self.socketUserIsBusy);
   socket.on('userIsDone', self.socketUserIsDone);
 
-  console.log('OK - Maintenance Module - event listeners registered');
+  console.log(preLog(), 'OK - Maintenance Module - event listeners registered');
 }
 
 module.prototype.socketUserIsBusy = function() {
   var self = this;
-  console.log('OK - User is busy');
+  console.log(preLog(), 'OK - User is busy');
   self.setValue(self.jadeData.Busy.nodeId, true, function() {
   });
   self.setValue(self.jadeData.Ready.nodeId, false, function() {
@@ -194,10 +198,10 @@ module.prototype.socketUserIsBusy = function() {
 module.prototype.socketUserIsDone = function() {
   var self = this;
   self.setValue(self.jadeData.Done.nodeId, true, function(err) {
-    console.log('OK - User is done');
+    console.log(preLog(), 'OK - User is done');
   });
   self.setValue(self.jadeData.Busy.nodeId, false, function(err) {
-    console.log('OK - waiting for PT to set execute = false');
+    console.log(preLog(), 'OK - waiting for PT to set execute = false');
   });
 }
 

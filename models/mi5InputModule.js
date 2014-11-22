@@ -32,6 +32,7 @@ module = function() {
 
   this.socketRoom = 'input-module';
   this.ModuleId = 2501;
+  this.SkillID = 1402;
 
   this.opc = require('./../models/simpleOpcua').server(CONFIG.OPCUAInputModule);
   console.log(preLog() + 'endpoint', CONFIG.OPCUAInputModule);
@@ -100,6 +101,9 @@ module.prototype.makeItReady = function(callbackMain) {
 
   async.series([ function(callback) {
     self.setValue(self.jadeData.Dummy.nodeId, false, callback);
+  }, function(callback) {
+    console.log(preLog(), self.jadeData.SkillOutput[0].ID.nodeId);
+    self.setValue(self.jadeData.SkillOutput[0].ID.nodeId, self.SkillID, callback);
   }, function(callback) {
     self.setValue(self.jadeData.SkillOutput[0].Dummy.nodeId, false, callback);
   }, function(callback) {
@@ -266,6 +270,8 @@ module.prototype.setObject = function(baseNode, dataObject, callback) {
 
   assert(typeof baseNode === "string");
   assert(_.isObject(dataObject));
+
+  console.log(baseNode, dataObject);
 
   self.opc.mi5WriteObject(baseNode, dataObject, self.Mi5ModuleInterface, callback);
 };

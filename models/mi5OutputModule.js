@@ -32,6 +32,7 @@ module = function() {
 
   this.socketRoom = 'output-module';
   this.ModuleId = 2601;
+  this.SkillID = 1403;
 
   this.opc = require('./../models/simpleOpcua').server(CONFIG.OPCUAOutputModule);
   console.log(preLog() + 'endpoint', CONFIG.OPCUAOutputModule);
@@ -100,6 +101,8 @@ module.prototype.makeItReady = function(callbackMain) {
 
   async.series([ function(callback) {
     self.setValue(self.jadeData.Dummy.nodeId, false, callback);
+  }, function(callback) {
+    self.setValue(self.jadeData.SkillOutput[0].ID.nodeId, self.SkillID, callback);
   }, function(callback) {
     self.setValue(self.jadeData.SkillOutput[0].Dummy.nodeId, false, callback);
   }, function(callback) {
