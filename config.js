@@ -29,6 +29,7 @@ if (what == 'hmitest'){
   exports.OPCUAMaintenanceModule  = 'opc.tcp://192.168.192.80:4840/';
   exports.OPCUAInputModule        = 'opc.tcp://192.168.192.76:4840/'; // owXp
   exports.OPCUAOutputModule       = 'opc.tcp://192.168.192.76:4840/';
+  exports.FTPCamera               = '192.168.192.65'; // BR Panel
 }
 
 /*
@@ -44,6 +45,7 @@ if (what == 'live'){
   exports.OPCUAMaintenanceModule= 'opc.tcp://192.168.192.116:4840/';
   exports.OPCUAInputModule      = 'opc.tcp://192.168.192.76:4840/'; // owXp
   exports.OPCUAOutputModule     = 'opc.tcp://192.168.192.76:4840/';
+  exports.FTPCamera               = '192.168.192.65'; // BR Panel
 }
 
 /*
@@ -59,6 +61,7 @@ if (what == 'clone'){
   exports.OPCUAMaintenanceModule  = 'opc.tcp://192.168.192.132:4840/';
   exports.OPCUAInputModule        = 'opc.tcp://192.168.192.76:4840/'; // owXp
   exports.OPCUAOutputModule       = 'opc.tcp://192.168.192.76:4840/';
+  exports.FTPCamera               = '192.168.192.65'; // BR Panel
 }
 
 

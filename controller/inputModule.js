@@ -21,7 +21,7 @@ function index(req, res) {
     jadeData.module = mi5Input.jadeData;
 
     // console.log(JSON.stringify(jadeData, null, 1));
-    console.log(mi5Input.jadeData.SkillOutput[0].Busy);
+    // console.log(mi5Input.jadeData.SkillOutput[0].Busy);
 
     res.render('sbadmin2/input_module', jadeData);
   });

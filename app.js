@@ -47,24 +47,24 @@ mi5Maintenance.initialize(function(err){
 //Manual Module
 GLOBAL.mi5Manual = require('./models/mi5ManualModule').newManualModule;
 mi5Manual.initialize(function(err){
-if(!err){
- console.log('Manual Module is connected');
- mi5Manual.getModuleData(function(err){
-   if(!err){
-     mi5Manual.subscribe();
-     mi5Manual.makeItReady();
-   }
- });
-} else {
- console.log(err);
-}
+  if(!err){
+   console.log('Manual Module is connected');
+   mi5Manual.getModuleData(function(err){
+     if(!err){
+       mi5Manual.subscribe();
+       mi5Manual.makeItReady();
+     }
+   });
+  } else {
+    console.log(err);
+  }
 });
 
 // Input Module
 GLOBAL.mi5Input = new require('./models/mi5InputModule').newInputModule;
 mi5Input.initialize(function(err){
   if(!err){
-   console.log('Manual Module is connected');
+   console.log('Input Module is connected');
    mi5Input.getModuleData(function(err){
      if(!err){
        mi5Input.subscribe();
@@ -74,8 +74,23 @@ mi5Input.initialize(function(err){
   } else {
    console.log(err);
   }
-  });
+});
 
+//Output Module
+GLOBAL.mi5Output = new require('./models/mi5OutputModule').newOutputModule;
+mi5Output.initialize(function(err){
+  if(!err){
+    console.log('Output Module is connected');
+    mi5Output.getModuleData(function(err){
+      if(!err){
+        mi5Output.subscribe();
+        mi5Output.makeItReady(function(){});
+      }
+    });
+  } else {
+    console.log(err);
+  }
+});
 
 
 // Message Feed

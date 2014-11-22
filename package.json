@@ -12,6 +12,7 @@
     "async": "*",
     "express": "3.2.6",
     "jade": "*",
+    "jsftp": "^1.3.8",
     "lucidjs": "^3.1.0",
     "moment": "^2.8.3",
     "mongodb": "^1.4.19",
