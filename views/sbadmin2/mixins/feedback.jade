@@ -2,13 +2,13 @@
 // input topic is the topic, element or site on which the feedback is given
 mixin feedbackButton(topic)
   - var topicId = md5(topic);
-  btn.btn-primary.btn-sm.pull-right(data-toggle="modal" data-target="#feedbackModal#{topicId}" style="border-radius: 100%; margin-top: -4px")
+  btn.btn-primary.btn-sm.pull-right(data-toggle="modal" data-target="#feedbackModal#{topicId}" style="border-radius: 100%; margin-top: -4px; cursor: pointer")
     i.fa.fa-thumbs-o-up
-  <!-- modal-->
+  // modal
   div.modal.fade(id="feedbackModal#{topicId}" tabindex ="-1" role="dialog" aria-labelledby="feedbackModalLabel#{topicId}" aria-hidden="true")
-    <!-- form element to post the feedback -->
+    // form element to post the feedback
     div.modal-dialog
-      form(role="form", action="/feedback/"+topicId, method="POST")
+      form(role="form", action="/feedback/"+topicId, method="POST", id="feedbackForm#{topicId}")
         div.modal-content
             div.modal-header
                 btn.close(data-dismiss="modal")
@@ -37,11 +37,17 @@ mixin feedbackButton(topic)
                 div.col-xs-12(role="form")
                     div.form-group
                         h4 Please tell us why:
-                        textarea.form-control#feedbackText(name="userparameter")
-                        input#inputFeedbackText.hidden(name="userparameter" value=0)
-                        - 
+                        textarea.form-control#feedbackText(name="text")
+                        input(type="hidden", name="topic", value=topic)
             div.modal-footer
               span.pull-left
                 button.btn.btn-default(data-dismiss="modal") Close
               span.pull-right
-                button.btn.btn-primary(data-dismiss="modal", type="submit") Save
+                button.btn.btn-primary(data-dismiss="modal", type="submit", onClick='sendSerializedForm("#feedbackForm'+topicId+'")') Save
+                
+                script.
+                 function sendSerializedForm(formId){
+                   var formData = $(formId).serializeArray();
+                   console.log(formData);
+                   socket.emit('feedBack', formData);
+                 }       
