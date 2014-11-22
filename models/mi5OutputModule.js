@@ -209,7 +209,7 @@ module.prototype.ioRegister = function(socket) {
   socket.on(self.jadeData.SkillOutput[0].Done.submitEvent, self.socketUserIsDone);
 
   console.log(preLog() + 'OK - Output Module - event listeners registered');
-}
+};
 
 module.prototype.socketUserIsBusy = function() {
   var self = this;
@@ -219,7 +219,7 @@ module.prototype.socketUserIsBusy = function() {
   self.setValue(self.jadeData.SkillOutput[0].Ready.nodeId, false, function() {
   });
 
-}
+};
 
 module.prototype.socketUserIsDone = function() {
   var self = this;
@@ -229,7 +229,7 @@ module.prototype.socketUserIsDone = function() {
   self.setValue(self.jadeData.SkillOutput[0].Busy.nodeId, false, function(err) {
     console.log(preLog() + 'OK - waiting for PT to set execute = false');
   });
-}
+};
 
 // /////////////////////////////////////////////////////////////////
 // Backend
@@ -251,7 +251,7 @@ module.prototype.monitorItems = function(itemArray) {
     mI.on('changed', item.callback);
   });
   return true;
-}
+};
 
 /**
  * set a key:value object based on a basenode
@@ -316,7 +316,7 @@ module.prototype.cutLastElement = function(nodeId) {
   result.pop();
   result = result.join('.') + '.';
   return result;
-}
+};
 
 /**
  * Get Inputs
@@ -437,7 +437,7 @@ module.prototype.structInput = function(baseNode) {
   });
 
   return nodes;
-}
+};
 
 /**
  * Adds ParameterInput to a basenode (no-array-architecture)
@@ -462,7 +462,7 @@ module.prototype.structSkillInput = function(baseNode) {
     return baseNode + item;
   });
   return nodes;
-}
+};
 
 /**
  * Adds nodes to UserParameter[x].YYYYYYYYYYY
@@ -480,7 +480,7 @@ module.prototype.structParameterInput = function(baseNode) {
     return baseNode + item;
   });
   return nodes;
-}
+};
 
 // ///////////////////////////////////////////////////////////////////////////////////////////
 // Output
@@ -554,7 +554,7 @@ module.prototype.structOutputObjectBlank = function() {
     outputDummy.StateValue.push(stateValueDummy);
   });
   return outputDummy;
-}
+};
 
 /**
  * Adds SkillOutput to a basenode (no-array-architecture)
@@ -589,7 +589,7 @@ module.prototype.structOutput = function(baseNode) {
   });
 
   return nodes;
-}
+};
 
 /**
  * Adds SkillOutput to a basenode (no-array-architecture)
@@ -614,7 +614,7 @@ module.prototype.structSkillOutput = function(baseNode) {
     return baseNode + item;
   });
   return nodes;
-}
+};
 
 /**
  * Adds nodes to ParameterOutput.ParameterOutputX.YYY
@@ -632,7 +632,7 @@ module.prototype.structParameterOutput = function(baseNode) {
     return baseNode + item;
   });
   return nodes;
-}
+};
 
 /**
  * Adds nodes to Output.StateValue[X].YYYY
@@ -650,4 +650,4 @@ module.prototype.structStateValue = function(baseNode) {
     return baseNode + item;
   });
   return nodes;
-}
+};
