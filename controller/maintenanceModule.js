@@ -21,14 +21,10 @@ function showModule(req, res) {
       maintenanceSockets(socket);
 
       socket.on('disconnect', function() {
-        console.log('disconnect in maintenance', io, socket);
+        console.log('disconnect in maintenance'.inverse, socket);
+        console.log('connected sockets:'.inverse, io.sockets.connected);
       })
     });
-
-    io.on('disconnection', function(socket) {
-      console.log('disconnect', io, socket);
-      console.log('connected sockets:', io.sockets.connected);
-    })
 
     jadeData.manualModule = mi5Maintenance.jadeData;
 
