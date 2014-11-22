@@ -10,6 +10,7 @@
   "dependencies": {
     "MD5": "*",
     "async": "*",
+    "colors": "^1.0.3",
     "express": "3.2.6",
     "jade": "*",
     "jsftp": "^1.3.8",

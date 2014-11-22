@@ -3,6 +3,9 @@
  */
 GLOBAL.CONFIG = require('./config.js'); 
 
+// Node Modules
+var colors = require('colors');
+
 // Server Modules
 var path = require('path');
 var express = require('express');
@@ -103,7 +106,7 @@ var services = require('./controller/backgroundServices');
 var router = require('./controller/router'); // Control
 
 // Express Environments
-app.set('port', process.env.PORT || CONFIG.Port);
+app.set('port', CONFIG.Port);
 app.set('views', __dirname + '/views');
 app.set('view engine', 'jade');
 app.use(express.favicon());
@@ -126,5 +129,5 @@ if ('development' == app.get('env')) {
 app = router.router(app);
 
 server.listen(app.get('port'), function(){
-  console.log('Express server listening on port ' + app.get('port'));
+  console.log('Express server listening on port '.green + app.get('port') );
 });
