@@ -12,34 +12,38 @@ block content
            | Order something else!
            
   div.row
-    div.col-lg-8
-      div.panel.panel-default 
-        div.panel-heading
-          i.fa.fa-clock-o.fa-fw
-          | All Tasks in a Timeline
-        div.panel-body
-          ul.timeline
-            if tasks
-              for task in tasks
-                li
-                  div.timeline-badge
-                    | #{task.TaskID.value}
-                  div.timeline-panel
-                    div.timeline-heading
-                      h4.timeline-title= task.Name.value
-                      p
-                        small.text-muted
-                          i.fa.fa-clock-o= task.Timestamp.value
-                    div.timeline-body
-                      p RecipeID: #{task.RecipeID.value}
-            
-            else
-                li
-                  div.timeline-badge
-                    i.fa.fa-circle-o
-                  div.timeline-panel
-                    div.timeline-heading
-                      h4.timeline-title No Task
-                    div.timeline-body
-                      p There are no tasks in the Production List
-    
+     div.col-lg-8
+       h1.page-header Tasks
+       div.panel.panel-default 
+         div.panel-heading
+           i.fa.fa-clock-o.fa-fw
+           | All Tasks in a Timeline
+           +feedbackButton("tasks")
+  
+         div.panel-body
+           script console.log(#{task});
+           ul.timeline#taskListTimeline
+             if tasks
+               for task in tasks
+                 +timelineTaskElement(task)        
+             else
+                 li
+                   div.timeline-badge
+                     i.fa.fa-circle-o
+                   div.timeline-panel
+                     div.timeline-heading
+                       h4.timeline-title No Task
+                     div.timeline-body
+                       p There are no tasks in the Production List
+         script.
+           socket.on('taskNew', function(data){
+             console.log(data);
+             // - we should append instead of reload
+             window.location.replace("/tasks"); 
+           });
+           socket.on('taskDisappears', function(data){
+             console.log(data);
+             $("#"+data.TaskID.containerId).remove();
+           });
+          
+   
