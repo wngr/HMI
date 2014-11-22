@@ -190,7 +190,13 @@ exports.server = function(endPointUrl) {
         var nodeData = opcua._convertMi5ListToNodeData(baseNode, object, mappingFunction);
 
         // write
-        opcua.session.write(nodeData, callback);
+        opcua.session.write(nodeData, function(err, result) {
+          // Error occured
+          if (result[0].value !== 0) {
+            console.log(JSON.stringify(nodeData, null, 1), result);
+          }
+          callback(err, result);
+        });
       },
 
       /**
@@ -335,6 +341,8 @@ exports.server = function(endPointUrl) {
           type = nodeopcua.DataType.Float
         } else if (type === 'Int16') {
           type = nodeopcua.DataType.Int16
+        } else if (type === 'UInt16') {
+          type = nodeopcua.DataType.UInt16
         } else if (type === 'Boolean') {
           type = nodeopcua.DataType.Boolean
         } else {
