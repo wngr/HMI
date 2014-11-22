@@ -1,0 +1,124 @@
+//mixin for custom_order side. Creates the site body for cocktail recipes
+mixin orderCustomCocktail(recipe)
+                          <!-- then the recipe is a cocktail-->
+                          - console.log("recipe is a cocktail");
+                          - var amountParam = recipe.UserParameter[0]
+                          div.row
+                           <!-- panel for amount-->
+                           div.col-lg-2.col-md-2.col-sm-3.col-xs-3
+                                div.panel.panel-default#totalAmount
+                                    div.panel-heading
+                                        h4
+                                            |Total Liquid Amount
+                                        span.pull-right
+                                            +feedbackButton("Total Liquid Amount")
+                                    div.panel-body
+                                     div.row
+                                      div.col-lg-12.text-center
+                                        b= amountParam.MaxValue.value
+                                      div.col-lg-12.text-center(style="padding: 20px")
+                                        - var myStep=Math.round(amountParam.Step.value);
+                                        - console.log("mystep: "+myStep);
+                                        - if(myStep == 0){ myStep = 1; }
+                                        input.span2(name='userparameter', id=amountParam.Name.containerId, type="text", data-slider-value=amountParam.Default.value, data-slider-min=amountParam.MinValue.value, data-slider-max=amountParam.MaxValue.value, data-slider-step=myStep, data-slider-orientation="vertical", style="height: 100%")
+                                        script.
+                                                $(function(){
+                                                    $('##{amountParam.Name.containerId}').slider({
+                                                        reversed: true,
+                                                        formater: function(value) {
+                                                            return value;
+                                                        }
+                                                    });
+                                                });
+                                      div.col-lg-12.text-center
+                                        b= amountParam.MinValue.value
+                           <!-- panels for liquids:-->
+                           div.col-lg-6.col-md-6.col-sm-9.col-xs-9
+                             //- amount of different flavoured fluids
+                             - var amountOfFlavours = 0;
+                             - var totalFlavourAmount = 0; //sum over default flavour amounts given by the OPC Server
+                             - var percFlavourAmount = []; //scale factor how much percent of each fluid is in the cocktail
+                             //-calculate totalFlavourAmount
+                             for userParameter in recipe.UserParameter
+                                if(userParameter.Name.value!="Total Liquid Amount" && userParameter.Name.value!="Amount")
+                                    - totalFlavourAmount = totalFlavourAmount + userParameter.Default.value;
+                             script var mixRatioData = [];//Data for the mixRatioDonut
+                             for userParameter in recipe.UserParameter
+                               //- so that amount wont be user again
+                               if(userParameter.Name.value!="Total Liquid Amount" && userParameter.Name.value!="Amount")
+                                 - amountOfFlavours++;
+                                 if(totalFlavourAmount==0)
+                                    - totalFlavourAmount = 100;
+                                    - console.log("totalFlavourAmount ist NULL!");
+                                 - percFlavourAmount[(amountOfFlavours-1)] = userParameter.Default.value/totalFlavourAmount;
+                                 - console.log("percental Flavour Amount of #{userParameter.Name.value}: " + percFlavourAmount[(amountOfFlavours-1)]);
+                                 script mixRatioData.push({label: "#{userParameter.Name.value}", value: #{userParameter.Default.value}});
+                                 div.row
+                                  //- Cookie Order Site:
+                                  //- userParameters with odd saving the amount are left out
+                                  //- console.log("userParameter.name.value: "+ userParameter.Name.value)
+                                  //- cocktail order site:
+                                  //- if(userParameter.Name.value!="Amount")
+                                  //- means that the recipe is cocktail recipe
+                                  //- var cocktail=true;
+                                  div.col-lg-12.col-md-12
+                                    div.panel.panel-default(id="panel"+userParameter.Name.containerId)
+                                      div.panel-heading
+                                            h4= userParameter.Name.value
+                                            span.pull-right(style="margin-top: -30px")
+                                                +feedbackButton("Total Liquid Amount")
+                                      div.panel-body
+                                       div.row
+                                        div.col-lg-12e
+                                            div.row.text-center
+                                                div.col-lg-12
+                                                    -//set Step on on when its zero and round it on one
+                                                    - var myStep=Math.round(userParameter.Step.value);
+                                                    - console.log("mystep: "+myStep);
+                                                    - if(myStep == 0){ myStep = 1; }
+                                                    //b= userParameter.MinValue.value
+                                                    //input.span2(name='userparameter', id=userParameter.Name.containerId, type="text", data-slider-value=userParameter.Default.value, data-slider-min=userParameter.MinValue.value, data-slider-max=userParameter.MaxValue.value, data-slider-step=myStep, style="width: 90%")
+                                                    input.span2(name='userparameter', id=userParameter.Name.containerId, type="text", data-slider-value=100, data-slider-min=5, data-slider-max=200, data-slider-step=myStep, style="width: 90%")
+                                                    //b= userParameter.MaxValue.value
+                                            script.
+                                                $(function(){
+                                                    var slider#{userParameter.Name.containerId}= $('##{userParameter.Name.containerId}').slider({
+                                                        formater: function(value) {
+                                                            return value;
+                                                        }
+                                                    });
+                                                    console.log("sider initial value: "+$('##{userParameter.Name.containerId}').slider("getValue"));
+                                                    var updateMixRatioDonut = function(newValue){
+                                                        mixRatioData[(#{amountOfFlavours}-1)]={label: "#{userParameter.Name.value}", value: Math.round(#{percFlavourAmount[(amountOfFlavours-1)]}*newValue)};
+                                                        mixRatioDonut.setData(mixRatioData);
+                                                        mixRatioDonut.select(#{amountOfFlavours}-1);
+                                                    };
+                                                    $('##{userParameter.Name.containerId}').on('slide',function(){
+                                                        updateMixRatioDonut($('##{userParameter.Name.containerId}').slider("getValue"));
+                                                    });
+                                                });
+                                            //script console.log("start slider value: " + slider#{userParameter.Name.containerId}.getValue());
+                           <!-- panel for Mix ratio-->
+                           div.col-lg-4.col-md-4.col-sm-12.col-xs-12
+                                div.panel.panel-default(id="panelMixRatio"+recipe.RecipeID.value)
+                                    div.panel-heading
+                                        h4 Mix Ratio
+                                        span.pull-right(style="margin-top: -30px")
+                                            +feedbackButton("Total Liquid Amount")
+                                    div.panel-body
+                                          div(id="mixRatio"+recipe.RecipeID.value)
+                                          script.
+                                            console.log("amount of flavours: "+#{amountOfFlavours});
+                                            //for (i=1; i<= #{amountOfFlavours}; i++){
+                                            //}
+                                            var mixRatioDonut = Morris.Donut({
+                                                element: "mixRatio#{recipe.RecipeID.value}",
+                                                data: [
+                                                    { label: 'Maracuja', value: 10},
+                                                    { label: 'Orange', value: 15},
+                                                    { label: 'Grenadine', value: 8}
+                                                ]
+                                            });
+                                            mixRatioDonut.setData(mixRatioData);
+                                          - //console.log("ganz unten mixratiodata: "+ mixRatioData[3].label);
+                                          - //mixRatioDonut.setData(mixRatioData);
