@@ -33,6 +33,7 @@ module = function() {
   this.socketRoom = 'output-module';
   this.ModuleId = 2601;
   this.SkillID = 1403;
+  this.PositionOutput = 1300;
 
   this.opc = require('./../models/simpleOpcua').server(CONFIG.OPCUAOutputModule);
   console.log(preLog() + 'endpoint', CONFIG.OPCUAOutputModule);
@@ -113,6 +114,8 @@ module.prototype.makeItReady = function(callbackMain) {
     self.setValue(self.jadeData.SkillOutput[0].Done.nodeId, false, callback);
   }, function(callback) {
     self.setValue(self.jadeData.SkillInput[0].Execute.nodeId, false, callback);
+  }, function(callback) {
+    self.setValue(self.jadeData.PositionOutput.nodeId, self.PositionOutput, callback);
   }, function(callback) {
     console.log(preLog() + 'OK - Output Module is set to Ready-State');
     callbackMain();
@@ -567,7 +570,7 @@ module.prototype.structOutput = function(baseNode) {
   var self = this;
 
   var nodes = [ 'Connected', 'ConnectionTestInput', 'CurrentTaskDescription', 'Dummy', 'Error',
-      'ErrorDescription', 'ErrorID', 'ID', 'IP', 'Idle', 'Name', 'PositionSensor' ];
+      'ErrorDescription', 'ErrorID', 'ID', 'IP', 'Idle', 'Name', 'PositionOutput', 'PositionSensor' ];
   // Add SkillOutputs
   for (var i = 0; i <= self.NumberOfSkillOutputs; i++) {
     var temp = self.structSkillOutput('SkillOutput.SkillOutput' + i + '.');

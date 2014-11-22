@@ -119,6 +119,7 @@ function Mi5ManualModule(variableName) {
     type = 'String';
     break;
   case "Position":
+  case "PositionOutput":
     type = 'Double';
     break;
   default:
@@ -162,7 +163,7 @@ function Mi5ModuleInterface(variableName) {
   case "SkillDescription":
     type = 'String';
     break;
-  case "Position":
+  case "PositionOutput":
     type = 'Double';
     break;
   default:

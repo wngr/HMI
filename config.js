@@ -26,12 +26,15 @@ process.argv.forEach(function(val, index, array) {
 
 // Default Commandline
 if(!server){
-  server = 'live';
+  server = 'clone';
 }
 if(!port){
-  port = 80;
+  port = 3000;
 }
 exports.Port = port;
+
+exports.OutputPositionOutput = 1300;
+exports.InputPositionOutput = 200;
 
 //////////////////////////////////////////////////////////////////////////////
 // Preconfigured Server
