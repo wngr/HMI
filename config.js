@@ -33,6 +33,9 @@ if(!port){
 }
 exports.Port = port;
 
+exports.OutputPositionOutput = 1300;
+exports.InputPositionOutput = 200;
+
 //////////////////////////////////////////////////////////////////////////////
 // Preconfigured Server
 /*
