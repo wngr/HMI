@@ -158,7 +158,9 @@ module.prototype.onExecuteChange = function(data) {
     // task fully finished
     self.setValue(self.jadeData.Done.nodeId, false, function() {
     });
-    io.emit('manualRequired', true);
+    self.setValue(self.jadeData.Ready.nodeId, true, function() {
+    });
+    io.emit('manualRequired', false);
     io.to(self.socketRoom).emit('reloadPageManual', 0);
   }
   console.log(preLog(), 'onExecuteChange', data.value.value);
