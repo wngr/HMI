@@ -80,7 +80,7 @@ IO.on('connection', function(socket) {
   console.log('Connected Clients now:', connectedClients);
 
   // Register Listeners for backgroundDebug
-  require('./../controller/backgroundDebug').listeners(socket);
+  require('./../controller/backgroundDebug').sockets(socket);
 
   // Message Feed Module - Initial emit
   mMessageFeed.emitMessageFeedInitial();

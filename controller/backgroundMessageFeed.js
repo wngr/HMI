@@ -3,7 +3,7 @@
  * 
  * @author Thomas Frei
  */
-function work() {
+function service() {
 
   mMessageFeed.createMonitoredItems(function(err, feed) {
     if (!err) {
@@ -14,4 +14,4 @@ function work() {
   });
 
 }
-exports.work = work;
+exports.service = service;

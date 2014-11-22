@@ -10,15 +10,15 @@
  * 
  * @constructor
  */
-function work(){
+function service() {
   serverTime();
 }
-exports.work = work;
+exports.service = service;
 
 /**
  * Sends time Object to the Browser, needed for Top-Navigation
  */
-function serverTime(){
+function serverTime() {
   setInterval(function() {
     var now = moment();
     var serverTime = {
