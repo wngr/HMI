@@ -34,11 +34,13 @@ block content
                           p
                             small.text-muted
                               i.fa.fa-clock-o
-                              |&nbsp;#{task.Timestamp.value}
+                              |&nbsp;#{task.Timestamp.value}W
                         div.timeline-body
                                     p RecipeID: #{task.RecipeID.value}
                       div.col-lg-6
                           img(src="/assets/images/recipes/recipe"+task.RecipeID.value+"/cocktail.jpg" style="border-radius: 100%; height:100%; width:100%")
+                      div.col-lg-12
+                        a(href='#', onClick="socket.emit('abortTask',"+task.TaskID.value+");") Abort
                                 
             else
                 li

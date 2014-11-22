@@ -48,8 +48,8 @@ if (server == 'hmitest'){
   exports.OPCUATask               = 'opc.tcp://192.168.192.80:4840/';
   exports.OPCUAHandModule         = 'opc.tcp://192.168.192.80:4840/';
   exports.OPCUAMaintenanceModule  = 'opc.tcp://192.168.192.80:4840/';
-  exports.OPCUAInputModule        = 'opc.tcp://192.168.192.76:4840/'; // owXp
-  exports.OPCUAOutputModule       = 'opc.tcp://192.168.192.76:4840/';
+  exports.OPCUAInputModule        = 'opc.tcp://192.168.192.117:4840/'; // ModuleX
+  exports.OPCUAOutputModule       = 'opc.tcp://192.168.192.117:4840/';
   exports.FTPCamera               = '192.168.192.65'; // BR Panel
 }
 
@@ -63,8 +63,8 @@ if (server == 'live'){
   exports.OPCUATask             = 'opc.tcp://192.168.192.116:4840/';
   exports.OPCUAHandModule       = 'opc.tcp://192.168.192.116:4840/';
   exports.OPCUAMaintenanceModule= 'opc.tcp://192.168.192.116:4840/';
-  exports.OPCUAInputModule      = 'opc.tcp://192.168.192.76:4840/'; // owXp
-  exports.OPCUAOutputModule     = 'opc.tcp://192.168.192.76:4840/';
+  exports.OPCUAInputModule      = 'opc.tcp://192.168.192.117:4840/'; // ModuleX
+  exports.OPCUAOutputModule     = 'opc.tcp://192.168.192.117:4840/';
   exports.FTPCamera               = '192.168.192.65'; // BR Panel
 }
 
@@ -78,8 +78,8 @@ if (server == 'clone'){
   exports.OPCUATask               = 'opc.tcp://192.168.192.132:4840/';
   exports.OPCUAHandModule         = 'opc.tcp://192.168.192.132:4840/';
   exports.OPCUAMaintenanceModule  = 'opc.tcp://192.168.192.132:4840/';
-  exports.OPCUAInputModule        = 'opc.tcp://192.168.192.76:4840/'; // owXp
-  exports.OPCUAOutputModule       = 'opc.tcp://192.168.192.76:4840/';
+  exports.OPCUAInputModule        = 'opc.tcp://192.168.192.117:4840/'; // ModuleX
+  exports.OPCUAOutputModule       = 'opc.tcp://192.168.192.117:4840/';
   exports.FTPCamera               = '192.168.192.65'; // BR Panel
 }
 
