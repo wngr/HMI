@@ -89,6 +89,9 @@ io.on('connection', function(socket) {
   // Message Feed Module - Initial emit
   mMessageFeed.emitMessageFeedInitial();
 
+  // Register Listeners for backgroundFeedback
+  require('./../controller/backgroundFeedback').sockets(socket);
+
   // Disconnect
   socket.on('disconnect', function() {
     var oldClients = connectedClients;
