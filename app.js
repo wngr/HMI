@@ -51,6 +51,9 @@ mi5Output.start(function(){});
 GLOBAL.mi5TaskInterface = new require('./models/mi5TaskInterface').newTaskInterface;
 mi5TaskInterface.start(function(){});
 
+// Camera Module
+GLOBAL.mi5Camera = new require('./models/mi5Camera').newMi5Camera;
+
 // Message Feed
 GLOBAL.mMessageFeed = require('./models/simpleMessageFeed');
 
