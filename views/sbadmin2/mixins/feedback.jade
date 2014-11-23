@@ -20,12 +20,19 @@ mixin feedbackButton(topic)
                 div.col-xs-12
                   div.form-group  
                     h4 How do you like this page?
-                div.col-xs-1
-                    i.fa.fa-frown-o.fa-2x
-                div.col-xs-10
-                    input.span2(id="feedbackSlider#{topicId}",name="userparameter", type="text", data-slider-value="5", data-slider-min="0", data-slider-max="10", data-slider-step="1", style="width: 100%")
-                div.col-xs-1
-                    i.fa.fa-smile-o.fa-2x
+                //div.col-xs-1
+                //    i.fa.fa-frown-o.fa-2x
+                //div.col-xs-10
+                div.col-xs-12
+                  div.row
+                    div.col-xs-2
+                        i.fa.fa-frown-o
+                    div.col-xs-8
+                        input.span2(id="feedbackSlider#{topicId}",name="userparameter", type="text", data-slider-value="5", data-slider-min="0", data-slider-max="10", data-slider-step="1", style="width: 100%")
+                    div.col-xs-2
+                        i.fa.fa-smile-o
+                //div.col-xs-1
+                //    i.fa.fa-smile-o.fa-2x
                 script.
                     $(function(){
                         $('#feedbackSlider#{topicId}').slider({
