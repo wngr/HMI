@@ -18,13 +18,15 @@ block content
                             h1= recipe.Name.value
                             p= recipe.Description.value
                    div.panel-body
-                    form(role="form", action="/order/order/"+recipe.RecipeID.value, method="POST")
+                    form(role="form", action="/order/order/"+recipe.RecipeID.value, method="POST", id='formIdSerialize')
                          //begin of site for COOKIES:
                          if(recipe.UserParameter[0].Name.value=="Topping")
+                            - console.log("recipe is a cookie recipe");
                             + orderCustomCookie(recipe)
                          //begin of site for COCKTAILS:
                          if(recipe.UserParameter[0].Name.value=="Total Liquid Amount")
                             //-then the recipe is for a cocktail
+                            - console.log("recipe is a cocktail recipe");
                             +orderCustomCocktail(recipe)
                          br
                          div.row

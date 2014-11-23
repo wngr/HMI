@@ -9,7 +9,6 @@ mixin dropdown-messageFeed()
             //- i.fa.fa-caret-down //- not necessary cause auf messageFee
             script.
               socket.on("messageFeedBadge", function(data){
-                - console.log('JADE: messageFeedBadge received');
                 if(data == 0){
                   $("#messageFeedBadge").removeClass("badge-top").html("");
                 } else {
