@@ -11,6 +11,10 @@ var jadeH = require('./../models/simpleJadeHelper');
 
 var messageFeedArray = [];
 
+function preLog() {
+  return 'Message-Feed:'.grey;
+}
+
 /**
  * Subscribe and monitor all messageFeed entries
  * 
@@ -54,7 +58,7 @@ function emitMessageFeedInitial() {
   _emitMessageFeedArray('messageFeedSingle', 1);
   _emitMessageFeedBadge();
 
-  console.log('OK - MessageFeed -Initial - IO.emit()');
+  console.log(preLog(), 'OK - MessageFeed -Initial - IO.emit()');
 }
 exports.emitMessageFeedInitial = emitMessageFeedInitial;
 
@@ -79,19 +83,18 @@ function _readMessageEntry(baseNode) {
       // only do something if ID != 0
       if (jadeData.ID.value != 0) {
         // Check for maintenance or manual module
-        console.log(jadeData.Level.value);
+        // console.log(jadeData.Level.value);
 
         if (_isSpecialMessage(jadeData)) {
           _handleSpecialMessages(jadeData);
-          console.log('OK - SpecialMessage - ', jadeData.Message.value);
+          console.log(preLog(), 'OK - SpecialMessage - ', jadeData.Message.value);
         } else {
           _pushMessage(jadeData);
           _emitMessageFeedArray('messageFeedPanel', 15);
           _emitMessageFeedArray('messageFeedArray', 5);
           _emitMessageFeedArray('messageFeedSingle', 1);
           _emitMessageFeedBadge();
-          console.log('OK - MessageFeed - IO.emit() - Level: ',
-              jadeData.Level.value);
+          console.log(preLog(), 'OK - MessageFeed - IO.emit() - Level: ', jadeData.Message.value);
         }
 
       }
@@ -113,8 +116,8 @@ function _pushMessage(message) {
   messageFeedArray.unshift(message); // unshift adds element at the top of the
   // array
 
-  console.log('OK - MessageFeed - New Message from ProcessTool:',
-      message.Message.value, message.Timestamp.value);
+  // console.log(preLog(),'OK - MessageFeed - New Message from ProcessTool:', message.Message.value,
+  // message.Timestamp.value);
 }
 
 /**
@@ -125,8 +128,7 @@ function _pushMessage(message) {
  *          <mixed> (options: #number, 'complete')
  */
 function _emitMessageFeedArray(eventName, numberOfEntries) {
-  numberOfEntries = typeof numberOfEntries !== 'undefined' ? numberOfEntries
-      : 5; // default: 5
+  numberOfEntries = typeof numberOfEntries !== 'undefined' ? numberOfEntries : 5; // default: 5
 
   IO.emit(eventName, _.first(messageFeedArray, numberOfEntries));
 }
