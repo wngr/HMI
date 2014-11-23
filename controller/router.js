@@ -79,7 +79,7 @@ function index(req, res) {
 }
 
 var connectedClients = 0;
-IO.on('connection', function(socket) {
+io.on('connection', function(socket) {
   connectedClients++;
   console.log('Connected Clients now:', connectedClients);
 
@@ -88,6 +88,9 @@ IO.on('connection', function(socket) {
 
   // Message Feed Module - Initial emit
   mMessageFeed.emitMessageFeedInitial();
+
+  // Register Listeners for backgroundFeedback
+  require('./../controller/backgroundFeedback').sockets(socket);
 
   // Disconnect
   socket.on('disconnect', function() {
