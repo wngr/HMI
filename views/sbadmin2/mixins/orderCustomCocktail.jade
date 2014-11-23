@@ -11,7 +11,7 @@ mixin orderCustomCocktail(recipe)
                                         h4
                                             |Total Liquid Amount
                                         span.pull-right
-                                            +feedbackButton("Total Liquid Amount")
+                                            //+feedbackButton("Total Liquid Amount")
                                     div.panel-body
                                      div.row
                                       div.col-lg-12.text-center
@@ -66,7 +66,7 @@ mixin orderCustomCocktail(recipe)
                                       div.panel-heading
                                             h4= userParameter.Name.value
                                             span.pull-right(style="margin-top: -30px")
-                                                +feedbackButton("Total Liquid Amount")
+                                                //+feedbackButton("Cocktail Ingredient #{userParameter.Name.value}")
                                       div.panel-body
                                        div.row
                                         div.col-lg-12e
@@ -104,7 +104,7 @@ mixin orderCustomCocktail(recipe)
                                     div.panel-heading
                                         h4 Mix Ratio
                                         span.pull-right(style="margin-top: -30px")
-                                            +feedbackButton("Total Liquid Amount")
+                                            //+feedbackButton("Mix Ratio Donut Chart")
                                     div.panel-body
                                           div(id="mixRatio"+recipe.RecipeID.value)
                                           script.

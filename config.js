@@ -26,12 +26,12 @@ process.argv.forEach(function(val, index, array) {
 
 // Default Commandline
 if(!server){
-  server = 'hmi';
+  server = 'clone';
 }
 console.log('Using Server Setup'.bgGreen, server);
 
 if(!port){
-  port = 80;
+  port = 3000;
 }
 exports.Port = port;
 
@@ -52,7 +52,7 @@ if (server == 'hmitest'){
   exports.OPCUAMaintenanceModule  = 'opc.tcp://192.168.192.80:4840/';
   exports.OPCUAInputModule        = 'opc.tcp://192.168.192.117:4840/'; // ModuleX
   exports.OPCUAOutputModule       = 'opc.tcp://192.168.192.117:4840/';
-  exports.FTPCamera               = '192.168.192.65'; // BR Panel
+  exports.FTPCamera               = '192.168.192.128'; // BR Panel
 }
 
 /*
@@ -67,22 +67,22 @@ if (server == 'live'){
   exports.OPCUAMaintenanceModule= 'opc.tcp://192.168.192.116:4840/';
   exports.OPCUAInputModule      = 'opc.tcp://192.168.192.117:4840/'; // ModuleX
   exports.OPCUAOutputModule     = 'opc.tcp://192.168.192.117:4840/';
-  exports.FTPCamera               = '192.168.192.65'; // BR Panel
+  exports.FTPCamera               = '192.168.192.128'; // BR Panel
 }
 
 /*
  * OPCUA Test Server-Configuration ITQ Lan
  */
 if (server == 'clone'){
-  exports.OPCUARecipe             = 'opc.tcp://192.168.192.132:4840/';
-  exports.OPCUAOrder              = 'opc.tcp://192.168.192.132:4840/';
-  exports.OPCUAMessageFeed        = 'opc.tcp://192.168.192.132:4840/';
-  exports.OPCUATask               = 'opc.tcp://192.168.192.132:4840/';
-  exports.OPCUAHandModule         = 'opc.tcp://192.168.192.132:4840/';
-  exports.OPCUAMaintenanceModule  = 'opc.tcp://192.168.192.132:4840/';
+  exports.OPCUARecipe             = 'opc.tcp://192.168.192.128:4840/';
+  exports.OPCUAOrder              = 'opc.tcp://192.168.192.128:4840/';
+  exports.OPCUAMessageFeed        = 'opc.tcp://192.168.192.128:4840/';
+  exports.OPCUATask               = 'opc.tcp://192.168.192.128:4840/';
+  exports.OPCUAHandModule         = 'opc.tcp://192.168.192.128:4840/';
+  exports.OPCUAMaintenanceModule  = 'opc.tcp://192.168.192.128:4840/';
   exports.OPCUAInputModule        = 'opc.tcp://192.168.192.117:4840/'; // ModuleX
   exports.OPCUAOutputModule       = 'opc.tcp://192.168.192.117:4840/';
-  exports.FTPCamera               = '192.168.192.65'; // BR Panel
+  exports.FTPCamera               = '192.168.192.128'; // BR Panel
 }
 
 

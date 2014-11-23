@@ -49,7 +49,7 @@ function placeOrder(req, res) {
   var userParameters = _handlePostParameters(postParameters);
 
   // Debug
-  console.log(order, userParameters);
+  console.log('ORDER'.bgBlue, order, userParameters);
 
   recipeInterface.setOrder(order, userParameters, function(err, callback) {
     if (err) {
