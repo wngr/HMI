@@ -15,19 +15,25 @@ block content
                           img(id="pictureRecipe"+recipe.RecipeID.value src="/assets/images/recipes/recipe"+recipe.RecipeID.value+"/cocktail.jpg" style="border-radius: 100%; horizontal-align: middle; vertical-align: middle; width:70%")
                       div.col-lg-6.col-md-6
                         div.jumbotron
-                            h1= recipe.Name.value
+                            span.pull-right
+                                    +feedbackButton("Cocktail #{recipe.Name.value}")
+                            h1
+                                | #{recipe.Name.value}
                             p= recipe.Description.value
                    div.panel-body
                     form(role="form", action="/order/order/"+recipe.RecipeID.value, method="POST", id='formIdSerialize')
-                         //begin of site for COOKIES:
-                         if(recipe.UserParameter[0].Name.value=="Topping")
-                            - console.log("recipe is a cookie recipe");
-                            + orderCustomCookie(recipe)
-                         //begin of site for COCKTAILS:
-                         if(recipe.UserParameter[0].Name.value=="Total Liquid Amount")
-                            //-then the recipe is for a cocktail
-                            - console.log("recipe is a cocktail recipe");
-                            +orderCustomCocktail(recipe)
+                         if(recipe.UserParameter[0])
+                            //begin of site for COOKIES:
+                            if(recipe.UserParameter[0].Name.value=="Topping")
+                                - console.log("recipe is a cookie recipe");
+                                + orderCustomCookie(recipe)
+                            //begin of site for COCKTAILS:
+                            if(recipe.UserParameter[0].Name.value=="Total Liquid Amount")
+                               //-then the recipe is for a cocktail
+                               - console.log("recipe is a cocktail recipe");
+                               +orderCustomCocktail(recipe)
+                         else
+                            p.lead recipe is empty
                          br
                          div.row
                            div.col-lg-12

@@ -4,17 +4,28 @@ mixin orderCustomCocktail(recipe)
                           <!-- then the recipe is a cocktail-->
                           - console.log("recipe is a cocktail");
                           - var amountParam = recipe.UserParameter[0]
+                          //List of all ingredients with corresponding color
                           script.
                             var allIngredientColors=[
+                                {ingredient: 'Default', color: '#3980B5'},
                                 {ingredient: 'Grenadine Syrup', color: '#A23138'},
                                 {ingredient: 'Orange Juice', color: '#F9D423'},
                                 {ingredient: 'Maracuja Juice', color: '#E89505'},
+                                {ingredient: 'Citrone Juice', color: '#FFF44F'},
+                                {ingredient: 'Pineapple Juice', color: '#FDCC4A'},
+                                {ingredient: 'Strawberry Syrup', color: '#E62C47'},
+                                {ingredient: 'Blue Curacao', color: '#006996'},
+                                {ingredient: 'Water', color: '#BBD9EE'},
+                                {ingredient: 'Batida de Coco', color: '#F8F2DC'},
+                                {ingredient: 'White Rum', color: '#E8D0A9'},
+                                {ingredient: 'Gin', color: '#C2D72F'},
+                                {ingredient: 'Tequila', color: '#E3501A'}
                             ];
                             function arrayObjectIndexOf(myArray, searchTerm, property) {
                                 for(var i = 0, len = myArray.length; i < len; i++) {
                                     if (myArray[i][property] === searchTerm) return i;
                                 }
-                                return -1;
+                                return 0;
                             }
                           div.row
                            <!-- panel for amount-->
@@ -70,9 +81,9 @@ mixin orderCustomCocktail(recipe)
                                  script mixRatioData.push({label: "#{userParameter.Name.value}", value: #{userParameter.Default.value}});
                                  //-fill color array
                                  script var colorIndex = arrayObjectIndexOf(allIngredientColors, "#{userParameter.Name.value}", "ingredient");//allIngredientColors.indexOf("Orange Juice");
-                                 script console.log("color hexa: "+ allIngredientColors[colorIndex].color);
+                                 //-script console.log("color hexa: "+ allIngredientColors[colorIndex].color);
                                  script ingredientColors[(#{amountOfFlavours}-1)]=(allIngredientColors[colorIndex].color);
-                                 script console.log("pushed color: "+ ingredientColors[colorIndex]);
+                                 //-script console.log("pushed color: "+ ingredientColors[colorIndex]);
                                  //- ingredientColor = 
                                  //script ingredientColors.push(
                                  div.row

@@ -21,13 +21,14 @@ block content
               a.panel-primary(href="/order/custom/"+recipe.RecipeID.value)
                div.panel-heading.panel-primary
                  div.row
-                   div.col-lg-4.col-md-4.col-sm-4.col-xs-4
+                   div.col-lg-4.col-md-4.col-sm-4.col-xs-4.text-center
                       img(src="/assets/images/recipes/recipe"+recipe.RecipeID.value+"/cocktail.jpg" style="border-radius: 100%; height:200%; width:200%")
                    div.col-lg-8.col-md-8.col-sm-8.col-xs-8.text-right(style='padding-right: 5px')
                      div.row
                         div.col-lg-12.col-md-12.col-sm-12.col-xs-12 ID: # #{recipe.RecipeID.value}
                         div.col-lg-12.col-md-12.col-sm-12.col-xs-12
-                            p.lead= recipe.Name.value 
+                          span.pull-right
+                            h5= recipe.Name.value 
                a(href="/order/direct/"+recipe.RecipeID.value)
                   div.panel-footer
                     span.pull-left 1-click order!

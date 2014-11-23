@@ -5,7 +5,8 @@ mixin timelineTaskElement(task)
       | #{task.TaskID.value}
     div.timeline-panel
       div.row
-        div.col-lg-6
+        div.col-lg-12
+         div.col-lg-6.col-md-6.col-sm-6.col-xs-6
           div.timeline-heading
             h4.timeline-title= task.Name.value
             p
@@ -14,7 +15,6 @@ mixin timelineTaskElement(task)
                 |&nbsp;#{task.Timestamp.value}
           div.timeline-body
                       p RecipeID: #{task.RecipeID.value}
-        div.col-lg-6
+          a.btn.btn-default(href="#", onClick="socket.emit(\"abortTask\","+task.TaskID.value+");") Abort
+         div.col-lg-6.col-md-6.col-sm-6.col-xs-6
             img(src="/assets/images/recipes/recipe"+task.RecipeID.value+"/cocktail.jpg" style="border-radius: 100%; height:100%; width:100%")
-        div.col-lg-12
-          a(href="#", onClick="socket.emit(\"abortTask\","+task.TaskID.value+");") Abort
