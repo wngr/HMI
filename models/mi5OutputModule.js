@@ -60,7 +60,7 @@ module.prototype.start = function(callback) {
         }
       });
     } else {
-      console.log(err);
+      console.log(preLog(), err);
       callback(err);
     }
   });
@@ -78,7 +78,7 @@ module.prototype.initialize = function(callback) {
 
   self.opc.initialize(function(err) {
     if (err) {
-      console.log(err);
+      console.log(preLog(), err);
       callback(err);
       return 0;
     } else {
