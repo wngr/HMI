@@ -11,6 +11,7 @@ var manualModule = require('./manualModule');
 var maintenanceModule = require('./maintenanceModule');
 var inputModule = require('./inputModule');
 var outputModule = require('./outputModule');
+var camera = require('./camera');
 
 // Dashboard / Overview
 var overviewCharts = require('./overviewCharts');
@@ -54,6 +55,9 @@ exports.router = function(app) {
 
   // Manual Output
   app.get('/output', outputModule.index);
+
+  // Camera
+  app.get('/camera', camera.index);
 
   // Test
   app.post('/testRecipeView', recipes.placeOrder);

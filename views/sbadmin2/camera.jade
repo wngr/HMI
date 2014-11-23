@@ -1,0 +1,78 @@
+extends layout
+
+block content
+  if error
+    div.row
+      div.col-lg-12
+        h1 ERROR
+        p= error.Error
+        p= error.code
+        p= error.errno
+        p= error.syscal
+  
+  div.row
+    div.col-lg-8
+      h1.page-header Camera
+      div.panel.panel-default 
+        div.panel-heading
+          i.fa.fa-clock-o.fa-fw
+          | Picture in the camera
+          +feedbackButton("camera-timeline")
+
+        div.panel-body
+          ul.timeline#cameraTimeLine
+            if camera
+              for picture in camera
+                +pictureElement(picture)  
+                
+            else
+                li
+                  div.timeline-badge
+                    i.fa.fa-circle-o
+                  div.timeline-panel
+                    div.timeline-heading
+                      h4.timeline-title No Picture
+                    div.timeline-body
+                      p  Currently there is no picture to display
+        script.
+          socket.on('cameraNew', function(data){
+            console.log(data);
+            // - we should append instead of reload
+            window.location.replace("/camera"); 
+          });
+         
+    
+
+mixin pictureElement(picture)
+  li
+    div.timeline-badge
+      i.fa.fa-camera.fa-fw
+    div.timeline-panel
+      div.row
+        div.col-lg-12
+          div.timeline-heading
+            //- h4.timeline-title 
+            p
+              small.text-muted
+                i.fa.fa-clock-o= picture.name
+        div.col-lg-12
+            img(src=picture.url style="height:100%; width:100%", data-toggle="modal", data-target="#camera"+picture.id)
+            +pictureModal(picture)
+
+
+mixin pictureModal(picture)
+  div.modal.fade(id="camera#{picture.id}" tabindex ="-1" role="dialog" aria-labelledby="label"+picture.id, aria-hidden="true")
+    div.modal-dialog
+      div.modal-content
+          div.modal-header
+              btn.close(data-dismiss="modal")
+                  span(aria-hidden="true") &times
+                  span.sr-only close
+              h4.modal-title(id="label"+picture.id) Full-Width
+          div.modal-body(style="margin-top: 10px")
+            div.row(style="padding: 10px 10px")
+              div.col-xs-12
+                img(src=picture.url style="height:100%; width:100%", data-toggle="modal", data-target="#"+picture.id, type="button")
+          div.modal-footer
+            span.pull-left
+              button.btn.btn-default(data-dismiss="modal") Close

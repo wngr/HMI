@@ -14,7 +14,7 @@ var path = require('path'), express = require('express'), app = express(), http 
 
 //Lucid JS
 var lucidJS = require('lucidjs');
-var lucid = new lucidJS.EventEmitter();
+GLOBAL.lucid = new lucidJS.EventEmitter();
 
 GLOBAL.IO = require('socket.io').listen(server);
 GLOBAL.io = IO;
@@ -27,9 +27,19 @@ GLOBAL.CONFIG = require('./../config.js');
 GLOBAL.mi5Camera = new require('./../models/mi5Camera').newMi5Camera;
 
 async.series([function(callback){
- mi5Camera.subscribe();
+ callback();
+}, function(callback){
+  mi5Camera.getFileList(function(list){
+    console.log(list);
+    callback();
+  });
+  console.log('=-=-=-=-=-=-=-=-=-=-=-=-=');  
+}, function(callback){
+  console.log(mi5Camera.getLastPicture());
+  callback();
+}, function(callback){
+  console.log(mi5Camera.getLastPictures(3));
+  callback();
 }
 ], function(err, results){
-//  console.log(JSON.stringify(mi5Input.jadeData, null, 1));
-  console.log('=-=-=-=-=-=-=-=-=-=-=-=-=');
 });

@@ -18,7 +18,7 @@ module = function() {
   // We use a xampp server on the HMI computer with port 8080, to not conflict with the node.js Server
   this.baseUrl = 'http://' + CONFIG.FTPCamera + ':8080/wenglor/';
 
-  this.updateInterval = 3000;
+  this.updateInterval = 1000;
 
   this.ftp = new JSFtp({
     host : CONFIG.FTPCamera,
@@ -29,12 +29,16 @@ module = function() {
 };
 exports.newMi5Camera = new module();
 
+function preLog() {
+  return 'Camera-Module'.bgBlue;
+}
+
 /**
  * Get all .bmp files in the home directory
  * 
- * @param callback
+ * @param callback(fileList)
  */
-module.prototype.updateFileList = function(callback) {
+module.prototype.getFileList = function(callback) {
   var self = this;
 
   var tempList = [];
@@ -43,43 +47,49 @@ module.prototype.updateFileList = function(callback) {
     res.forEach(function(file) {
       var extension = file.name.slice(-4);
       if (extension == '.bmp') {
-        tempList.push(file.name);
+        var url = self.addBaseUrl(file.name)
+        var id = md5(url);
+
+        tempList.push({
+          url : url,
+          id : id,
+          name : file.name,
+          timestamp : file.name
+        });
       }
     });
-
     self.fileList = tempList;
-
-    if (typeof callback === 'function') {
-      callback();
-    }
+    callback(tempList);
   });
 };
 
-module.prototype.subscribe = function() {
+/**
+ * Get newest n pictures (sort newest first);
+ * 
+ * @param n
+ * @returns
+ */
+module.prototype.getLastPictures = function(n) {
   var self = this;
 
-  setInterval(self.checkForNew, self.updateInterval);
-};
+  assert(typeof n === 'number', 'specify the number of pictures you want to displya');
 
-module.prototype.checkForNew = function(newFileList) {
-  var self = this;
-
-  self.updateFileList(function() {
-    var newDiff = _.difference(newFileList, self.fileList);
-
-    if (newDiff.length >= 1) {
-      // io.emit('cameraNewImage', );
-      console.log('New Image'.bgGreen);
-    }
-  });
+  var list = _.last(self.fileList, n);
+  list.reverse();
+  return list;
 };
 
 module.prototype.addBaseUrl = function(image) {
   var self = this;
 
   return self.baseUrl + image;
-};
+}
 
-module.prototype.getLastPicture = function(image) {
-
+/**
+ * 
+ * @returns
+ */
+module.prototype.getLastPicture = function() {
+  var self = this;
+  return _.last(self.fileList);
 };
