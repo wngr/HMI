@@ -3,13 +3,12 @@ extends layout
 block content
   div.row
     div.col-lg-12
-      div.jumbotron
-        h1 Order something!
-        p You may choose whatever you want!
-        p Underneath you will find anything we can produce. Please select something.
-        p If there are too many things, let us surprise you!
-        p 
-         a.btn.btn-default.btn-lg(href='/order/ifeellucky/',role='button') 
+        h1.page-header Order something!
+        //p You may choose whatever you want!
+        //p Underneath you will find anything we can produce. Please select something.
+        //p If there are too many things, let us surprise you!
+        span.pull-left
+         a.btn.btn-default.btn-lg(href='/order/ifeellucky/',role='button',style="margin-bottom: 20px") 
            i.fa.fa-magic.fa-lg
            | I feel lucky!
   
@@ -17,16 +16,18 @@ block content
   div.row
      if recipes
         for recipe in recipes
-          div.col-lg-4.col-md-6
-             div.panel.panel-primary
+          div.col-lg-4.col-md-6.col-sm-6
+            div.panel.panel-primary(style="width:100%, height:100%")
               a.panel-primary(href="/order/custom/"+recipe.RecipeID.value)
                div.panel-heading.panel-primary
                  div.row
-                   div.col-xs-3
+                   div.col-lg-4.col-md-4.col-sm-4.col-xs-4
                       img(src="/assets/images/recipes/recipe"+recipe.RecipeID.value+"/cocktail.jpg" style="border-radius: 100%; height:200%; width:200%")
-                   div.col-xs-9.text-right(style='padding-right: 5px')
-                     div ID: # #{recipe.RecipeID.value}
-                     div= recipe.Name.value 
+                   div.col-lg-8.col-md-8.col-sm-8.col-xs-8.text-right(style='padding-right: 5px')
+                     div.row
+                        div.col-lg-12.col-md-12.col-sm-12.col-xs-12 ID: # #{recipe.RecipeID.value}
+                        div.col-lg-12.col-md-12.col-sm-12.col-xs-12
+                            p.lead= recipe.Name.value 
                a(href="/order/direct/"+recipe.RecipeID.value)
                   div.panel-footer
                     span.pull-left 1-click order!

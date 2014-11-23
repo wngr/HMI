@@ -1,15 +1,28 @@
 //mixin for custom_order side. Creates the site body for cocktail recipes
 mixin orderCustomCocktail(recipe)
+                      if(recipe.UserParameter[0])
                           <!-- then the recipe is a cocktail-->
                           - console.log("recipe is a cocktail");
                           - var amountParam = recipe.UserParameter[0]
+                          script.
+                            var allIngredientColors=[
+                                {ingredient: 'Grenadine Syrup', color: '#A23138'},
+                                {ingredient: 'Orange Juice', color: '#F9D423'},
+                                {ingredient: 'Maracuja Juice', color: '#E89505'},
+                            ];
+                            function arrayObjectIndexOf(myArray, searchTerm, property) {
+                                for(var i = 0, len = myArray.length; i < len; i++) {
+                                    if (myArray[i][property] === searchTerm) return i;
+                                }
+                                return -1;
+                            }
                           div.row
                            <!-- panel for amount-->
                            div.col-lg-2.col-md-2.col-sm-3.col-xs-3
                                 div.panel.panel-default#totalAmount
                                     div.panel-heading
-                                        h4
-                                            |Total Liquid Amount
+                                        h4#TotalLiquidAmountHeading
+                                            div Total Liquid Amount
                                         span.pull-right
                                             //+feedbackButton("Total Liquid Amount")
                                     div.panel-body
@@ -20,7 +33,7 @@ mixin orderCustomCocktail(recipe)
                                         - var myStep=Math.round(amountParam.Step.value);
                                         - console.log("mystep: "+myStep);
                                         - if(myStep == 0){ myStep = 1; }
-                                        input.span2(name='userparameter', id=amountParam.Name.containerId, type="text", data-slider-value=amountParam.Default.value, data-slider-min=amountParam.MinValue.value, data-slider-max=amountParam.MaxValue.value, data-slider-step=myStep, data-slider-orientation="vertical", style="height: 100%")
+                                        input.span2(name='userparameter', id=amountParam.Name.containerId, data-slider-id=amountParam.Name.containerId, type="text", data-slider-value=amountParam.Default.value, data-slider-min=amountParam.MinValue.value, data-slider-max=amountParam.MaxValue.value, data-slider-step=myStep, data-slider-orientation="vertical", style="height: 100%")
                                         script.
                                                 $(function(){
                                                     $('##{amountParam.Name.containerId}').slider({
@@ -38,6 +51,8 @@ mixin orderCustomCocktail(recipe)
                              - var amountOfFlavours = 0;
                              - var totalFlavourAmount = 0; //sum over default flavour amounts given by the OPC Server
                              - var percFlavourAmount = []; //scale factor how much percent of each fluid is in the cocktail
+                             script var ingredientColors= []; //array of ingredient colors. Will be sent to morris.js
+                             - var ingredientColor;
                              //-calculate totalFlavourAmount
                              for userParameter in recipe.UserParameter
                                 if(userParameter.Name.value!="Total Liquid Amount" && userParameter.Name.value!="Amount")
@@ -53,6 +68,13 @@ mixin orderCustomCocktail(recipe)
                                  - percFlavourAmount[(amountOfFlavours-1)] = userParameter.Default.value/totalFlavourAmount;
                                  - console.log("percental Flavour Amount of #{userParameter.Name.value}: " + percFlavourAmount[(amountOfFlavours-1)]);
                                  script mixRatioData.push({label: "#{userParameter.Name.value}", value: #{userParameter.Default.value}});
+                                 //-fill color array
+                                 script var colorIndex = arrayObjectIndexOf(allIngredientColors, "#{userParameter.Name.value}", "ingredient");//allIngredientColors.indexOf("Orange Juice");
+                                 script console.log("color hexa: "+ allIngredientColors[colorIndex].color);
+                                 script ingredientColors[(#{amountOfFlavours}-1)]=(allIngredientColors[colorIndex].color);
+                                 script console.log("pushed color: "+ ingredientColors[colorIndex]);
+                                 //- ingredientColor = 
+                                 //script ingredientColors.push(
                                  div.row
                                   //- Cookie Order Site:
                                   //- userParameters with odd saving the amount are left out
@@ -87,7 +109,7 @@ mixin orderCustomCocktail(recipe)
                                                             return value;
                                                         }
                                                     });
-                                                    console.log("sider initial value: "+$('##{userParameter.Name.containerId}').slider("getValue"));
+                                                    console.log("slider initial value: "+$('##{userParameter.Name.containerId}').slider("getValue"));
                                                     var updateMixRatioDonut = function(newValue){
                                                         mixRatioData[(#{amountOfFlavours}-1)]={label: "#{userParameter.Name.value}", value: Math.round(#{percFlavourAmount[(amountOfFlavours-1)]}*newValue)};
                                                         mixRatioDonut.setData(mixRatioData);
@@ -97,12 +119,19 @@ mixin orderCustomCocktail(recipe)
                                                         updateMixRatioDonut($('##{userParameter.Name.containerId}').slider("getValue"));
                                                     });
                                                 });
+                                            //style.
+                                            //    ##{userParameter.Name.containerId} .slider-selection{
+                                            //        background: #E89505;
+                                            //    }
                                             //script console.log("start slider value: " + slider#{userParameter.Name.containerId}.getValue());
                            <!-- panel for Mix ratio-->
                            div.col-lg-4.col-md-4.col-sm-12.col-xs-12
                                 div.panel.panel-default(id="panelMixRatio"+recipe.RecipeID.value)
                                     div.panel-heading
-                                        h4 Mix Ratio
+                                        div.headingVonMixRatio#headingVonMixRatioId
+                                            h4 Mix Ratio
+                                        //script document.getElementsByClassName("headingVonMixRatio")[0].style.color="blue";
+                                        //script document.getElementsByClassName("slider slider-horizontal")[0].style.background="red";
                                         span.pull-right(style="margin-top: -30px")
                                             //+feedbackButton("Mix Ratio Donut Chart")
                                     div.panel-body
@@ -113,12 +142,24 @@ mixin orderCustomCocktail(recipe)
                                             //}
                                             var mixRatioDonut = Morris.Donut({
                                                 element: "mixRatio#{recipe.RecipeID.value}",
-                                                data: [
-                                                    { label: 'Maracuja', value: 10},
-                                                    { label: 'Orange', value: 15},
-                                                    { label: 'Grenadine', value: 8}
-                                                ]
+                                                data: mixRatioData,
+                                                colors: ingredientColors
+                                                /*colors: [
+                                                    '#0BA462',
+                                                    '#39B580',
+                                                    '#67C69D'
+                                                ]*/
                                             });
+                                            var mixRatioColors = [
+                                                    '#0BA462',
+                                                    '#39B580',
+                                                    '#FFFFFF'
+                                                ];
+                                            console.log("color one: "+mixRatioColors[0]);
+                                            //mixRatioDonut.setColors(mixRatioColors);
                                             mixRatioDonut.setData(mixRatioData);
-                                          - //console.log("ganz unten mixratiodata: "+ mixRatioData[3].label);
-                                          - //mixRatioDonut.setData(mixRatioData);
+                      else
+                        p this recipe is empty
+                        //- console.log("ganz unten mixratiodata: "+ mixRatioData[3].label);
+                        //script document.getElementById("headingVonMixRatioId").style.color="red";
+                        //script document.getElementsByClassName("headingVonMixRatio")[0].style.color="blue";
