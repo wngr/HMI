@@ -34,9 +34,9 @@ nav.navbar.navbar-default.navbar-static-top(role='navigation',style='margin-bott
           script.
             socket.on("outputRequired", function(data){
               - console.log('JADE: outputBadge received');
-              if(data === true){
+              if(data === false){
                 $("#outputBadge").removeClass("badge-top alert-danger").html("");
-              } else if(data === false){
+              } else if(data === true){
                 $("#outputBadge").addClass("badge-top alert-danger").html('<i class="fa fa-map-marker fa-fw"></i>');
               }
             });
