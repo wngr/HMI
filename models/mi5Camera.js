@@ -18,7 +18,7 @@ module = function() {
   // We use a xampp server on the HMI computer with port 8080, to not conflict with the node.js Server
   this.baseUrl = 'http://' + CONFIG.FTPCamera + ':8080/wenglor/';
 
-  this.updateInterval = 1000;
+  // this.updateInterval = 30 * 1000; // see controller
 
   this.ftp = new JSFtp({
     host : CONFIG.FTPCamera,
