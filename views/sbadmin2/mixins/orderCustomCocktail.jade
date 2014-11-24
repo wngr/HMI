@@ -9,22 +9,36 @@ mixin orderCustomCocktail(recipe)
                             var allIngredientColors=[
                                 {ingredient: 'Default', color: '#3980B5'},
                                 {ingredient: 'Grenadine Syrup', color: '#A23138'},
+                                {ingredient: 'Grenadine', color: '#A23138'},
                                 {ingredient: 'Orange Juice', color: '#F9D423'},
+                                {ingredient: 'Orange', color: '#F9D423'},
                                 {ingredient: 'Maracuja Juice', color: '#E89505'},
+                                {ingredient: 'Maracuja', color: '#E89505'},
                                 {ingredient: 'Citrone Juice', color: '#FFF44F'},
+                                {ingredient: 'Citrus Juice', color: '#FFF44F'},
+                                {ingredient: 'Lemon Juice', color: '#FFF44F'},
+                                {ingredient: 'Lemon', color: '#FFF44F'},
                                 {ingredient: 'Pineapple Juice', color: '#FDCC4A'},
+                                {ingredient: 'Pineapple', color: '#FDCC4A'},
                                 {ingredient: 'Strawberry Syrup', color: '#E62C47'},
+                                {ingredient: 'Strawberry', color: '#E62C47'},
                                 {ingredient: 'Blue Curacao', color: '#006996'},
+                                {ingredient: 'Blue Curacao Syrup', color: '#006996'},
                                 {ingredient: 'Water', color: '#BBD9EE'},
                                 {ingredient: 'Batida de Coco', color: '#F8F2DC'},
                                 {ingredient: 'White Rum', color: '#E8D0A9'},
+                                {ingredient: 'Dark Rum', color:'#45362B'},
+                                {ingredient: 'Rum Dark', color: '#E8D0A9'},
+                                {ingredient: 'Rum White', color:'#45362B'},
                                 {ingredient: 'Gin', color: '#C2D72F'},
                                 {ingredient: 'Tequila', color: '#E3501A'}
                             ];
+                            //function to find property in an object array. gives the index of the object
                             function arrayObjectIndexOf(myArray, searchTerm, property) {
                                 for(var i = 0, len = myArray.length; i < len; i++) {
                                     if (myArray[i][property] === searchTerm) return i;
                                 }
+                                //not found:
                                 return 0;
                             }
                           div.row
