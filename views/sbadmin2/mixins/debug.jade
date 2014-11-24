@@ -18,6 +18,7 @@ mixin dropdown-debug()
                   span.pull-right.text-muted
                     em = true
             li.divider
+            li.divider
             li     
               a(href='#',onclick="socket.emit('bgDebugResetProcessTool', true);")
                 div
@@ -26,10 +27,38 @@ mixin dropdown-debug()
                   span.pull-right.text-muted
                     em = true
             li.divider
+            li.divider
             li     
-              a(href='#',onclick="socket.emit('bgDebugOrderPendingFalse',1);")
+              a(href='#',onclick="socket.emit('bgDebugResetXTS',1);")
                 div
                   i.fa.fa-pencil.fa-fw
-                  strong Mi5.Order[0].pending
+                  strong MI5.ResetXTS (.137)
+                  span.pull-right.text-muted
+                    em = true
+            li.divider
+            li.divider
+            li     
+              a(href='#',onclick="socket.emit('bgDebugMaintenanceTrue',1);")
+                div
+                  i.fa.fa-pencil.fa-fw
+                  strong Mi5.Maintenance (.137)
+                  span.pull-right.text-muted
+                    em = true
+            li.divider
+            li     
+              a(href='#',onclick="socket.emit('bgDebugMaintenanceFalse',1);")
+                div
+                  i.fa.fa-pencil.fa-fw
+                  strong Mi5.Maintenance (.137)
                   span.pull-right.text-muted
                     em = false
+            li.divider
+            li.divider
+            li     
+              a(href='#',onclick="socket.emit('bgDebugRestartXTS',1);")
+                div
+                  i.fa.fa-pencil.fa-fw
+                  strong Mi5.Restart (.137)
+                  span.pull-right.text-muted
+                    em = true
+                  
