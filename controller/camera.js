@@ -11,7 +11,7 @@ function index(req, res) {
 
   setInterval(function() {
     io.to('camera').emit('cameraNew');
-  }, 15 * 1000); // setInterval
+  }, 30 * 1000); // setInterval
 
   mi5Camera.getFileList(function(list) {
     jadeData.camera = mi5Camera.getLastPictures(5);
