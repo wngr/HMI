@@ -33,7 +33,7 @@ module = function() {
   this.socketRoom = 'output-module';
   this.ModuleId = 2601;
   this.SkillID = 1403;
-  this.PositionOutput = 200;
+  this.PositionOutput = 165;
   this.ModuleName = 'Output Module';
 
   this.opc = require('./../models/simpleOpcua').server(CONFIG.OPCUAOutputModule);
