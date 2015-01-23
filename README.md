@@ -5,6 +5,11 @@
 This should serve as a basic structure for HMI development. 
 It is also a testing basis for the MVC approach in JavaScript
 
+## Versions
+
+* _hannover_ current branch.
+This branch is used to group the changes for the hannover fair.
+
 ## Usage
 
 * Sapmleserver: 
