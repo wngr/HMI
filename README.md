@@ -5,10 +5,11 @@
 This should serve as a basic structure for HMI development. 
 It is also a testing basis for the MVC approach in JavaScript
 
-## Versions
+## Branches:
 
-* _hannover_ current branch.
-This branch is used to group the changes for the hannover fair.
+* _hannover_ 
+For Hannover Trade Fair
+Test For Eclipse
 
 ## Usage
 
