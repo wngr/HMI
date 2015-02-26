@@ -52,7 +52,7 @@ GLOBAL.mi5TaskInterface = new require('./models/mi5TaskInterface').newTaskInterf
 mi5TaskInterface.start(function(){});
 
 // Camera Module
-GLOBAL.mi5Camera = new require('./models/mi5Camera').newMi5Camera;
+//GLOBAL.mi5Camera = new require('./models/mi5Camera').newMi5Camera; // Setup proper FTP server first
 
 // Message Feed
 GLOBAL.mMessageFeed = require('./models/simpleMessageFeed');
