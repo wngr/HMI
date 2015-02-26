@@ -1,0 +1,4 @@
+[{"name":"userparameter","value":"5"},{"name":"text","value":""},{"name":"topic","value":"Produced Cookies"},{"name":"timestamp","value":"2014-11-23T01:18:30+01:00"}]
+[{"name":"userparameter","value":"10"},{"name":"text","value":"asdfasdf"},{"name":"topic","value":"liquidFillingLevel"},{"name":"timestamp","value":"2014-11-23T01:20:01+01:00"}]
+[{"name":"userparameter","value":"10"},{"name":"text","value":"Auch das XTS Test Rezept gefaellt mir"},{"name":"topic","value":"Cocktail #{recipe.Name.value}"},{"name":"timestamp","value":"2014-11-23T18:08:41+01:00"}]
+[{"name":"userparameter","value":"9"},{"name":"text","value":"Formidable ;-)"},{"name":"topic","value":"tasks"},{"name":"timestamp","value":"2015-02-26T14:26:57+01:00"}]
