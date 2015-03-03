@@ -51,7 +51,7 @@ mi5Output.start(function(){});
 GLOBAL.mi5TaskInterface = new require('./models/mi5TaskInterface').newTaskInterface;
 mi5TaskInterface.start(function(){});
 
-// Camera Module
+// Camera Module // deactivated for Briefcase Setup
 //GLOBAL.mi5Camera = new require('./models/mi5Camera').newMi5Camera; // Setup proper FTP server first
 
 // Message Feed
