@@ -1,0 +1,28 @@
+// Overwrite .fa-spin to center the element
+
+.fa-spin {
+  animation: 2s linear 0s normal none infinite running spin;
+  animation-duration: 2s;
+  animation-timing-function: linear;
+  animation-delay: 0s;
+  animation-direction: normal;
+  animation-fill-mode: none;
+  animation-iteration-count: infinite;
+  animation-play-state: running;
+  animation-name: spin;
+  
+  transform-origin: 52% 44%; // important part
+}
+
+.badge-top {
+	min-width: 20px;
+	text-align: center;
+	width: auto;
+	height: auto;
+	margin:0;
+	border-radius:50%;
+	position:absolute;
+	top:2px;
+	right:5px;
+	padding:2px;
+}
