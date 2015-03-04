@@ -18,7 +18,7 @@
     "moment": "^2.8.3",
     "mongodb": "^1.4.19",
     "myo": "^1.1.0",
-    "node-opcua": "*",
+    "node-opcua": "^0.0.30",
     "openssl": "*",
     "socket.io": "latest",
     "underscore": "*"
